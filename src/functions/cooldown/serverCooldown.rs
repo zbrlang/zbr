@@ -1,0 +1,51 @@
+use crate::context::{DiscordContext, FnOutput};
+use super::helpers::{apply_time_placeholders, parse_duration};
+
+/// ZserverCooldown{duration;(errorMessage)}
+/// After triggered, no one in the server can run the command until duration is up.
+pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
+    let duration_str = args.get(0).cloned().unwrap_or_default();
+    let error_msg    = args.get(1).cloned().unwrap_or_default();
+
+    let duration_secs = match parse_duration(&duration_str) {
+        Ok(d) => d,
+        Err(e) => return FnOutput::error("serverCooldown", e),
+    };
+
+    let db = match &ctx.db {
+        Some(d) => d.clone(),
+        None => return FnOutput::error("serverCooldown", "no database available"),
+    };
+
+    let bot_id   = ctx.bot_id.clone();
+    let guild_id = ctx.guild_id.clone();
+    let command  = ctx.command_name.clone();
+
+    let remaining = tokio::task::block_in_place(|| {
+        tokio::runtime::Handle::current().block_on(async {
+            crate::db::get_server_cooldown(&db, &bot_id, &guild_id, &command).await
+        })
+    });
+
+    if remaining > 0 {
+        let labels = tokio::task::block_in_place(|| {
+            tokio::runtime::Handle::current().block_on(async {
+                ctx.cooldown_labels.lock().await.clone()
+            })
+        });
+        let msg = if error_msg.is_empty() {
+            format!("This command is on cooldown. Try again in {}.", super::helpers::format_remaining(remaining, &labels))
+        } else {
+            apply_time_placeholders(&error_msg, remaining, &labels)
+        };
+        return FnOutput::user_error(msg);
+    }
+
+    tokio::task::block_in_place(|| {
+        tokio::runtime::Handle::current().block_on(async {
+            crate::db::set_server_cooldown(&db, &bot_id, &guild_id, &command, duration_secs).await
+        })
+    });
+
+    FnOutput::Empty
+}

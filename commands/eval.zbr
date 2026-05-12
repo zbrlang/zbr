@@ -1,0 +1,5 @@
+#trigger !eval
+#name Eval Command
+#type prefix
+
+Zeval{Zmessage{}}

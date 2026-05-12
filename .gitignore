@@ -1,0 +1,7 @@
+target/
+scratch/
+ignore/
+
+.env
+*.db
+*.txt

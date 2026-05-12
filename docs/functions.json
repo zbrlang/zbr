@@ -1,0 +1,7638 @@
+[
+  {
+    "name": "ZaddButton",
+    "category": "components",
+    "description": "Adds a button to the bot's response. Buttons are grouped into action rows automatically.",
+    "syntax": "ZaddButton{newRow;customID;label;style;disabled?;emoji?}",
+    "args": [
+      {
+        "name": "newRow",
+        "type": "boolean",
+        "required": true,
+        "description": "If true, starts a new action row before this button."
+      },
+      {
+        "name": "customID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID used to identify this button in onInteraction handlers. Use a URL for link buttons."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "The button label text."
+      },
+      {
+        "name": "style",
+        "type": "string",
+        "required": false,
+        "default": "secondary",
+        "description": "Button style: primary, secondary, success, danger, or link."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Whether the button is disabled."
+      },
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": false,
+        "default": "",
+        "description": "Emoji to display on the button (custom emoji ID or unicode)."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "customID is required"
+    ],
+    "examples": [
+      {
+        "code": "ZaddButton{false;confirm_ban;✅ Confirm;success}",
+        "output": "Adds a green Confirm button"
+      },
+      {
+        "code": "ZaddButton{true;cancel;❌ Cancel;danger}",
+        "output": "Adds a red Cancel button on a new row"
+      }
+    ]
+  },
+  {
+    "name": "ZaddCmdReactions",
+    "category": "reactions",
+    "description": "Adds reactions to the message that triggered the command.",
+    "syntax": "ZaddCmdReactions{emoji1;emoji2;...}",
+    "args": [
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": true,
+        "description": "The emoji argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one emoji is required",
+      "invalid channel ID",
+      "invalid trigger message ID",
+      "no HTTP client available",
+      "no trigger message available (slash commands don't have a trigger message)"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZaddEmoji",
+    "category": "emojis",
+    "description": "Downloads the image, base64-encodes it, and creates a guild emoji.",
+    "syntax": "ZaddEmoji{name;imageURL;returnEmoji?}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      },
+      {
+        "name": "imageURL",
+        "type": "url",
+        "required": false,
+        "description": "The imageURL argument.",
+        "default": ""
+      },
+      {
+        "name": "returnEmoji",
+        "type": "boolean",
+        "required": false,
+        "description": "The returnEmoji argument.",
+        "default": "false"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "emoji name cannot be empty",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZaddField",
+    "category": "embeds",
+    "description": "Adds content to the current embed.",
+    "syntax": "ZaddField{name?;value?;inline?}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      },
+      {
+        "name": "inline",
+        "type": "boolean",
+        "required": false,
+        "description": "The inline argument.",
+        "default": "false"
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "embeds cannot have more than 25 fields",
+      "field name cannot be empty",
+      "field value cannot be empty"
+    ],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZaddMentionableSelect",
+    "category": "components",
+    "description": "Adds a mentionable select menu (users and roles) to the response.",
+    "syntax": "ZaddMentionableSelect{menuID;min?;max?;placeholder?}",
+    "args": [
+      {
+        "name": "menuID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID used to identify this menu in onInteraction handlers."
+      },
+      {
+        "name": "min",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "description": "Minimum number of items that must be selected."
+      },
+      {
+        "name": "max",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "description": "Maximum number of items that can be selected."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "Placeholder text shown when nothing is selected."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "menuID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZaddMessageReactions",
+    "category": "reactions",
+    "description": "Returns information for the addMessageReactions function.",
+    "syntax": "ZaddMessageReactions{channelID;messageID;emoji1;emoji2;...}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      },
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": true,
+        "description": "The emoji argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available",
+      "requires channelID, messageID, and at least one emoji"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZaddReactions",
+    "category": "reactions",
+    "description": "Queues reactions to be added to the bot's own response after it is sent.",
+    "syntax": "ZaddReactions{emoji1;emoji2;...}",
+    "args": [
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": true,
+        "description": "The emoji argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one emoji is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZaddRoleSelect",
+    "category": "components",
+    "description": "Adds a role select menu to the response. Users can pick from server roles.",
+    "syntax": "ZaddRoleSelect{menuID;min?;max?;placeholder?}",
+    "args": [
+      {
+        "name": "menuID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID used to identify this menu in onInteraction handlers."
+      },
+      {
+        "name": "min",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "description": "Minimum number of roles that must be selected."
+      },
+      {
+        "name": "max",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "description": "Maximum number of roles that can be selected."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "Placeholder text shown when nothing is selected."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "menuID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZaddSelectMenuOption",
+    "category": "components",
+    "description": "Adds an option to the current string select menu. Must be called after ZnewSelectMenu.",
+    "syntax": "ZaddSelectMenuOption{label;value;description?;default?;emoji?}",
+    "args": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "The user-facing label for this option."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "The value sent to your bot when this option is selected."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "Optional description shown below the label."
+      },
+      {
+        "name": "default",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Whether this option is selected by default."
+      },
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": false,
+        "default": "",
+        "description": "Emoji to display next to the option."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "label is required",
+      "no select menu — call ZnewSelectMenu first",
+      "value is required"
+    ],
+    "examples": [
+      {
+        "code": "ZaddSelectMenuOption{Red;red;The color red}",
+        "output": "Adds a Red option with value 'red'"
+      }
+    ]
+  },
+  {
+    "name": "ZaddTextInput",
+    "category": "components",
+    "description": "Adds a text input field to the current modal. Must be called after ZnewModal.",
+    "syntax": "ZaddTextInput{fieldID;label;style?;minLength?;maxLength?;required?;placeholder?}",
+    "args": [
+      {
+        "name": "fieldID",
+        "type": "string",
+        "required": true,
+        "description": "The ID used to read this field's value with ZinputValue."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "The label shown above the text input."
+      },
+      {
+        "name": "style",
+        "type": "string",
+        "required": false,
+        "default": "short",
+        "description": "Input style: short (single line) or paragraph (multi-line)."
+      },
+      {
+        "name": "minLength",
+        "type": "integer",
+        "required": false,
+        "default": "",
+        "description": "Minimum character length."
+      },
+      {
+        "name": "maxLength",
+        "type": "integer",
+        "required": false,
+        "default": "",
+        "description": "Maximum character length."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Whether the field must be filled in."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "Placeholder text shown inside the input."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "fieldID is required",
+      "label is required",
+      "no modal — call ZnewModal first"
+    ],
+    "examples": [
+      {
+        "code": "ZaddTextInput{feedback;Your feedback;paragraph;10;500}",
+        "output": "Adds a multi-line feedback field"
+      }
+    ]
+  },
+  {
+    "name": "ZaddUserSelect",
+    "category": "components",
+    "description": "Adds a user select menu to the response. Users can pick from server members.",
+    "syntax": "ZaddUserSelect{menuID;min?;max?;placeholder?}",
+    "args": [
+      {
+        "name": "menuID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID used to identify this menu in onInteraction handlers."
+      },
+      {
+        "name": "min",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "description": "Minimum number of users that must be selected."
+      },
+      {
+        "name": "max",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "description": "Maximum number of users that can be selected."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "Placeholder text shown when nothing is selected."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "menuID is required"
+    ],
+    "examples": [
+      {
+        "code": "ZaddUserSelect{pick_user;1;1;Select a user...}",
+        "output": "Adds a user select menu"
+      }
+    ]
+  },
+  {
+    "name": "ZafkChannelID",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZafkChannelID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "failed to fetch guild",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZafkTimeout",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZafkTimeout{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZallMembersCount",
+    "category": "bot",
+    "description": "Returns information for the allMembersCount function.",
+    "syntax": "ZallMembersCount{}",
+    "args": [],
+    "returns": "integer",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZallowRoleMentions",
+    "category": "context",
+    "description": "0 args  → no role pings allowed on this response.",
+    "syntax": "ZallowRoleMentions{roleID;...}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The roleID argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZallowUserMentions",
+    "category": "context",
+    "description": "0 args  → no user pings allowed on this response.",
+    "syntax": "ZallowUserMentions{userID;...}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZargCount",
+    "category": "string",
+    "description": "Returns information for the argCount function.",
+    "syntax": "ZargCount{text} — counts space-separated words in the text.",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZargsCheck",
+    "category": "control",
+    "description": "Halts with error if the number of space-separated args in ctx.message.",
+    "syntax": "ZargsCheck{min;max?;error}",
+    "args": [
+      {
+        "name": "min",
+        "type": "string",
+        "required": true,
+        "description": "The min argument."
+      },
+      {
+        "name": "max",
+        "type": "string",
+        "required": false,
+        "description": "The max argument.",
+        "default": ""
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": false,
+        "description": "The error argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "min is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zauthor",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "Zauthor{text?}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZauthorIcon",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "ZauthorIcon{url?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": false,
+        "description": "The url argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "ZauthorIcon requires an author to be set first"
+    ],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZauthorURL",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "ZauthorURL{url?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": false,
+        "description": "The url argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "ZauthorURL requires an author to be set first"
+    ],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "Zban",
+    "category": "moderation",
+    "description": "Returns information for the ban function.",
+    "syntax": "Zban{userID;reason?;deleteMessageDays?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "required": false,
+        "description": "The reason argument.",
+        "default": ""
+      },
+      {
+        "name": "deleteMessageDays",
+        "type": "string",
+        "required": false,
+        "description": "The deleteMessageDays argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "deleteMessageDays must be between 0 and 7",
+      "failed to ban user",
+      "no HTTP client available",
+      "not in a guild",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZblackListIDs",
+    "category": "blacklists",
+    "description": "Halts if the author's ID is in the provided list.",
+    "syntax": "ZblackListIDs{userID1;userID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one user ID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZblackListRoles",
+    "category": "blacklists",
+    "description": "Halts if the author has any role matching the provided names.",
+    "syntax": "ZblackListRoles{roleName1;roleName2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "roleName",
+        "type": "string",
+        "required": true,
+        "description": "The roleName argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one role name is required",
+      "invalid author ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZblackListRolesIDs",
+    "category": "blacklists",
+    "description": "Halts if the author has any of the provided role IDs.",
+    "syntax": "ZblackListRolesIDs{roleID1;roleID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The roleID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one role ID is required",
+      "invalid author ID",
+      "no HTTP client available",
+      "not in a guild",
+      "one or more invalid role IDs"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZblackListServers",
+    "category": "blacklists",
+    "description": "Halts if the current guild is in the provided list.",
+    "syntax": "ZblackListServers{guildID1;guildID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The guildID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one server ID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZblackListUsers",
+    "category": "blacklists",
+    "description": "Halts if the author's username matches any in the provided list.",
+    "syntax": "ZblackListUsers{username1;username2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": true,
+        "description": "The username argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one username is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZboostCount",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZboostCount{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZboostLevel",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZboostLevel{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZbotCommands",
+    "category": "bot",
+    "description": "Returns information for the botCommands function.",
+    "syntax": "ZbotCommands{separator?}",
+    "args": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZbotID",
+    "category": "bot",
+    "description": "Returns information for the botID function.",
+    "syntax": "ZbotID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZbotOwnerID",
+    "category": "bot",
+    "description": "Returns information for the botOwnerID function.",
+    "syntax": "ZbotOwnerID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZbotTyping",
+    "category": "bot",
+    "description": "Returns information for the botTyping function.",
+    "syntax": "ZbotTyping{}",
+    "args": [],
+    "returns": "nothing",
+    "errors": [
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZbyteCount",
+    "category": "string",
+    "description": "Returns information for the byteCount function.",
+    "syntax": "ZbyteCount{text} — returns the number of UTF-8 bytes in the text.",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zcalculate",
+    "category": "math",
+    "description": "Recursive-descent expression evaluator. Supports: + - * / % ** () and unary minus. Operator precedence (low → high): 1. + - 2. * / % 3. ** (right-associative) 4. unary - 5. atoms: numbers, parenthesised expressions.",
+    "syntax": "Zcalculate{expr?}",
+    "args": [
+      {
+        "name": "expr",
+        "type": "string",
+        "required": false,
+        "description": "The expr argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "expression cannot be empty"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcategoryChannels",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZcategoryChannels{catID?;separator?;return_type?}",
+    "args": [
+      {
+        "name": "catID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The catID argument.",
+        "default": ""
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      },
+      {
+        "name": "return_type",
+        "type": "string",
+        "required": false,
+        "description": "The return_type argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "category not found or is not a category",
+      "categoryID is required",
+      "invalid category ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcategoryCount",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZcategoryCount{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "failed to fetch channels",
+      "invalid guild ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcategoryID",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZcategoryID{name?}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "category not found",
+      "failed to fetch channels",
+      "name is required",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zceil",
+    "category": "math",
+    "description": "Returns the integer ceiling of the given number.",
+    "syntax": "Zceil{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZchangeCooldownTime",
+    "category": "cooldown",
+    "description": "Overrides the label text used in cooldown time formatting.",
+    "syntax": "ZchangeCooldownTime{days;hours;minutes;seconds}",
+    "args": [
+      {
+        "name": "days",
+        "type": "string",
+        "required": false,
+        "description": "The days argument.",
+        "default": ""
+      },
+      {
+        "name": "hours",
+        "type": "integer",
+        "required": false,
+        "description": "The hours argument.",
+        "default": "0"
+      },
+      {
+        "name": "minutes",
+        "type": "integer",
+        "required": false,
+        "description": "The minutes argument.",
+        "default": "0"
+      },
+      {
+        "name": "seconds",
+        "type": "integer",
+        "required": false,
+        "description": "The seconds argument.",
+        "default": "0"
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZchangeNickname",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZchangeNickname{nickname;userID}",
+    "args": [
+      {
+        "name": "nickname",
+        "type": "string",
+        "required": false,
+        "description": "The nickname argument.",
+        "default": ""
+      },
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "invalid userID",
+      "nickname cannot exceed 32 characters",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZchannelCount",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZchannelCount{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "failed to fetch channels",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZchannelExists",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZchannelExists{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel ID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZchannelID",
+    "category": "id",
+    "description": "ZchannelID{name}   — find channel by name in the guild.",
+    "syntax": "ZchannelID{}       — current channel's ID",
+    "args": [
+      {
+        "name": "query",
+        "type": "string",
+        "required": false,
+        "description": "The query argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZchannelName",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZchannelName{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZchannelNames",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZchannelNames{separator?;guildID?}",
+    "args": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      },
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "failed to fetch channels",
+      "invalid guild ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZchannelPosition",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZchannelPosition{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZchannelTopic",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZchannelTopic{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZchannelType",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZchannelType{arg0...}",
+    "args": [
+      {
+        "name": "arg0",
+        "type": "string",
+        "required": false,
+        "description": "The arg0 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcharCount",
+    "category": "string",
+    "description": "Returns the number of Unicode characters (not bytes) in the text.",
+    "syntax": "ZcharCount{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZcheckCondition",
+    "category": "control",
+    "description": "Evaluates a condition string and returns \"true\" or \"false\".",
+    "syntax": "ZcheckCondition{condition}",
+    "args": [
+      {
+        "name": "condition",
+        "type": "string",
+        "required": true,
+        "description": "The condition argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "condition is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcheckContains",
+    "category": "string",
+    "description": "Returns \"true\" if the text contains any of the provided words (case-insensitive).",
+    "syntax": "ZcheckContains{text;word;...}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text argument."
+      },
+      {
+        "name": "word",
+        "type": "string",
+        "required": true,
+        "description": "The word argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "text and at least one word are required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcheckUserPerms",
+    "category": "permissions",
+    "description": "Returns \"true\" if the user has all provided permissions, \"false\" otherwise.",
+    "syntax": "ZcheckUserPerms{userID;perm1;perm2;...}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "perm",
+        "type": "permission",
+        "required": true,
+        "description": "The perm argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild",
+      "user ID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zclear",
+    "category": "moderation",
+    "description": "Returns information for the clear function.",
+    "syntax": "Zclear{amount;userID?;removePinned?}",
+    "args": [
+      {
+        "name": "amount",
+        "type": "integer",
+        "required": true,
+        "description": "The amount argument."
+      },
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The userID argument.",
+        "default": ""
+      },
+      {
+        "name": "removePinned",
+        "type": "string",
+        "required": false,
+        "description": "The removePinned argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "amount is required",
+      "invalid channel ID in context",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZclearReactions",
+    "category": "reactions",
+    "description": "Use \"!all\" as emoji to clear all reactions.",
+    "syntax": "ZclearReactions{channelID;messageID;emoji}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      },
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": false,
+        "description": "The emoji argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available",
+      "requires channelID, messageID, and emoji (or !all)"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zcolor",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "Zcolor{hex?}",
+    "args": [
+      {
+        "name": "hex",
+        "type": "string",
+        "required": false,
+        "description": "The hex argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZcolorRole",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZcolorRole{roleID?;color?}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The roleID argument.",
+        "default": ""
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "The color argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild",
+      "role ID and color are required",
+      "role not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcommandName",
+    "category": "bot",
+    "description": "Returns information for the commandName function.",
+    "syntax": "ZcommandName{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZcommandsCount",
+    "category": "bot",
+    "description": "Returns information for the commandsCount function.",
+    "syntax": "ZcommandsCount{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZcommandTrigger",
+    "category": "bot",
+    "description": "Returns information for the commandTrigger function.",
+    "syntax": "ZcommandTrigger{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zcooldown",
+    "category": "cooldown",
+    "description": "Per-user per-server cooldown.",
+    "syntax": "Zcooldown{duration;(errorMessage)}",
+    "args": [
+      {
+        "name": "duration",
+        "type": "duration",
+        "required": false,
+        "description": "The duration argument.",
+        "default": ""
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcreateChannel",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZcreateChannel{name?}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "name is required",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcreateRole",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZcreateRole{name?;color?;hoisted?;mentionable?}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "The color argument.",
+        "default": ""
+      },
+      {
+        "name": "hoisted",
+        "type": "boolean",
+        "required": false,
+        "description": "The hoisted argument.",
+        "default": "false"
+      },
+      {
+        "name": "mentionable",
+        "type": "boolean",
+        "required": false,
+        "description": "The mentionable argument.",
+        "default": "false"
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to create role",
+      "name is required",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcreationDate",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZcreationDate{id;format}",
+    "args": [
+      {
+        "name": "id",
+        "type": "snowflake",
+        "required": true,
+        "description": "The id argument."
+      },
+      {
+        "name": "format",
+        "type": "string",
+        "required": true,
+        "description": "The format argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "ID is required",
+      "invalid ID format",
+      "invalid timestamp generated"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcropText",
+    "category": "string",
+    "description": "Crops text to maxChars characters. If cropped, appends 'ending'.",
+    "syntax": "ZcropText{text;maxChars;ending}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text argument."
+      },
+      {
+        "name": "maxChars",
+        "type": "string",
+        "required": true,
+        "description": "The maxChars argument."
+      },
+      {
+        "name": "ending",
+        "type": "string",
+        "required": true,
+        "description": "The ending argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZcustomEmoji",
+    "category": "emojis",
+    "description": "Returns the usable emoji string for a guild emoji by name, e.g. <:wave:123456>.",
+    "syntax": "ZcustomEmoji{name}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "emoji name cannot be empty",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcustomID",
+    "category": "components",
+    "description": "Returns the custom_id of the current interaction. Only populated inside onInteraction handlers.",
+    "syntax": "ZcustomID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": [
+      {
+        "code": "Zif{ZcustomID{}==confirm_ban;Zban{ZgetServerVar{pending_ban}}}",
+        "output": "Runs ban if the confirm button was clicked"
+      }
+    ]
+  },
+  {
+    "name": "Zdate",
+    "category": "time",
+    "description": "Returns the current date as YYYY-MM-DD.",
+    "syntax": "Zdate{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zday",
+    "category": "time",
+    "description": "Returns the current day of the month (1–31).",
+    "syntax": "Zday{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zdefer",
+    "category": "components",
+    "description": "Defers the interaction response, showing a loading state. The bot then has 15 minutes to follow up.",
+    "syntax": "Zdefer{}",
+    "args": [],
+    "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZdeleteChannels",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZdeleteChannels{arg1...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": false,
+        "description": "The arg1 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one channel ID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZdeleteChannelsByName",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZdeleteChannelsByName{arg1...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": false,
+        "description": "The arg1 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one name is required",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZdeleteMessage",
+    "category": "message",
+    "description": "Returns information for the deleteMessage function.",
+    "syntax": "ZdeleteMessage{channelID;messageID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "failed to delete message",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZdeleteRole",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZdeleteRole{roleID?}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The roleID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild",
+      "role ID is required",
+      "role not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zdescription",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "Zdescription{text?}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZdisplayName",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZdisplayName{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available",
+      "not in a guild",
+      "user not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zdiv",
+    "category": "math",
+    "description": "First arg is the starting value, divided by each subsequent arg. Zdiv{100;5;2} = 100 / 5 / 2 = 10.",
+    "syntax": "Zdiv{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "cannot divide by zero"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zdm",
+    "category": "message",
+    "description": "Returns information for the dm function.",
+    "syntax": "Zdm{userID;content}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "The content argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "content is required",
+      "no HTTP client available",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZdmChannelID",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZdmChannelID{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "failed to create DM channel",
+      "invalid userID",
+      "no HTTP client available",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditButton",
+    "category": "components",
+    "description": "Edits a button on an existing message.",
+    "syntax": "ZeditButton{customID;label;style;disabled?;emoji?;messageID?}",
+    "args": [
+      {
+        "name": "customID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID of the button to edit."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "New button label."
+      },
+      {
+        "name": "style",
+        "type": "string",
+        "required": true,
+        "description": "New button style: primary, secondary, success, danger, or link."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Whether the button should be disabled."
+      },
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": false,
+        "default": "",
+        "description": "New emoji for the button."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": false,
+        "default": "triggering message ID",
+        "description": "ID of the message containing the button."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "customID is required",
+      "failed to edit button",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditChannelPerms",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZeditChannelPerms{channelID;target...}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "target",
+        "type": "string",
+        "required": false,
+        "description": "The target argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID, userOrRoleID, and at least one permission are required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditMessage",
+    "category": "message",
+    "description": "Returns information for the editMessage function.",
+    "syntax": "ZeditMessage{channelID;messageID;content}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "The content argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "content is required",
+      "failed to edit message",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditSelectMenu",
+    "category": "components",
+    "description": "Edits a select menu on an existing message.",
+    "syntax": "ZeditSelectMenu{menuID;min;max;placeholder?;messageID?}",
+    "args": [
+      {
+        "name": "menuID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID of the select menu to edit."
+      },
+      {
+        "name": "min",
+        "type": "integer",
+        "required": true,
+        "description": "New minimum selection count."
+      },
+      {
+        "name": "max",
+        "type": "integer",
+        "required": true,
+        "description": "New maximum selection count."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "New placeholder text."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": false,
+        "default": "triggering message ID",
+        "description": "ID of the message containing the select menu."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to edit select menu",
+      "menuID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditSelectMenuOption",
+    "category": "components",
+    "description": "Edits an option on an existing select menu.",
+    "syntax": "ZeditSelectMenuOption{menuID;label;value;description?;default?;emoji?;messageID?}",
+    "args": [
+      {
+        "name": "menuID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID of the select menu."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "New option label."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "New option value."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "New option description."
+      },
+      {
+        "name": "default",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Whether this option is selected by default."
+      },
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": false,
+        "default": "",
+        "description": "New emoji for the option."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": false,
+        "default": "triggering message ID",
+        "description": "ID of the message containing the select menu."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to edit select menu option",
+      "label is required",
+      "menuID is required",
+      "no HTTP client available",
+      "value is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditSplitText",
+    "category": "textsplit",
+    "description": "Replaces the element at the given 1-based index with a new value.",
+    "syntax": "ZeditSplitText{index;value}",
+    "args": [
+      {
+        "name": "index",
+        "type": "integer",
+        "required": false,
+        "description": "The index argument.",
+        "default": ""
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "index must be 1 or greater"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditThread",
+    "category": "threads",
+    "description": "Use \"!unchanged\" for any field you want to leave as-is.",
+    "syntax": "ZeditThread{threadID;(name);(archived);(archiveDuration);(locked);(slowmode)}",
+    "args": [
+      {
+        "name": "threadID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The threadID argument.",
+        "default": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      },
+      {
+        "name": "archived",
+        "type": "string",
+        "required": false,
+        "description": "The archived argument.",
+        "default": ""
+      },
+      {
+        "name": "archiveDuration",
+        "type": "duration",
+        "required": false,
+        "description": "The archiveDuration argument.",
+        "default": ""
+      },
+      {
+        "name": "locked",
+        "type": "string",
+        "required": false,
+        "description": "The locked argument.",
+        "default": ""
+      },
+      {
+        "name": "slowmode",
+        "type": "duration",
+        "required": false,
+        "description": "The slowmode argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZemojiExists",
+    "category": "emojis",
+    "description": "Returns \"true\" if the emoji ID exists in the current server, \"false\" otherwise.",
+    "syntax": "ZemojiExists{id}",
+    "args": [
+      {
+        "name": "id",
+        "type": "snowflake",
+        "required": false,
+        "description": "The id argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZemojiName",
+    "category": "emojis",
+    "description": "Returns the name of a custom emoji by its ID.",
+    "syntax": "ZemojiName{id}",
+    "args": [
+      {
+        "name": "id",
+        "type": "snowflake",
+        "required": false,
+        "description": "The id argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZemoteCount",
+    "category": "emojis",
+    "description": "Returns the total number of custom emojis (static + animated) in the server.",
+    "syntax": "ZemoteCount{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zenabled",
+    "category": "bot",
+    "description": "Returns information for the enabled function.",
+    "syntax": "Zenabled{condition?;error_msg}",
+    "args": [
+      {
+        "name": "condition",
+        "type": "string",
+        "required": false,
+        "description": "The condition argument.",
+        "default": ""
+      },
+      {
+        "name": "error_msg",
+        "type": "string",
+        "required": true,
+        "description": "The error_msg argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zephemeral",
+    "category": "message",
+    "description": "Returns information for the ephemeral function.",
+    "syntax": "Zephemeral{} — makes the slash command response only visible to the invoker.",
+    "args": [],
+    "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zerror",
+    "category": "errors",
+    "description": "Returns information for the error function.",
+    "syntax": "Zerror{message} — halts execution with a custom user-facing error message.",
+    "args": [
+      {
+        "name": "message",
+        "type": "snowflake",
+        "required": false,
+        "description": "The message argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZexecutionTime",
+    "category": "bot",
+    "description": "Returns information for the executionTime function.",
+    "syntax": "ZexecutionTime{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZexecutionTime",
+    "category": "bot",
+    "description": "Returns information for the executionTime function.",
+    "syntax": "ZexecutionTime{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zfloor",
+    "category": "math",
+    "description": "Returns the integer portion of the given number.",
+    "syntax": "Zfloor{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zfooter",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "Zfooter{text?}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZfooterIcon",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "ZfooterIcon{url?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": false,
+        "description": "The url argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "ZfooterIcon requires a footer to be set first"
+    ],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZgetAttachments",
+    "category": "message",
+    "description": "No index = all attachment URLs joined by newline.",
+    "syntax": "ZgetAttachments{index?}",
+    "args": [
+      {
+        "name": "index",
+        "type": "integer",
+        "required": false,
+        "description": "The index argument.",
+        "default": "1"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "failed to fetch message",
+      "invalid channel ID in context",
+      "invalid message ID in context",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetBanReason",
+    "category": "moderation",
+    "description": "Returns information for the getBanReason function.",
+    "syntax": "ZgetBanReason{userID;guildID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetChannelVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZgetChannelVar{name;(channelID)}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetCooldown",
+    "category": "cooldown",
+    "description": "Returns remaining seconds on the cooldown.",
+    "syntax": "ZgetCooldown{type}",
+    "args": [
+      {
+        "name": "type",
+        "type": "string",
+        "required": false,
+        "description": "The type argument.",
+        "default": ""
+      }
+    ],
+    "returns": "integer",
+    "errors": [
+      "no database available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetEmbedData",
+    "category": "message",
+    "description": "type: title, description, footer, color, image, timestamp.",
+    "syntax": "ZgetEmbedData{channelID;messageID;embedIndex;type}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      },
+      {
+        "name": "embedIndex",
+        "type": "string",
+        "required": true,
+        "description": "The embedIndex argument."
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": true,
+        "description": "The type argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "embedIndex is required",
+      "message not found",
+      "messageID is required",
+      "no HTTP client available",
+      "type is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetMentionableSelectUserCount",
+    "category": "components",
+    "description": "Returns the number of users/roles selected in a mentionable select interaction.",
+    "syntax": "ZgetMentionableSelectUserCount{}",
+    "args": [],
+    "returns": "integer",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetMentionableSelectUserID",
+    "category": "components",
+    "description": "Returns the user or role ID at the given 1-based index from a mentionable select interaction.",
+    "syntax": "ZgetMentionableSelectUserID{index}",
+    "args": [
+      {
+        "name": "index",
+        "type": "integer",
+        "required": true,
+        "description": "1-based index of the selected user or role."
+      }
+    ],
+    "returns": "snowflake",
+    "errors": [
+      "index is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetMentionableSelectUserIDs",
+    "category": "components",
+    "description": "Returns all selected user/role IDs from a mentionable select interaction, joined by a separator.",
+    "syntax": "ZgetMentionableSelectUserIDs{separator?;limit?}",
+    "args": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "default": ", ",
+        "description": "Separator between IDs."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "default": "",
+        "description": "Maximum number of IDs to return (0 = all)."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetMessage",
+    "category": "message",
+    "description": "type: content (default), authorID, username, avatar.",
+    "syntax": "ZgetMessage{channelID;messageID;type?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": false,
+        "description": "The type argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "message not found",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetReactions",
+    "category": "reactions",
+    "description": "Returns a list of usernames who reacted with the given emoji.",
+    "syntax": "ZgetReactions{channelID;messageID;separator;emoji}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": true,
+        "description": "The separator argument."
+      },
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": true,
+        "description": "The emoji argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "requires channelID, messageID, separator, and emoji"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetRoleSelectRoleCount",
+    "category": "components",
+    "description": "Returns the number of roles selected in a role select interaction.",
+    "syntax": "ZgetRoleSelectRoleCount{}",
+    "args": [],
+    "returns": "integer",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetRoleSelectRoleID",
+    "category": "components",
+    "description": "Returns the role ID at the given 1-based index from a role select interaction.",
+    "syntax": "ZgetRoleSelectRoleID{index}",
+    "args": [
+      {
+        "name": "index",
+        "type": "integer",
+        "required": true,
+        "description": "1-based index of the selected role."
+      }
+    ],
+    "returns": "snowflake",
+    "errors": [
+      "index is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetRoleSelectRoleIDs",
+    "category": "components",
+    "description": "Returns all selected role IDs from a role select interaction, joined by a separator.",
+    "syntax": "ZgetRoleSelectRoleIDs{separator?;limit?}",
+    "args": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "default": ", ",
+        "description": "Separator between IDs."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "default": "",
+        "description": "Maximum number of IDs to return (0 = all)."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetServerVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZgetServerVar{name;(guildID)}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetSlowmode",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZgetSlowmode{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetTextSplitIndex",
+    "category": "textsplit",
+    "description": "Returns the 1-based index of the first element matching value.",
+    "syntax": "ZgetTextSplitIndex{value}",
+    "args": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetTextSplitLength",
+    "category": "textsplit",
+    "description": "Returns the number of elements in the current split.",
+    "syntax": "ZgetTextSplitLength{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetTimestamp",
+    "category": "time",
+    "description": "Returns the current Unix timestamp.",
+    "syntax": "ZgetTimestamp{unit?}",
+    "args": [
+      {
+        "name": "unit",
+        "type": "string",
+        "required": false,
+        "description": "The unit argument.",
+        "default": ""
+      }
+    ],
+    "returns": "integer",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetUserSelectUserCount",
+    "category": "components",
+    "description": "Returns the number of users selected in a user select interaction.",
+    "syntax": "ZgetUserSelectUserCount{}",
+    "args": [],
+    "returns": "integer",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetUserSelectUserID",
+    "category": "components",
+    "description": "Returns the user ID at the given 1-based index from a user select interaction.",
+    "syntax": "ZgetUserSelectUserID{index}",
+    "args": [
+      {
+        "name": "index",
+        "type": "integer",
+        "required": true,
+        "description": "1-based index of the selected user."
+      }
+    ],
+    "returns": "snowflake",
+    "errors": [
+      "index is required"
+    ],
+    "examples": [
+      {
+        "code": "ZgetUserSelectUserID{1}",
+        "output": "Returns the first selected user's ID"
+      }
+    ]
+  },
+  {
+    "name": "ZgetUserSelectUserIDs",
+    "category": "components",
+    "description": "Returns all selected user IDs from a user select interaction, joined by a separator.",
+    "syntax": "ZgetUserSelectUserIDs{separator?;limit?}",
+    "args": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "default": ", ",
+        "description": "Separator between IDs."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "default": "",
+        "description": "Maximum number of IDs to return (0 = all)."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZgetUserVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZgetUserVar{name;(userID;guildID)}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "(userID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The (userID argument.",
+        "default": "current author ID"
+      },
+      {
+        "name": "guildID)",
+        "type": "string",
+        "required": false,
+        "description": "The guildID) argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZgetVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZgetVar{name}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZglobalCooldown",
+    "category": "cooldown",
+    "description": "Per-user cooldown across all servers.",
+    "syntax": "ZglobalCooldown{duration;(errorMessage)}",
+    "args": [
+      {
+        "name": "duration",
+        "type": "duration",
+        "required": false,
+        "description": "The duration argument.",
+        "default": ""
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZguildBanner",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZguildBanner{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZguildExists",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZguildExists{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZguildID",
+    "category": "id",
+    "description": "Returns information for the guildID function.",
+    "syntax": "ZguildID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZhasRole",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZhasRole{roleID?}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The roleID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "boolean",
+    "errors": [
+      "invalid role ID",
+      "invalid user ID",
+      "no HTTP client available",
+      "not in a guild",
+      "role ID is required",
+      "user not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhighestRole",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZhighestRole{arg0...}",
+    "args": [
+      {
+        "name": "arg0",
+        "type": "string",
+        "required": false,
+        "description": "The arg0 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhighestRoleWithPerms",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZhighestRoleWithPerms{arg1...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": false,
+        "description": "The arg1 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one permission is required",
+      "failed to fetch roles",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zhour",
+    "category": "time",
+    "description": "Returns the current hour (0–23).",
+    "syntax": "Zhour{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZhttpAddHeader",
+    "category": "http",
+    "description": "Adds a header that will be sent with all subsequent HTTP requests in this execution.",
+    "syntax": "ZhttpAddHeader{name;value}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "The value argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "header name is required",
+      "header value is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhttpDelete",
+    "category": "http",
+    "description": "Returns information for the httpDelete function.",
+    "syntax": "ZhttpDelete{url;body?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": true,
+        "description": "The url argument."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "required": false,
+        "description": "The body argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "url is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhttpGet",
+    "category": "http",
+    "description": "Returns information for the httpGet function.",
+    "syntax": "ZhttpGet{url}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": true,
+        "description": "The url argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "url is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhttpPatch",
+    "category": "http",
+    "description": "Returns information for the httpPatch function.",
+    "syntax": "ZhttpPatch{url;body?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": true,
+        "description": "The url argument."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "required": false,
+        "description": "The body argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "url is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhttpPost",
+    "category": "http",
+    "description": "Returns information for the httpPost function.",
+    "syntax": "ZhttpPost{url;body?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": true,
+        "description": "The url argument."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "required": false,
+        "description": "The body argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "url is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhttpPut",
+    "category": "http",
+    "description": "Returns information for the httpPut function.",
+    "syntax": "ZhttpPut{url;body?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": true,
+        "description": "The url argument."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "required": false,
+        "description": "The body argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "url is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhttpResult",
+    "category": "http",
+    "description": "Reads the response body of the last HTTP request and navigates into it using.",
+    "syntax": "ZhttpResult{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "response is not valid JSON"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZhttpStatus",
+    "category": "http",
+    "description": "Returns the HTTP status code of the last HTTP request made in this execution.",
+    "syntax": "ZhttpStatus{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zif",
+    "category": "control",
+    "description": "Zif is handled as a special case in Runtime::evaluate (lazy evaluation). This stub is never called — the runtime intercepts \"if\" before resolving args.",
+    "syntax": "Zif{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "internal error: Zif should be handled by the runtime"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZignoreChannels",
+    "category": "permissions",
+    "description": "Halts if the current channel is in the provided list.",
+    "syntax": "ZignoreChannels{channelID1;channelID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one channel ID is required"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "Zimage",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "Zimage{url?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": false,
+        "description": "The url argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZinputValue",
+    "category": "components",
+    "description": "Reads a submitted modal text input field value. Only valid inside an onInteraction handler for a modal submission.",
+    "syntax": "ZinputValue{fieldID}",
+    "args": [
+      {
+        "name": "fieldID",
+        "type": "string",
+        "required": true,
+        "description": "The field ID as set in ZaddTextInput."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "fieldID is required"
+    ],
+    "examples": [
+      {
+        "code": "ZinputValue{feedback}",
+        "output": "Returns the text the user typed in the 'feedback' field"
+      }
+    ]
+  },
+  {
+    "name": "ZinviteInfo",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZinviteInfo{arg1;arg2}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true,
+        "description": "The arg2 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "code is required",
+      "no HTTP client available",
+      "type is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisAdmin",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZisAdmin{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available",
+      "not in a guild",
+      "user not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisBanned",
+    "category": "moderation",
+    "description": "Returns information for the isBanned function.",
+    "syntax": "ZisBanned{userID;guildID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisBoolean",
+    "category": "control",
+    "description": "Returns information for the isBoolean function.",
+    "syntax": "ZisBoolean{value} — returns \"true\" if value is exactly \"true\" or \"false\".",
+    "args": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZisBooster",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZisBooster{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available",
+      "not in a guild",
+      "user not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisBot",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZisBot{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisEmojiAnimated",
+    "category": "emojis",
+    "description": "Returns \"true\" if the emoji is animated, \"false\" otherwise.",
+    "syntax": "ZisEmojiAnimated{id}",
+    "args": [
+      {
+        "name": "id",
+        "type": "snowflake",
+        "required": false,
+        "description": "The id argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisHoisted",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZisHoisted{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "boolean",
+    "errors": [
+      "could not get author's top role",
+      "invalid role ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisInteger",
+    "category": "control",
+    "description": "Returns information for the isInteger function.",
+    "syntax": "ZisInteger{value} — returns \"true\" if value parses as a whole number (no decimal point).",
+    "args": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZisMentionable",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZisMentionable{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "boolean",
+    "errors": [
+      "could not get author's top role",
+      "invalid role ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisMentioned",
+    "category": "message",
+    "description": "Returns \"true\" if the user is mentioned in the triggering message.",
+    "syntax": "ZisMentioned{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The userID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZisMessageEdited",
+    "category": "message",
+    "description": "Returns information for the isMessageEdited function.",
+    "syntax": "ZisMessageEdited{channelID;messageID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "message not found",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisNSFW",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZisNSFW{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisNumber",
+    "category": "control",
+    "description": "Returns information for the isNumber function.",
+    "syntax": "ZisNumber{value} — returns \"true\" if value parses as any number (integer or float).",
+    "args": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZisSlash",
+    "category": "control",
+    "description": "Slash commands have no trigger prefix (ctx.trigger is None).",
+    "syntax": "ZisSlash{} — returns \"true\" if the current command was triggered as a slash command.",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZisTimedOut",
+    "category": "moderation",
+    "description": "Returns information for the isTimedOut function.",
+    "syntax": "ZisTimedOut{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The userID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild",
+      "user not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisUserDMEnabled",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZisUserDMEnabled{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZisValidHex",
+    "category": "control",
+    "description": "Returns information for the isValidHex function.",
+    "syntax": "ZisValidHex{value} — returns \"true\" if value is a valid hex color (#RRGGBB or RRGGBB).",
+    "args": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZjoinSplitText",
+    "category": "textsplit",
+    "description": "Joins all split elements with the given separator.",
+    "syntax": "ZjoinSplitText{separator}",
+    "args": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArray",
+    "category": "json",
+    "description": "Creates an empty array at the given key path.",
+    "syntax": "ZjsonArray{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one key is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArrayAppend",
+    "category": "json",
+    "description": "Appends a value to the end of the array at the given key path.",
+    "syntax": "ZjsonArrayAppend{key;...;value}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "The value argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one key and a value are required",
+      "at least one key is required",
+      "key path not found",
+      "no JSON object — call ZjsonParse or ZjsonArray first",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArrayCount",
+    "category": "json",
+    "description": "Returns the number of elements in the array at the given key path.",
+    "syntax": "ZjsonArrayCount{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one key is required",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArrayIndex",
+    "category": "json",
+    "description": "Returns the 0-based index of the first occurrence of value in the array.",
+    "syntax": "ZjsonArrayIndex{key;...;value}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "The value argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one key and a value are required",
+      "at least one key is required",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArrayPop",
+    "category": "json",
+    "description": "Removes and returns the last element of the array at the given key path.",
+    "syntax": "ZjsonArrayPop{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one key is required",
+      "key path not found",
+      "no JSON object — call ZjsonParse or ZjsonArray first",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArrayReverse",
+    "category": "json",
+    "description": "Reverses the array at the given key path in place.",
+    "syntax": "ZjsonArrayReverse{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one key is required",
+      "key path not found",
+      "no JSON object — call ZjsonParse or ZjsonArray first",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArrayShift",
+    "category": "json",
+    "description": "Removes and returns the first element of the array at the given key path.",
+    "syntax": "ZjsonArrayShift{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one key is required",
+      "key path not found",
+      "no JSON object — call ZjsonParse or ZjsonArray first",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArraySort",
+    "category": "json",
+    "description": "Sorts the array at the given key path in place (ascending, lexicographic for strings,.",
+    "syntax": "ZjsonArraySort{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one key is required",
+      "key path not found",
+      "no JSON object — call ZjsonParse or ZjsonArray first",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonArrayUnshift",
+    "category": "json",
+    "description": "Inserts a value at the front of the array at the given key path.",
+    "syntax": "ZjsonArrayUnshift{key;...;value}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "The value argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one key and a value are required",
+      "at least one key is required",
+      "key path not found",
+      "no JSON object — call ZjsonParse or ZjsonArray first",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonClear",
+    "category": "json",
+    "description": "Clears the working JSON object for this execution.",
+    "syntax": "ZjsonClear{}",
+    "args": [],
+    "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZjsonExists",
+    "category": "json",
+    "description": "Returns \"true\" if the key path exists in the working JSON object, \"false\" otherwise.",
+    "syntax": "ZjsonExists{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one key is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonGet",
+    "category": "json",
+    "description": "Returns the value at the given key path in the working JSON object.",
+    "syntax": "ZjsonGet{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one key is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonJoinArray",
+    "category": "json",
+    "description": "Joins all elements of the array at the given key path into a string using separator.",
+    "syntax": "ZjsonJoinArray{key;...;separator}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": true,
+        "description": "The separator argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one key and a separator are required",
+      "at least one key is required",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonParse",
+    "category": "json",
+    "description": "Parses a JSON string into the working object for this execution.",
+    "syntax": "ZjsonParse{jsonString}",
+    "args": [
+      {
+        "name": "jsonString",
+        "type": "string",
+        "required": true,
+        "description": "The jsonString argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "JSON string is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonPretty",
+    "category": "json",
+    "description": "Serializes the working JSON object to a pretty-printed string.",
+    "syntax": "ZjsonPretty{indent?}",
+    "args": [
+      {
+        "name": "indent",
+        "type": "string",
+        "required": false,
+        "description": "The indent argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "failed to serialize JSON"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonSet",
+    "category": "json",
+    "description": "Sets a value at the given key path. Auto-detects type (bool, number, string).",
+    "syntax": "ZjsonSet{key;...;value}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "The value argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one key and a value are required",
+      "at least one key is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZjsonStringify",
+    "category": "json",
+    "description": "Serializes the working JSON object to a compact JSON string.",
+    "syntax": "ZjsonStringify{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZjsonUnset",
+    "category": "json",
+    "description": "Removes the key at the given path from the working JSON object.",
+    "syntax": "ZjsonUnset{key;...}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "The key argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one key is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zkick",
+    "category": "moderation",
+    "description": "Returns information for the kick function.",
+    "syntax": "Zkick{userID;reason?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "required": false,
+        "description": "The reason argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to kick user",
+      "no HTTP client available",
+      "not in a guild",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZlastMessageID",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZlastMessageID{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZlastPinTimestamp",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZlastPinTimestamp{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZlinesCount",
+    "category": "string",
+    "description": "Returns the number of lines in the text. An empty string counts as 0 lines.",
+    "syntax": "ZlinesCount{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZlistVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZlistVar{separator}",
+    "args": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no database available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zlowercase",
+    "category": "string",
+    "description": "Returns information for the lowercase function.",
+    "syntax": "Zlowercase{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZlowestRole",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZlowestRole{arg0...}",
+    "args": [
+      {
+        "name": "arg0",
+        "type": "string",
+        "required": false,
+        "description": "The arg0 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZlowestRoleWithPerms",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZlowestRoleWithPerms{arg1...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": false,
+        "description": "The arg1 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one permission is required",
+      "failed to fetch roles",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zmax",
+    "category": "math",
+    "description": "Returns information for the max function.",
+    "syntax": "Zmax{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZmembersCount",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZmembersCount{arg0...}",
+    "args": [
+      {
+        "name": "arg0",
+        "type": "string",
+        "required": false,
+        "description": "The arg0 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "integer",
+    "errors": [
+      "guild not found",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": [],
+    "notes": "Presence filtering requires the GUILD_PRESENCES intent."
+  },
+  {
+    "name": "Zmentioned",
+    "category": "message",
+    "description": "Returns the user ID of the Nth mentioned user in the triggering message (1-based).",
+    "syntax": "Zmentioned{index;fallbackToAuthor?}",
+    "args": [
+      {
+        "name": "index",
+        "type": "integer",
+        "required": true,
+        "description": "The index argument."
+      },
+      {
+        "name": "fallbackToAuthor",
+        "type": "string",
+        "required": false,
+        "description": "The fallbackToAuthor argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "index is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zmessage",
+    "category": "context",
+    "description": "Returns information for the message function.",
+    "syntax": "Zmessage{arg0...}",
+    "args": [
+      {
+        "name": "arg0",
+        "type": "string",
+        "required": false,
+        "description": "The arg0 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZmessageID",
+    "category": "message",
+    "description": "Returns information for the messageID function.",
+    "syntax": "ZmessageID{} — returns the triggering message ID (prefix commands only).",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zmin",
+    "category": "math",
+    "description": "Returns information for the min function.",
+    "syntax": "Zmin{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zminute",
+    "category": "time",
+    "description": "Returns the current minute (0–59).",
+    "syntax": "Zminute{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZmodifyChannel",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZmodifyChannel{channelID?;name?;topic?;nsfw?;position?;categoryID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      },
+      {
+        "name": "topic",
+        "type": "string",
+        "required": false,
+        "description": "The topic argument.",
+        "default": ""
+      },
+      {
+        "name": "nsfw",
+        "type": "boolean",
+        "required": false,
+        "description": "The nsfw argument.",
+        "default": "false"
+      },
+      {
+        "name": "position",
+        "type": "integer",
+        "required": false,
+        "description": "The position argument.",
+        "default": "0"
+      },
+      {
+        "name": "categoryID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The categoryID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channel ID is required",
+      "channel not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZmodifyRole",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZmodifyRole{roleID?;name?;color?;hoisted?;mentionable?}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The roleID argument.",
+        "default": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "The color argument.",
+        "default": ""
+      },
+      {
+        "name": "hoisted",
+        "type": "boolean",
+        "required": false,
+        "description": "The hoisted argument.",
+        "default": "false"
+      },
+      {
+        "name": "mentionable",
+        "type": "boolean",
+        "required": false,
+        "description": "The mentionable argument.",
+        "default": "false"
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild",
+      "role ID is required",
+      "role not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZmodifyRolePerms",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZmodifyRolePerms{roleID...}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The roleID argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild",
+      "roleID and at least one permission are required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zmodulo",
+    "category": "math",
+    "description": "Returns information for the modulo function.",
+    "syntax": "Zmodulo{arg1;arg2}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true,
+        "description": "The arg2 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "cannot modulo by zero"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zmonth",
+    "category": "time",
+    "description": "Returns the current month (1–12).",
+    "syntax": "Zmonth{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zmulti",
+    "category": "math",
+    "description": "Returns the numeric product of all supplied values.",
+    "syntax": "Zmulti{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZnewModal",
+    "category": "components",
+    "description": "Creates a modal dialog. Only valid inside an onInteraction handler. Add fields with ZaddTextInput.",
+    "syntax": "ZnewModal{modalID;title}",
+    "args": [
+      {
+        "name": "modalID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID used to identify this modal in onInteraction handlers."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": "The title shown at the top of the modal."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "modalID is required",
+      "title is required"
+    ],
+    "examples": [
+      {
+        "code": "ZnewModal{feedback_form;Submit Feedback}",
+        "output": "Creates a modal titled 'Submit Feedback'"
+      }
+    ]
+  },
+  {
+    "name": "ZnewSelectMenu",
+    "category": "components",
+    "description": "Creates a string select menu on the response. Add options with ZaddSelectMenuOption.",
+    "syntax": "ZnewSelectMenu{menuID;min?;max?;placeholder?}",
+    "args": [
+      {
+        "name": "menuID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID used to identify this menu in onInteraction handlers."
+      },
+      {
+        "name": "min",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "description": "Minimum number of options the user must select."
+      },
+      {
+        "name": "max",
+        "type": "integer",
+        "required": false,
+        "default": "1",
+        "description": "Maximum number of options the user can select."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "Placeholder text shown when nothing is selected."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "menuID is required"
+    ],
+    "examples": [
+      {
+        "code": "ZnewSelectMenu{color_picker;1;1;Choose a color...}",
+        "output": "Creates a single-select color picker menu"
+      }
+    ]
+  },
+  {
+    "name": "Znot",
+    "category": "control",
+    "description": "Flips \"true\" → \"false\" and \"false\" → \"true\".",
+    "syntax": "Znot{value}",
+    "args": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZnumberSeparator",
+    "category": "string",
+    "description": "Formats a number with thousands separators. Default separator is ','.",
+    "syntax": "ZnumberSeparator{number;(separator)}",
+    "args": [
+      {
+        "name": "number",
+        "type": "string",
+        "required": true,
+        "description": "The number argument."
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ","
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZonlyAdmin",
+    "category": "permissions",
+    "description": "Halts unless the author has Administrator permission.",
+    "syntax": "ZonlyAdmin{(errorMessage)}",
+    "args": [
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "invalid author ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyBotChannelPerms",
+    "category": "permissions",
+    "description": "Halts unless the bot has all provided permissions in the specified channel.",
+    "syntax": "ZonlyBotChannelPerms{channelID;perm1;perm2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "perm",
+        "type": "permission",
+        "required": true,
+        "description": "The perm argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID and at least one permission are required",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyBotPerms",
+    "category": "permissions",
+    "description": "Halts unless the bot itself has all provided permissions in the guild.",
+    "syntax": "ZonlyBotPerms{perm1;perm2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "perm",
+        "type": "permission",
+        "required": true,
+        "description": "The perm argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one permission is required",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyForCategories",
+    "category": "permissions",
+    "description": "Halts unless the current channel belongs to one of the provided categories.",
+    "syntax": "ZonlyForCategories{categoryID1;categoryID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "categoryID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The categoryID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one category ID is required",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyForChannels",
+    "category": "permissions",
+    "description": "Halts unless the current channel is in the provided list.",
+    "syntax": "ZonlyForChannels{channelID1;channelID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one channel ID is required"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyForIDs",
+    "category": "permissions",
+    "description": "Halts unless the author's ID is in the provided list.",
+    "syntax": "ZonlyForIDs{userID1;userID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one user ID is required"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyForRoleIDs",
+    "category": "permissions",
+    "description": "Halts unless the author has any of the provided role IDs.",
+    "syntax": "ZonlyForRoleIDs{roleID1;roleID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The roleID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one role ID is required",
+      "invalid author ID",
+      "no HTTP client available",
+      "not in a guild",
+      "one or more invalid role IDs"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyForRoles",
+    "category": "permissions",
+    "description": "Halts unless the author has any of the provided roles (matched by name).",
+    "syntax": "ZonlyForRoles{roleName1;roleName2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "roleName",
+        "type": "string",
+        "required": true,
+        "description": "The roleName argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one role name is required",
+      "invalid author ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyForServers",
+    "category": "permissions",
+    "description": "Halts unless the current guild is in the provided list.",
+    "syntax": "ZonlyForServers{guildID1;guildID2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The guildID argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one server ID is required"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyForUsers",
+    "category": "permissions",
+    "description": "Halts unless the author's username matches one of the provided names.",
+    "syntax": "ZonlyForUsers{username1;username2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "username",
+        "type": "string",
+        "required": true,
+        "description": "The username argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one username is required"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyIf",
+    "category": "control",
+    "description": "Guard function — halts execution with the error message if the condition is false.",
+    "syntax": "ZonlyIf{condition;error}",
+    "args": [
+      {
+        "name": "condition",
+        "type": "string",
+        "required": true,
+        "description": "The condition argument."
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": true,
+        "description": "The error argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "condition is required",
+      "error message is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZonlyIfMessageContains",
+    "category": "permissions",
+    "description": "Halts with error if the message does not contain ALL of the provided words.",
+    "syntax": "ZonlyIfMessageContains{message;word;...;error}",
+    "args": [
+      {
+        "name": "message",
+        "type": "snowflake",
+        "required": true,
+        "description": "The message argument."
+      },
+      {
+        "name": "word",
+        "type": "string",
+        "required": true,
+        "description": "The word argument.",
+        "variadic": true
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": true,
+        "description": "The error argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "message, at least one word, and an error message are required"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyNSFW",
+    "category": "permissions",
+    "description": "Halts unless the current channel is marked as NSFW.",
+    "syntax": "ZonlyNSFW{(errorMessage)}",
+    "args": [
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "ZonlyPerms",
+    "category": "permissions",
+    "description": "Halts unless the author has all provided permissions.",
+    "syntax": "ZonlyPerms{perm1;perm2;...;(errorMessage)}",
+    "args": [
+      {
+        "name": "perm",
+        "type": "permission",
+        "required": true,
+        "description": "The perm argument.",
+        "variadic": true
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one permission is required",
+      "invalid author ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": [],
+    "notes": "Permission guard function; returns nothing and halts on failure."
+  },
+  {
+    "name": "Zoption",
+    "category": "context",
+    "description": "Returns information for the option function.",
+    "syntax": "Zoption{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZparentID",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZparentID{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zping",
+    "category": "bot",
+    "description": "Returns information for the ping function.",
+    "syntax": "Zping{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZpinMessage",
+    "category": "message",
+    "description": "Returns information for the pinMessage function.",
+    "syntax": "ZpinMessage{channelID;messageID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "failed to pin message",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZpublishMessage",
+    "category": "message",
+    "description": "Crossposts a message in an announcement channel.",
+    "syntax": "ZpublishMessage{channelID;messageID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "failed to publish message",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zrandom",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "Zrandom{arg1;arg2}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true,
+        "description": "The arg2 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZrandomCategoryID",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomCategoryID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrandomChannelID",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomChannelID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrandomGuildID",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomGuildID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrandomMention",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomMention{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrandomRoleID",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomRoleID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrandomString",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomString{length} — generates a random alphanumeric string.",
+    "args": [
+      {
+        "name": "length",
+        "type": "string",
+        "required": true,
+        "description": "The length argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "length must be greater than 0"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrandomText",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomText{text1;text2;...} — picks one value randomly.",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text argument.",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one value is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrandomUser",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomUser{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrandomUserID",
+    "category": "random",
+    "description": "Returns a random selection or generated value.",
+    "syntax": "ZrandomUserID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZremoveAllComponents",
+    "category": "components",
+    "description": "Removes all components from a message.",
+    "syntax": "ZremoveAllComponents{messageID?}",
+    "args": [
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": false,
+        "default": "triggering message ID",
+        "description": "ID of the message to remove components from."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to remove components",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZremoveButtons",
+    "category": "components",
+    "description": "Removes all buttons from a message.",
+    "syntax": "ZremoveButtons{messageID?}",
+    "args": [
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": false,
+        "default": "triggering message ID",
+        "description": "ID of the message to remove buttons from."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to remove buttons",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZremoveComponent",
+    "category": "components",
+    "description": "Removes a specific component by its custom ID from a message.",
+    "syntax": "ZremoveComponent{customID;messageID?}",
+    "args": [
+      {
+        "name": "customID",
+        "type": "string",
+        "required": true,
+        "description": "The custom ID of the component to remove."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": false,
+        "default": "triggering message ID",
+        "description": "ID of the message containing the component."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "customID is required",
+      "failed to remove component",
+      "message not found",
+      "messageID is required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZremoveEmoji",
+    "category": "emojis",
+    "description": "Deletes a custom emoji from the server. Requires MANAGE_GUILD_EXPRESSIONS permission.",
+    "syntax": "ZremoveEmoji{id}",
+    "args": [
+      {
+        "name": "id",
+        "type": "snowflake",
+        "required": false,
+        "description": "The id argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZremoveLinks",
+    "category": "string",
+    "description": "Returns information for the removeLinks function.",
+    "syntax": "ZremoveLinks{text} — removes all URLs (http/https) from the text.",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZremoveSplitTextElement",
+    "category": "textsplit",
+    "description": "Removes the element at the given 1-based index from the split.",
+    "syntax": "ZremoveSplitTextElement{index}",
+    "args": [
+      {
+        "name": "index",
+        "type": "integer",
+        "required": false,
+        "description": "The index argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "index must be 1 or greater"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZreplaceText",
+    "category": "string",
+    "description": "Replaces occurrences of 'sample' with 'new' in 'text'.",
+    "syntax": "ZreplaceText{text;sample;new;(amount)}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text argument."
+      },
+      {
+        "name": "sample",
+        "type": "string",
+        "required": true,
+        "description": "The sample argument."
+      },
+      {
+        "name": "new",
+        "type": "string",
+        "required": true,
+        "description": "The new argument."
+      },
+      {
+        "name": "amount",
+        "type": "integer",
+        "required": false,
+        "description": "The amount argument.",
+        "default": "0"
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZrepliedMessageID",
+    "category": "message",
+    "description": "No args = check the triggering message's referenced message.",
+    "syntax": "ZrepliedMessageID{channelID?;messageID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": ""
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The messageID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "message not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zreply",
+    "category": "actions",
+    "description": "Returns information for the reply function.",
+    "syntax": "Zreply{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZresetChannelVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZresetChannelVar{name} — deletes this var across every channel",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZresetServerVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZresetServerVar{name} — deletes this var across every server",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZresetUserVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZresetUserVar{name} — deletes this var for every user in the current guild",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleColor",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZroleColor{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "could not get author's top role",
+      "invalid role ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleCount",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZroleCount{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "failed to fetch roles",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleExists",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZroleExists{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "could not get author's top role"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleGrant",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZroleGrant{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one role to grant/remove is required",
+      "no HTTP client available",
+      "not in a guild",
+      "userID and at least one role to grant/remove are required",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleID",
+    "category": "id",
+    "description": "ZroleID{name}   — find role by name in the guild.",
+    "syntax": "ZroleID{}       — author's top role ID",
+    "args": [
+      {
+        "name": "query",
+        "type": "string",
+        "required": false,
+        "description": "The query argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid author ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleName",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZroleName{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "could not get author's top role",
+      "invalid role ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleNames",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZroleNames{separator?}",
+    "args": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "failed to fetch roles",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrolePerms",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZrolePerms{arg1;separator?}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "could not get author's top role",
+      "invalid role ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrolePosition",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZrolePosition{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "could not get author's top role",
+      "invalid role ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZrulesChannelID",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZrulesChannelID{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "failed to fetch guild",
+      "invalid guild ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zsecond",
+    "category": "time",
+    "description": "Returns the current second (0–59).",
+    "syntax": "Zsecond{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZsendEmbed",
+    "category": "embeds",
+    "description": "args: channel_id ; embed_index (default 1) ; return_id (optional \"true\"/\"false\").",
+    "syntax": "ZsendEmbed{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsendMessage",
+    "category": "actions",
+    "description": "args: channel_id ; content ; return_id (optional \"true\"/\"false\", default false).",
+    "syntax": "ZsendMessage{channelID?;content?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": ""
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": false,
+        "description": "The content argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "message content cannot be empty",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsendWebhook",
+    "category": "embeds",
+    "description": "Sends the embed at the given index via a webhook URL.",
+    "syntax": "ZsendWebhook{webhookURL;(index);(returnID)}",
+    "args": [
+      {
+        "name": "webhookURL",
+        "type": "url",
+        "required": false,
+        "description": "The webhookURL argument.",
+        "default": ""
+      },
+      {
+        "name": "index",
+        "type": "integer",
+        "required": false,
+        "description": "The index argument.",
+        "default": "1"
+      },
+      {
+        "name": "returnID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The returnID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZserverCooldown",
+    "category": "cooldown",
+    "description": "After triggered, no one in the server can run the command until duration is up.",
+    "syntax": "ZserverCooldown{duration;(errorMessage)}",
+    "args": [
+      {
+        "name": "duration",
+        "type": "duration",
+        "required": false,
+        "description": "The duration argument.",
+        "default": ""
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "description": "The errorMessage argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZserverCount",
+    "category": "bot",
+    "description": "Returns information for the serverCount function.",
+    "syntax": "ZserverCount{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZserverDescription",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZserverDescription{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZserverEmojis",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZserverEmojis{arg1;separator...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZserverIcon",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZserverIcon{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZserverInvite",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZserverInvite{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZserverName",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZserverName{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZserverNames",
+    "category": "bot",
+    "description": "Returns information for the serverNames function.",
+    "syntax": "ZserverNames{amount;separator?}",
+    "args": [
+      {
+        "name": "amount",
+        "type": "integer",
+        "required": true,
+        "description": "The amount argument."
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZserverOwner",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZserverOwner{guildID?}",
+    "args": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZserverVerificationLevel",
+    "category": "servers",
+    "description": "Returns server metadata or performs server operations.",
+    "syntax": "ZserverVerificationLevel{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "guild not found",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsetChannelVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZsetChannelVar{name;value;(channelID)}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      },
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsetServerVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZsetServerVar{name;value;(guildID)}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      },
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The guildID argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsetUserRoles",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZsetUserRoles{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "at least one roleID is required",
+      "no HTTP client available",
+      "not in a guild",
+      "user not found",
+      "userID and at least one roleID are required",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsetUserVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZsetUserVar{name;value;(userID;guildID)}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      },
+      {
+        "name": "(userID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The (userID argument.",
+        "default": "current author ID"
+      },
+      {
+        "name": "guildID)",
+        "type": "string",
+        "required": false,
+        "description": "The guildID) argument.",
+        "default": "current guild ID"
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsetVar",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZsetVar{name;value}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "The value argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZslashCommandsCount",
+    "category": "bot",
+    "description": "Returns information for the slashCommandsCount function.",
+    "syntax": "ZslashCommandsCount{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZslashID",
+    "category": "bot",
+    "description": "Returns information for the slashID function.",
+    "syntax": "ZslashID{name}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "not a slash command"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZslowMode",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZslowMode{dur?}",
+    "args": [
+      {
+        "name": "dur",
+        "type": "string",
+        "required": false,
+        "description": "The dur argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channel ID is required",
+      "channel not found",
+      "duration is required",
+      "no HTTP client available",
+      "slowmode cannot exceed 6 hours (21600 seconds)"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zsort",
+    "category": "math",
+    "description": "The last 3 args are always direction, return_amount, separator.",
+    "syntax": "Zsort{n1;n2;...;direction;return_amount;separator}",
+    "args": [
+      {
+        "name": "n",
+        "type": "float",
+        "required": true,
+        "description": "The n argument.",
+        "variadic": true
+      },
+      {
+        "name": "direction",
+        "type": "string",
+        "required": true,
+        "description": "The direction argument."
+      },
+      {
+        "name": "return_amount",
+        "type": "string",
+        "required": true,
+        "description": "The return_amount argument."
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": true,
+        "description": "The separator argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "requires at least 2 numbers, a direction, a return amount, and a separator"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsplitText",
+    "category": "textsplit",
+    "description": "Returns one element from the split text by 1-based index.",
+    "syntax": "ZsplitText{index}",
+    "args": [
+      {
+        "name": "index",
+        "type": "integer",
+        "required": false,
+        "description": "The index argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "index is required",
+      "index must be 1 or greater",
+      "no split text available — call ZtextSplit first"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zsqrt",
+    "category": "math",
+    "description": "Returns the square root of the given value.",
+    "syntax": "Zsqrt{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZstartThread",
+    "category": "threads",
+    "description": "Creates a thread. If messageID is provided, creates from that message.",
+    "syntax": "ZstartThread{name;channelID;(messageID);(archiveDuration);(returnID)}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      },
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": ""
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The messageID argument.",
+        "default": ""
+      },
+      {
+        "name": "archiveDuration",
+        "type": "duration",
+        "required": false,
+        "description": "The archiveDuration argument.",
+        "default": ""
+      },
+      {
+        "name": "returnID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The returnID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "integer",
+    "errors": [
+      "no HTTP client available",
+      "thread name cannot be empty"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zstop",
+    "category": "errors",
+    "description": "Returns information for the stop function.",
+    "syntax": "Zstop{} — halts execution silently. No error, no output.",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zsub",
+    "category": "math",
+    "description": "First arg is the starting value, subsequent args are subtracted from it. Zsub{10;3;2} = 10 - 3 - 2 = 5.",
+    "syntax": "Zsub{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zsum",
+    "category": "math",
+    "description": "Returns information for the sum function.",
+    "syntax": "Zsum{arg1;arg2...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false,
+        "description": "The arg2 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZsuppressErrors",
+    "category": "errors",
+    "description": "Activates error suppression for this execution.",
+    "syntax": "ZsuppressErrors{errorText?;embedIndex?}",
+    "args": [
+      {
+        "name": "errorText",
+        "type": "string",
+        "required": false,
+        "description": "The errorText argument.",
+        "default": ""
+      },
+      {
+        "name": "embedIndex",
+        "type": "string",
+        "required": false,
+        "description": "The embedIndex argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "embed index must be 1 or greater"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZsystemChannelID",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZsystemChannelID{}",
+    "args": [],
+    "returns": "string",
+    "errors": [
+      "failed to fetch guild",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZtextSplit",
+    "category": "textsplit",
+    "description": "Splits text by separator and stores the result in ctx.split_text.",
+    "syntax": "ZtextSplit{text;separator}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZthreadAddMember",
+    "category": "threads",
+    "description": "Returns information for the threadAddMember function.",
+    "syntax": "ZthreadAddMember{threadID;userID}",
+    "args": [
+      {
+        "name": "threadID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The threadID argument."
+      },
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZthreadMessageCount",
+    "category": "threads",
+    "description": "Returns the total number of messages in the thread (up to 100 via API, or approximate count from thread metadata).",
+    "syntax": "ZthreadMessageCount{threadID}",
+    "args": [
+      {
+        "name": "threadID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The threadID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZthreadRemoveMember",
+    "category": "threads",
+    "description": "Returns information for the threadRemoveMember function.",
+    "syntax": "ZthreadRemoveMember{threadID;userID}",
+    "args": [
+      {
+        "name": "threadID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The threadID argument."
+      },
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZthreadUserCount",
+    "category": "threads",
+    "description": "Returns the number of members in the thread.",
+    "syntax": "ZthreadUserCount{threadID}",
+    "args": [
+      {
+        "name": "threadID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The threadID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zthumbnail",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "Zthumbnail{url?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": false,
+        "description": "The url argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "Ztime",
+    "category": "time",
+    "description": "Ztime{} — returns the current timezone name.",
+    "syntax": "Ztime{America/New_York} — sets the timezone for all subsequent date/time functions.",
+    "args": [
+      {
+        "name": "America/New_York",
+        "type": "string",
+        "required": false,
+        "description": "The America/New_York argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Ztimeout",
+    "category": "moderation",
+    "description": "Returns information for the timeout function.",
+    "syntax": "Ztimeout{userID;duration}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "duration",
+        "type": "duration",
+        "required": true,
+        "description": "The duration argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "duration is required",
+      "failed to compute timeout timestamp",
+      "failed to timeout user",
+      "no HTTP client available",
+      "not in a guild",
+      "timeout cannot exceed 28 days",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Ztimestamp",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "Ztimestamp{arg0...}",
+    "args": [
+      {
+        "name": "arg0",
+        "type": "string",
+        "required": false,
+        "description": "The arg0 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "Ztitle",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "Ztitle{text?}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "Ztitlecase",
+    "category": "string",
+    "description": "Converts the first letter of each word to uppercase, rest to lowercase.",
+    "syntax": "Ztitlecase{result}",
+    "args": [
+      {
+        "name": "result",
+        "type": "string",
+        "required": true,
+        "description": "The result argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZtitleURL",
+    "category": "embeds",
+    "description": "Returns embed metadata or updates embed content.",
+    "syntax": "ZtitleURL{url?}",
+    "args": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": false,
+        "description": "The url argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "ZtitleURL requires a title to be set first"
+    ],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZtrimContent",
+    "category": "string",
+    "description": "Removes duplicate spaces — collapses multiple consecutive spaces into one.",
+    "syntax": "ZtrimContent{result}",
+    "args": [
+      {
+        "name": "result",
+        "type": "string",
+        "required": true,
+        "description": "The result argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZtrimSpace",
+    "category": "string",
+    "description": "Removes leading and trailing whitespace.",
+    "syntax": "ZtrimSpace{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZtryRun",
+    "category": "errors",
+    "description": "ZtryRun is handled as a special case in Runtime::evaluate (lazy evaluation). This stub is never called — the runtime intercepts \"tryRun\" before resolving args.",
+    "syntax": "ZtryRun{arg1...}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": false,
+        "description": "The arg1 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "internal error: ZtryRun should be handled by the runtime"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zunban",
+    "category": "moderation",
+    "description": "Returns information for the unban function.",
+    "syntax": "Zunban{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to unban user",
+      "no HTTP client available",
+      "not in a guild",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuntimeOut",
+    "category": "moderation",
+    "description": "Returns information for the untimeOut function.",
+    "syntax": "ZuntimeOut{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The userID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to remove timeout",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zuppercase",
+    "category": "string",
+    "description": "Returns information for the uppercase function.",
+    "syntax": "Zuppercase{arg1}",
+    "args": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true,
+        "description": "The arg1 argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zuptime",
+    "category": "bot",
+    "description": "Returns information for the uptime function.",
+    "syntax": "Zuptime{}",
+    "args": [],
+    "returns": "integer",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zurl",
+    "category": "string",
+    "description": "mode: \"encode\" or \"decode\".",
+    "syntax": "Zurl{mode;text}",
+    "args": [
+      {
+        "name": "mode",
+        "type": "string",
+        "required": true,
+        "description": "The mode argument."
+      },
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "The text argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "mode is required (encode or decode)"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuseChannel",
+    "category": "message",
+    "description": "Redirects all bot output for this execution to the specified channel.",
+    "syntax": "ZuseChannel{channelID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserAvatar",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZuserAvatar{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserBadge",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZuserBadge{userID;separator}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserBanner",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZuserBanner{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserBannerColor",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZuserBannerColor{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserExists",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZuserExists{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserID",
+    "category": "id",
+    "description": "ZuserID{name}   — find user by name in the guild.",
+    "syntax": "ZuserID{}       — author's ID",
+    "args": [
+      {
+        "name": "query",
+        "type": "string",
+        "required": false,
+        "description": "The query argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserJoined",
+    "category": "users",
+    "description": "Returns the date when the user joined the current guild.",
+    "syntax": "ZuserJoined{userID?;format?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The userID argument.",
+        "default": ""
+      },
+      {
+        "name": "format",
+        "type": "string",
+        "required": false,
+        "description": "The format argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zusername",
+    "category": "users",
+    "description": "No args → returns the command author's username.",
+    "syntax": "Zusername{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The userID argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "user not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserPerms",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZuserPerms{userID;amount;separator}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "amount",
+        "type": "integer",
+        "required": false,
+        "description": "The amount argument.",
+        "default": ""
+      },
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "description": "The separator argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid amount",
+      "invalid userID",
+      "no HTTP client available",
+      "not in a guild",
+      "user not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserReacted",
+    "category": "reactions",
+    "description": "Returns \"true\" if the user reacted with the emoji, \"false\" otherwise.",
+    "syntax": "ZuserReacted{channelID;messageID;userID;emoji}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channelID argument."
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The messageID argument."
+      },
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "emoji",
+        "type": "emoji",
+        "required": true,
+        "description": "The emoji argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "requires channelID, messageID, userID, and emoji"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserRoles",
+    "category": "roles",
+    "description": "Returns role metadata or performs role operations.",
+    "syntax": "ZuserRoles{arg0...}",
+    "args": [
+      {
+        "name": "arg0",
+        "type": "string",
+        "required": false,
+        "description": "The arg0 argument.",
+        "default": "",
+        "variadic": true
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid user ID",
+      "no HTTP client available",
+      "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserServerAvatar",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZuserServerAvatar{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "no HTTP client available",
+      "not in a guild",
+      "user not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZuserStatus",
+    "category": "users",
+    "description": "Returns user metadata or performs user operations.",
+    "syntax": "ZuserStatus{userID;customStatus}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The userID argument."
+      },
+      {
+        "name": "customStatus",
+        "type": "string",
+        "required": true,
+        "description": "The customStatus argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid user ID"
+    ],
+    "examples": [],
+    "notes": "Presence filtering requires the GUILD_PRESENCES intent."
+  },
+  {
+    "name": "Zvar",
+    "category": "variables",
+    "description": "Zvar{name;value}  — set temp var.",
+    "syntax": "Zvar{name}        — get temp var",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZvarExistError",
+    "category": "variables",
+    "description": "Halts with the error message if the global variable does not exist.",
+    "syntax": "ZvarExistError{name;error}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": true,
+        "description": "The error argument."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "error message is required",
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZvarExists",
+    "category": "variables",
+    "description": "Gets or sets persistent variables.",
+    "syntax": "ZvarExists{name}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name argument."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no database available",
+      "variable name is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZvoiceUserLimit",
+    "category": "channels",
+    "description": "Returns channel metadata or performs channel operations.",
+    "syntax": "ZvoiceUserLimit{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": "current channel ID"
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channel is not a voice or stage channel",
+      "channel not found",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZwebhookCreate",
+    "category": "embeds",
+    "description": "Creates a webhook in the given channel and returns its URL.",
+    "syntax": "ZwebhookCreate{channelID;name}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channelID argument.",
+        "default": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "The name argument.",
+        "default": ""
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "no HTTP client available",
+      "webhook name cannot be empty"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZwebhookDelete",
+    "category": "embeds",
+    "description": "Deletes a webhook by its URL.",
+    "syntax": "ZwebhookDelete{webhookURL}",
+    "args": [
+      {
+        "name": "webhookURL",
+        "type": "url",
+        "required": false,
+        "description": "The webhookURL argument.",
+        "default": ""
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "invalid webhook ID in URL",
+      "invalid webhook URL format",
+      "no HTTP client available"
+    ],
+    "examples": [],
+    "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "Zyear",
+    "category": "time",
+    "description": "Returns the current year.",
+    "syntax": "Zyear{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  }
+]

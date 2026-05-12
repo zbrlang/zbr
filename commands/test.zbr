@@ -1,0 +1,6 @@
+#trigger !test
+#name Test Command
+#type prefix
+
+Zreply{}
+Hello!

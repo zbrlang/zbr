@@ -1,0 +1,6 @@
+#trigger !hello
+#name Hello Command
+#type prefix
+
+Hello, Zusername{}! 👋
+You are in <#ZchannelID{}> on Zif{ZguildID{}==;a DM;ZserverName{}}.

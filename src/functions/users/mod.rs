@@ -1,0 +1,17 @@
+pub mod userAvatar;
+pub mod userServerAvatar;
+pub mod userBadge;
+pub mod userBanner;
+pub mod userBannerColor;
+pub mod userExists;
+pub mod creationDate;
+pub mod userPerms;
+pub mod changeNickname;
+pub mod displayName;
+pub mod userStatus;
+pub mod isAdmin;
+pub mod isBooster;
+pub mod isBot;
+pub mod isUserDMEnabled;
+pub mod username;
+pub mod userJoined;
