@@ -11,9 +11,13 @@ pub mod cooldown;
 pub mod embeds;
 pub mod emojis;
 pub mod errors;
+pub mod events;
+pub mod forums;
 pub mod http;
 pub mod id;
+pub mod invites;
 pub mod json;
+pub mod loops;
 pub mod math;
 pub mod message;
 pub mod moderation;
@@ -22,12 +26,15 @@ pub mod random;
 pub mod reactions;
 pub mod roles;
 pub mod servers;
+pub mod stage;
+pub mod stickers;
 pub mod string;
 pub mod textsplit;
 pub mod threads;
 pub mod time;
 pub mod users;
 pub mod variables;
+pub mod voice;
 
 use crate::context::FnMeta;
 use crate::context::FnOutput;
@@ -275,7 +282,11 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     );
     registry.insert(
         "onlyIfMessageContains".to_string(),
-        FnMeta { func: permissions::onlyIfMessageContains::run, min_args: 3, max_args: 100 },
+        FnMeta {
+            func: permissions::onlyIfMessageContains::run,
+            min_args: 3,
+            max_args: 100,
+        },
     );
 
     // textsplit
@@ -427,19 +438,35 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     );
     registry.insert(
         "byteCount".to_string(),
-        FnMeta { func: string::byteCount::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: string::byteCount::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "argCount".to_string(),
-        FnMeta { func: string::argCount::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: string::argCount::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "checkContains".to_string(),
-        FnMeta { func: string::checkContains::run, min_args: 2, max_args: 100 },
+        FnMeta {
+            func: string::checkContains::run,
+            min_args: 2,
+            max_args: 100,
+        },
     );
     registry.insert(
         "removeLinks".to_string(),
-        FnMeta { func: string::removeLinks::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: string::removeLinks::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
 
     // math
@@ -665,39 +692,75 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     );
     registry.insert(
         "isBoolean".to_string(),
-        FnMeta { func: control::isBoolean::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: control::isBoolean::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "isInteger".to_string(),
-        FnMeta { func: control::isInteger::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: control::isInteger::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "isNumber".to_string(),
-        FnMeta { func: control::isNumber::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: control::isNumber::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "isSlash".to_string(),
-        FnMeta { func: control::isSlash::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: control::isSlash::run,
+            min_args: 0,
+            max_args: 0,
+        },
     );
     registry.insert(
         "isValidHex".to_string(),
-        FnMeta { func: control::isValidHex::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: control::isValidHex::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "stop".to_string(),
-        FnMeta { func: errors::stop::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: errors::stop::run,
+            min_args: 0,
+            max_args: 0,
+        },
     );
     registry.insert(
         "error".to_string(),
-        FnMeta { func: errors::error::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: errors::error::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "suppressErrors".to_string(),
-        FnMeta { func: errors::suppressErrors::run, min_args: 0, max_args: 2 },
+        FnMeta {
+            func: errors::suppressErrors::run,
+            min_args: 0,
+            max_args: 2,
+        },
     );
     registry.insert(
         "tryRun".to_string(),
-        FnMeta { func: errors::tryRun::run, min_args: 1, max_args: 2 },
+        FnMeta {
+            func: errors::tryRun::run,
+            min_args: 1,
+            max_args: 2,
+        },
     );
 
     // cooldown
@@ -945,33 +1008,61 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     // Reactions
     registry.insert(
         "addReactions".to_string(),
-        FnMeta { func: reactions::addReactions::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: reactions::addReactions::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "addCmdReactions".to_string(),
-        FnMeta { func: reactions::addCmdReactions::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: reactions::addCmdReactions::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "addMessageReactions".to_string(),
-        FnMeta { func: reactions::addMessageReactions::run, min_args: 3, max_args: 100 },
+        FnMeta {
+            func: reactions::addMessageReactions::run,
+            min_args: 3,
+            max_args: 100,
+        },
     );
     registry.insert(
         "getReactions".to_string(),
-        FnMeta { func: reactions::getReactions::run, min_args: 4, max_args: 4 },
+        FnMeta {
+            func: reactions::getReactions::run,
+            min_args: 4,
+            max_args: 4,
+        },
     );
     registry.insert(
         "clearReactions".to_string(),
-        FnMeta { func: reactions::clearReactions::run, min_args: 3, max_args: 100 },
+        FnMeta {
+            func: reactions::clearReactions::run,
+            min_args: 3,
+            max_args: 100,
+        },
     );
     registry.insert(
         "userReacted".to_string(),
-        FnMeta { func: reactions::userReacted::run, min_args: 4, max_args: 4 },
+        FnMeta {
+            func: reactions::userReacted::run,
+            min_args: 4,
+            max_args: 4,
+        },
     );
 
     // Time extras
     registry.insert(
         "getTimestamp".to_string(),
-        FnMeta { func: time::getTimestamp::run, min_args: 0, max_args: 1 },
+        FnMeta {
+            func: time::getTimestamp::run,
+            min_args: 0,
+            max_args: 1,
+        },
     );
 
     // actions
@@ -987,8 +1078,16 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         "sendMessage".to_string(),
         FnMeta {
             func: actions::sendMessage::run,
-            min_args: 2,
+            min_args: 1,
             max_args: 3,
+        },
+    );
+    registry.insert(
+        "replyIn".to_string(),
+        FnMeta {
+            func: actions::replyIn::run,
+            min_args: 2,
+            max_args: 2,
         },
     );
     registry.insert(
@@ -1133,7 +1232,11 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     );
     registry.insert(
         "varExistError".to_string(),
-        FnMeta { func: variables::varExistError::run, min_args: 2, max_args: 2 },
+        FnMeta {
+            func: variables::varExistError::run,
+            min_args: 2,
+            max_args: 2,
+        },
     );
 
     // embeds — all setters take an optional trailing index arg (1-based, default 1)
@@ -1352,7 +1455,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         FnMeta {
             func: users::displayName::run,
             min_args: 0,
-            max_args: 1,
+            max_args: 2,
         },
     );
     registry.insert(
@@ -1397,7 +1500,11 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     );
     registry.insert(
         "userJoined".to_string(),
-        FnMeta { func: users::userJoined::run, min_args: 0, max_args: 2 },
+        FnMeta {
+            func: users::userJoined::run,
+            min_args: 0,
+            max_args: 2,
+        },
     );
 
     // Channels
@@ -2018,7 +2125,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     registry.insert(
         "serverInvite".to_string(),
         FnMeta {
-            func: servers::serverInvite::run,
+            func: invites::serverInvite::run,
             min_args: 0,
             max_args: 1,
         },
@@ -2026,7 +2133,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     registry.insert(
         "inviteInfo".to_string(),
         FnMeta {
-            func: servers::inviteInfo::run,
+            func: invites::inviteInfo::run,
             min_args: 2,
             max_args: 2,
         },
@@ -2106,6 +2213,128 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         },
     );
 
+    // Voice
+    registry.insert(
+        "isInVoice".to_string(),
+        FnMeta {
+            func: voice::isInVoice::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "userVoiceChannel".to_string(),
+        FnMeta {
+            func: voice::userVoiceChannel::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "voiceMembers".to_string(),
+        FnMeta {
+            func: voice::voiceMembers::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "voiceMemberCount".to_string(),
+        FnMeta {
+            func: voice::voiceMemberCount::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "userSelfMuted".to_string(),
+        FnMeta {
+            func: voice::userSelfMuted::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "userSelfDeafened".to_string(),
+        FnMeta {
+            func: voice::userSelfDeafened::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "userStreaming".to_string(),
+        FnMeta {
+            func: voice::userStreaming::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "userServerMuted".to_string(),
+        FnMeta {
+            func: voice::userServerMuted::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "userServerDeafened".to_string(),
+        FnMeta {
+            func: voice::userServerDeafened::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "voiceMove".to_string(),
+        FnMeta {
+            func: voice::voiceMove::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "voiceKick".to_string(),
+        FnMeta {
+            func: voice::voiceKick::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "mute".to_string(),
+        FnMeta {
+            func: moderation::mute::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "unmute".to_string(),
+        FnMeta {
+            func: moderation::unmute::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "deafen".to_string(),
+        FnMeta {
+            func: moderation::deafen::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "undeafen".to_string(),
+        FnMeta {
+            func: moderation::undeafen::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
     // Message
     registry.insert(
         "dm".to_string(),
@@ -2175,7 +2404,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         "pinMessage".to_string(),
         FnMeta {
             func: message::pinMessage::run,
-            min_args: 2,
+            min_args: 1,
             max_args: 2,
         },
     );
@@ -2183,7 +2412,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         "unpinMessage".to_string(),
         FnMeta {
             func: message::unpinMessage::run,
-            min_args: 2,
+            min_args: 1,
             max_args: 2,
         },
     );
@@ -2191,7 +2420,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         "publishMessage".to_string(),
         FnMeta {
             func: message::publishMessage::run,
-            min_args: 2,
+            min_args: 1,
             max_args: 2,
         },
     );
@@ -2207,7 +2436,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         "getMessage".to_string(),
         FnMeta {
             func: message::getMessage::run,
-            min_args: 2,
+            min_args: 1,
             max_args: 3,
         },
     );
@@ -2215,7 +2444,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         "getEmbedData".to_string(),
         FnMeta {
             func: message::getEmbedData::run,
-            min_args: 4,
+            min_args: 3,
             max_args: 4,
         },
     );
@@ -2223,7 +2452,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         "isMessageEdited".to_string(),
         FnMeta {
             func: message::isMessageEdited::run,
-            min_args: 2,
+            min_args: 1,
             max_args: 2,
         },
     );
@@ -2286,6 +2515,22 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         },
     );
     registry.insert(
+        "httpGetHeader".to_string(),
+        FnMeta {
+            func: http::httpGetHeader::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "httpRemoveHeader".to_string(),
+        FnMeta {
+            func: http::httpRemoveHeader::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
         "httpStatus".to_string(),
         FnMeta {
             func: http::httpStatus::run,
@@ -2305,180 +2550,873 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     // JSON
     registry.insert(
         "jsonParse".to_string(),
-        FnMeta { func: json::jsonParse::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: json::jsonParse::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "jsonGet".to_string(),
-        FnMeta { func: json::jsonGet::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonGet::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonSet".to_string(),
-        FnMeta { func: json::jsonSet::run, min_args: 2, max_args: 100 },
+        FnMeta {
+            func: json::jsonSet::run,
+            min_args: 2,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonUnset".to_string(),
-        FnMeta { func: json::jsonUnset::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonUnset::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonExists".to_string(),
-        FnMeta { func: json::jsonExists::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonExists::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonClear".to_string(),
-        FnMeta { func: json::jsonClear::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: json::jsonClear::run,
+            min_args: 0,
+            max_args: 0,
+        },
     );
     registry.insert(
         "jsonStringify".to_string(),
-        FnMeta { func: json::jsonStringify::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: json::jsonStringify::run,
+            min_args: 0,
+            max_args: 0,
+        },
     );
     registry.insert(
         "jsonPretty".to_string(),
-        FnMeta { func: json::jsonPretty::run, min_args: 0, max_args: 1 },
+        FnMeta {
+            func: json::jsonPretty::run,
+            min_args: 0,
+            max_args: 1,
+        },
     );
     registry.insert(
         "jsonArray".to_string(),
-        FnMeta { func: json::jsonArray::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonArray::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonArrayAppend".to_string(),
-        FnMeta { func: json::jsonArrayAppend::run, min_args: 2, max_args: 100 },
+        FnMeta {
+            func: json::jsonArrayAppend::run,
+            min_args: 2,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonArrayUnshift".to_string(),
-        FnMeta { func: json::jsonArrayUnshift::run, min_args: 2, max_args: 100 },
+        FnMeta {
+            func: json::jsonArrayUnshift::run,
+            min_args: 2,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonArrayPop".to_string(),
-        FnMeta { func: json::jsonArrayPop::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonArrayPop::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonArrayShift".to_string(),
-        FnMeta { func: json::jsonArrayShift::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonArrayShift::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonArrayReverse".to_string(),
-        FnMeta { func: json::jsonArrayReverse::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonArrayReverse::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonArraySort".to_string(),
-        FnMeta { func: json::jsonArraySort::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonArraySort::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonArrayCount".to_string(),
-        FnMeta { func: json::jsonArrayCount::run, min_args: 1, max_args: 100 },
+        FnMeta {
+            func: json::jsonArrayCount::run,
+            min_args: 1,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonArrayIndex".to_string(),
-        FnMeta { func: json::jsonArrayIndex::run, min_args: 2, max_args: 100 },
+        FnMeta {
+            func: json::jsonArrayIndex::run,
+            min_args: 2,
+            max_args: 100,
+        },
     );
     registry.insert(
         "jsonJoinArray".to_string(),
-        FnMeta { func: json::jsonJoinArray::run, min_args: 2, max_args: 100 },
+        FnMeta {
+            func: json::jsonJoinArray::run,
+            min_args: 2,
+            max_args: 100,
+        },
     );
 
     // Components
     registry.insert(
         "addButton".to_string(),
-        FnMeta { func: components::addButton::run, min_args: 2, max_args: 6 },
+        FnMeta {
+            func: components::addButton::run,
+            min_args: 2,
+            max_args: 6,
+        },
     );
     registry.insert(
         "newSelectMenu".to_string(),
-        FnMeta { func: components::newSelectMenu::run, min_args: 1, max_args: 4 },
+        FnMeta {
+            func: components::newSelectMenu::run,
+            min_args: 1,
+            max_args: 4,
+        },
     );
     registry.insert(
         "addSelectMenuOption".to_string(),
-        FnMeta { func: components::addSelectMenuOption::run, min_args: 2, max_args: 5 },
+        FnMeta {
+            func: components::addSelectMenuOption::run,
+            min_args: 2,
+            max_args: 5,
+        },
     );
     registry.insert(
         "newModal".to_string(),
-        FnMeta { func: components::newModal::run, min_args: 2, max_args: 2 },
+        FnMeta {
+            func: components::newModal::run,
+            min_args: 2,
+            max_args: 2,
+        },
     );
     registry.insert(
         "addTextInput".to_string(),
-        FnMeta { func: components::addTextInput::run, min_args: 2, max_args: 7 },
+        FnMeta {
+            func: components::addTextInput::run,
+            min_args: 2,
+            max_args: 7,
+        },
     );
     registry.insert(
         "editButton".to_string(),
-        FnMeta { func: components::editButton::run, min_args: 3, max_args: 6 },
+        FnMeta {
+            func: components::editButton::run,
+            min_args: 3,
+            max_args: 6,
+        },
     );
     registry.insert(
         "editSelectMenu".to_string(),
-        FnMeta { func: components::editSelectMenu::run, min_args: 3, max_args: 5 },
+        FnMeta {
+            func: components::editSelectMenu::run,
+            min_args: 3,
+            max_args: 5,
+        },
     );
     registry.insert(
         "editSelectMenuOption".to_string(),
-        FnMeta { func: components::editSelectMenuOption::run, min_args: 3, max_args: 7 },
+        FnMeta {
+            func: components::editSelectMenuOption::run,
+            min_args: 3,
+            max_args: 7,
+        },
     );
     registry.insert(
         "removeAllComponents".to_string(),
-        FnMeta { func: components::removeAllComponents::run, min_args: 0, max_args: 1 },
+        FnMeta {
+            func: components::removeAllComponents::run,
+            min_args: 0,
+            max_args: 1,
+        },
     );
     registry.insert(
         "removeButtons".to_string(),
-        FnMeta { func: components::removeButtons::run, min_args: 0, max_args: 1 },
+        FnMeta {
+            func: components::removeButtons::run,
+            min_args: 0,
+            max_args: 1,
+        },
     );
     registry.insert(
         "removeComponent".to_string(),
-        FnMeta { func: components::removeComponent::run, min_args: 1, max_args: 2 },
+        FnMeta {
+            func: components::removeComponent::run,
+            min_args: 1,
+            max_args: 2,
+        },
     );
     registry.insert(
         "defer".to_string(),
-        FnMeta { func: components::defer::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: components::defer::run,
+            min_args: 0,
+            max_args: 0,
+        },
     );
     registry.insert(
         "inputValue".to_string(),
-        FnMeta { func: components::inputValue::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: components::inputValue::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "customID".to_string(),
-        FnMeta { func: components::customID::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: components::customID::run,
+            min_args: 0,
+            max_args: 0,
+        },
     );
     registry.insert(
         "addUserSelect".to_string(),
-        FnMeta { func: components::addUserSelect::run, min_args: 1, max_args: 4 },
+        FnMeta {
+            func: components::addUserSelect::run,
+            min_args: 1,
+            max_args: 4,
+        },
     );
     registry.insert(
         "addRoleSelect".to_string(),
-        FnMeta { func: components::addRoleSelect::run, min_args: 1, max_args: 4 },
+        FnMeta {
+            func: components::addRoleSelect::run,
+            min_args: 1,
+            max_args: 4,
+        },
     );
     registry.insert(
         "addMentionableSelect".to_string(),
-        FnMeta { func: components::addMentionableSelect::run, min_args: 1, max_args: 4 },
+        FnMeta {
+            func: components::addMentionableSelect::run,
+            min_args: 1,
+            max_args: 4,
+        },
     );
     registry.insert(
         "getUserSelectUserID".to_string(),
-        FnMeta { func: components::getUserSelectUserID::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: components::getUserSelectUserID::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "getUserSelectUserIDs".to_string(),
-        FnMeta { func: components::getUserSelectUserIDs::run, min_args: 0, max_args: 2 },
+        FnMeta {
+            func: components::getUserSelectUserIDs::run,
+            min_args: 0,
+            max_args: 2,
+        },
     );
     registry.insert(
         "getUserSelectUserCount".to_string(),
-        FnMeta { func: components::getUserSelectUserCount::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: components::getUserSelectUserCount::run,
+            min_args: 0,
+            max_args: 0,
+        },
     );
     registry.insert(
         "getRoleSelectRoleID".to_string(),
-        FnMeta { func: components::getRoleSelectRoleID::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: components::getRoleSelectRoleID::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "getRoleSelectRoleIDs".to_string(),
-        FnMeta { func: components::getRoleSelectRoleIDs::run, min_args: 0, max_args: 2 },
+        FnMeta {
+            func: components::getRoleSelectRoleIDs::run,
+            min_args: 0,
+            max_args: 2,
+        },
     );
     registry.insert(
         "getRoleSelectRoleCount".to_string(),
-        FnMeta { func: components::getRoleSelectRoleCount::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: components::getRoleSelectRoleCount::run,
+            min_args: 0,
+            max_args: 0,
+        },
     );
     registry.insert(
         "getMentionableSelectUserID".to_string(),
-        FnMeta { func: components::getMentionableSelectUserID::run, min_args: 1, max_args: 1 },
+        FnMeta {
+            func: components::getMentionableSelectUserID::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
     registry.insert(
         "getMentionableSelectUserIDs".to_string(),
-        FnMeta { func: components::getMentionableSelectUserIDs::run, min_args: 0, max_args: 2 },
+        FnMeta {
+            func: components::getMentionableSelectUserIDs::run,
+            min_args: 0,
+            max_args: 2,
+        },
     );
     registry.insert(
         "getMentionableSelectUserCount".to_string(),
-        FnMeta { func: components::getMentionableSelectUserCount::run, min_args: 0, max_args: 0 },
+        FnMeta {
+            func: components::getMentionableSelectUserCount::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+
+    // Loops
+    registry.insert(
+        "loopIndex".to_string(),
+        FnMeta {
+            func: loops::loopIndex::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
+        "loopValue".to_string(),
+        FnMeta {
+            func: loops::loopValue::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    // repeat, forSplit, forJson are intercepted in runtime.rs — no registration needed
+
+    // Events
+    registry.insert(
+        "createEvent".to_string(),
+        FnMeta {
+            func: events::createEvent::run,
+            min_args: 3,
+            max_args: 4,
+        },
+    );
+    registry.insert(
+        "editEvent".to_string(),
+        FnMeta {
+            func: events::editEvent::run,
+            min_args: 1,
+            max_args: 4,
+        },
+    );
+    registry.insert(
+        "deleteEvent".to_string(),
+        FnMeta {
+            func: events::deleteEvent::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "eventName".to_string(),
+        FnMeta {
+            func: events::eventName::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "eventDescription".to_string(),
+        FnMeta {
+            func: events::eventDescription::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "eventStart".to_string(),
+        FnMeta {
+            func: events::eventStart::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "eventEnd".to_string(),
+        FnMeta {
+            func: events::eventEnd::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "eventStatus".to_string(),
+        FnMeta {
+            func: events::eventStatus::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "eventChannel".to_string(),
+        FnMeta {
+            func: events::eventChannel::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "eventSubscribers".to_string(),
+        FnMeta {
+            func: events::eventSubscribers::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "eventCount".to_string(),
+        FnMeta {
+            func: events::eventCount::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
+        "serverEvents".to_string(),
+        FnMeta {
+            func: events::serverEvents::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+
+    // Stickers
+    registry.insert(
+        "stickerName".to_string(),
+        FnMeta {
+            func: stickers::stickerName::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "stickerID".to_string(),
+        FnMeta {
+            func: stickers::stickerID::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "stickerExists".to_string(),
+        FnMeta {
+            func: stickers::stickerExists::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "stickerDescription".to_string(),
+        FnMeta {
+            func: stickers::stickerDescription::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "stickerEmoji".to_string(),
+        FnMeta {
+            func: stickers::stickerEmoji::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "stickerCount".to_string(),
+        FnMeta {
+            func: stickers::stickerCount::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
+        "serverStickers".to_string(),
+        FnMeta {
+            func: stickers::serverStickers::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
+        "deleteSticker".to_string(),
+        FnMeta {
+            func: stickers::deleteSticker::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // Stage
+    registry.insert(
+        "stageCreate".to_string(),
+        FnMeta {
+            func: stage::stageCreate::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "stageEdit".to_string(),
+        FnMeta {
+            func: stage::stageEdit::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "stageDelete".to_string(),
+        FnMeta {
+            func: stage::stageDelete::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "stageTopic".to_string(),
+        FnMeta {
+            func: stage::stageTopic::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // Invites
+    registry.insert(
+        "createInvite".to_string(),
+        FnMeta {
+            func: invites::createInvite::run,
+            min_args: 1,
+            max_args: 3,
+        },
+    );
+    registry.insert(
+        "deleteInvite".to_string(),
+        FnMeta {
+            func: invites::deleteInvite::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "channelInvites".to_string(),
+        FnMeta {
+            func: invites::channelInvites::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+
+    // String extras
+    registry.insert(
+        "startsWith".to_string(),
+        FnMeta {
+            func: string::startsWith::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "endsWith".to_string(),
+        FnMeta {
+            func: string::endsWith::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "indexOf".to_string(),
+        FnMeta {
+            func: string::indexOf::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "substring".to_string(),
+        FnMeta {
+            func: string::substring::run,
+            min_args: 2,
+            max_args: 3,
+        },
+    );
+    registry.insert(
+        "regexMatch".to_string(),
+        FnMeta {
+            func: string::regexMatch::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "regexReplace".to_string(),
+        FnMeta {
+            func: string::regexReplace::run,
+            min_args: 3,
+            max_args: 3,
+        },
+    );
+    registry.insert(
+        "padLeft".to_string(),
+        FnMeta {
+            func: string::padLeft::run,
+            min_args: 2,
+            max_args: 3,
+        },
+    );
+    registry.insert(
+        "padRight".to_string(),
+        FnMeta {
+            func: string::padRight::run,
+            min_args: 2,
+            max_args: 3,
+        },
+    );
+
+    // Math extras
+    registry.insert(
+        "pow".to_string(),
+        FnMeta {
+            func: math::pow::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "abs".to_string(),
+        FnMeta {
+            func: math::abs::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "round".to_string(),
+        FnMeta {
+            func: math::round::run,
+            min_args: 1,
+            max_args: 2,
+        },
+    );
+
+    // Channel extras
+    registry.insert(
+        "channelCreated".to_string(),
+        FnMeta {
+            func: channels::channelCreated::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "channelWebhooks".to_string(),
+        FnMeta {
+            func: channels::channelWebhooks::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+
+    // Voice extras
+    registry.insert(
+        "voiceBitrate".to_string(),
+        FnMeta {
+            func: voice::voiceBitrate::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+
+    // Message extras
+    registry.insert(
+        "messageLink".to_string(),
+        FnMeta {
+            func: message::messageLink::run,
+            min_args: 1,
+            max_args: 2,
+        },
+    );
+
+    // Users extras
+    registry.insert(
+        "isModerator".to_string(),
+        FnMeta {
+            func: users::isModerator::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+
+    // Roles extras
+    registry.insert(
+        "roleMembers".to_string(),
+        FnMeta {
+            func: roles::roleMembers::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "roleMemberCount".to_string(),
+        FnMeta {
+            func: roles::roleMemberCount::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+
+    // Time extras
+    registry.insert(
+        "timeDiff".to_string(),
+        FnMeta {
+            func: time::timeDiff::run,
+            min_args: 2,
+            max_args: 3,
+        },
+    );
+    registry.insert(
+        "fromTimestamp".to_string(),
+        FnMeta {
+            func: time::fromTimestamp::run,
+            min_args: 1,
+            max_args: 2,
+        },
+    );
+
+    // Forums
+    registry.insert(
+        "createPost".to_string(),
+        FnMeta {
+            func: forums::createPost::run,
+            min_args: 2,
+            max_args: 4,
+        },
+    );
+    registry.insert(
+        "postTags".to_string(),
+        FnMeta {
+            func: forums::postTags::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "setPostTags".to_string(),
+        FnMeta {
+            func: forums::setPostTags::run,
+            min_args: 1,
+            max_args: 100,
+        },
+    );
+    registry.insert(
+        "forumTags".to_string(),
+        FnMeta {
+            func: forums::forumTags::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "forumTagID".to_string(),
+        FnMeta {
+            func: forums::forumTagID::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "forumTagEmoji".to_string(),
+        FnMeta {
+            func: forums::forumTagEmoji::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "forumTagModerated".to_string(),
+        FnMeta {
+            func: forums::forumTagModerated::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "createForumTag".to_string(),
+        FnMeta {
+            func: forums::createForumTag::run,
+            min_args: 2,
+            max_args: 4,
+        },
+    );
+    registry.insert(
+        "editForumTag".to_string(),
+        FnMeta {
+            func: forums::editForumTag::run,
+            min_args: 2,
+            max_args: 4,
+        },
+    );
+    registry.insert(
+        "deleteForumTag".to_string(),
+        FnMeta {
+            func: forums::deleteForumTag::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "forumPosts".to_string(),
+        FnMeta {
+            func: forums::forumPosts::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "forumPostCount".to_string(),
+        FnMeta {
+            func: forums::forumPostCount::run,
+            min_args: 1,
+            max_args: 1,
+        },
     );
 }

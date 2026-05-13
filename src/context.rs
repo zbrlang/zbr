@@ -10,9 +10,9 @@ pub static START_TIME: OnceLock<std::time::Instant> = OnceLock::new();
 
 #[derive(Clone, Debug, Default)]
 pub struct ButtonData {
-    pub custom_id: String,   // custom_id or URL for link buttons
+    pub custom_id: String, // custom_id or URL for link buttons
     pub label: String,
-    pub style: String,       // primary, secondary, success, danger, link
+    pub style: String, // primary, secondary, success, danger, link
     pub disabled: bool,
     pub emoji: Option<String>,
     pub new_row: bool,
@@ -30,7 +30,7 @@ pub struct SelectOptionData {
 #[derive(Clone, Debug, Default)]
 pub struct SelectMenuData {
     pub menu_id: String,
-    pub kind: String,        // string, user, role, mentionable, channel
+    pub kind: String, // string, user, role, mentionable, channel
     pub min_values: u8,
     pub max_values: u8,
     pub placeholder: Option<String>,
@@ -41,7 +41,7 @@ pub struct SelectMenuData {
 pub struct ModalFieldData {
     pub field_id: String,
     pub label: String,
-    pub style: String,       // short or paragraph
+    pub style: String, // short or paragraph
     pub min_length: Option<u32>,
     pub max_length: Option<u32>,
     pub required: bool,
@@ -186,6 +186,8 @@ pub struct DiscordContext {
     pub modal_values: HashMap<String, String>,
     /// Values selected in the current component interaction (for select menus).
     pub selected_values: Vec<String>,
+    /// Named background tasks spawned by Zasync{}. Awaitable via Zawait{name}.
+    pub async_tasks: Arc<Mutex<HashMap<String, tokio::task::JoinHandle<String>>>>,
 }
 
 #[derive(Clone, Debug)]
@@ -246,6 +248,7 @@ impl Default for DiscordContext {
             custom_id: None,
             modal_values: HashMap::new(),
             selected_values: Vec::new(),
+            async_tasks: Arc::new(Mutex::new(HashMap::new())),
         }
     }
 }

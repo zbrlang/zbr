@@ -3911,6 +3911,7 @@ dependencies = [
  "dotenv",
  "notify",
  "rand 0.8.6",
+ "regex",
  "reqwest 0.11.27",
  "serde",
  "serde_json",

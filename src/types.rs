@@ -1,7 +1,7 @@
+use sqlx::SqlitePool;
+use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use std::collections::HashMap;
-use sqlx::SqlitePool;
 
 pub type CommandMap = Arc<RwLock<HashMap<String, Command>>>;
 pub type Db = Arc<SqlitePool>;
@@ -21,6 +21,7 @@ pub struct Command {
 pub enum CommandType {
     Prefix,
     Slash,
+    SubSlash,
     Interaction,
     Event,
 }

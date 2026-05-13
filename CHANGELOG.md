@@ -2,6 +2,64 @@
 
 ---
 
+## Alpha v5
+
+Loop system, async execution, full voice channel coverage, scheduled events, forum channels, stage channels, stickers, invite management, regex, extended string and math utilities, and more.
+
+### Core
+- **Loop system** — `Zrepeat{N;code}` runs a code block N times (max 1000); `ZforSplit{code}` iterates over the current split text; `ZforJson{key;...;code}` iterates over a JSON array at a key path. All three are lazy-evaluated. `ZloopIndex{}` and `ZloopValue{}` expose the current iteration state inside any loop body
+- **Async execution** — `Zasync{name;code}` spawns a named background task that runs the code block concurrently; `Zawait{name}` blocks until that task completes and returns its result
+- **Deferred execution** — `Zdelay{duration;code}` runs a code block after a delay (e.g. `10s`, `2m`) in a background task; `ZreplyIn{duration;content}` replies to the trigger message after a delay. Both are fire-and-forget and cancelled on restart
+
+### Functions added
+
+**Moderation functions**
+`Zmute`, `Zunmute`, `Zdeafen`, `Zundeafen`
+
+**Voice functions**
+`ZisInVoice`, `ZuserVoiceChannel`, `ZuserStreaming`, `ZuserSelfDeafened`, `ZuserSelfMuted`, `ZuserServerDeafened`, `ZuserServerMuted`, `ZvoiceKick`, `ZvoiceMove`, `ZvoiceMembers`, `ZvoiceMemberCount`, `ZvoiceBitrate`
+
+**Math functions**
+`Zabs`, `Zpow`, `Zround`
+
+**String functions**
+`ZstartsWith`, `ZendsWith`, `ZindexOf`, `Zsubstring`, `ZpadLeft`, `ZpadRight`, `ZregexMatch`, `ZregexReplace`
+
+**Time functions**
+`ZfromTimestamp`, `ZtimeDiff`
+
+**Channel functions**
+`ZchannelCreated`, `ZchannelWebhooks`, `ZchannelInvites`
+
+**Invite functions**
+`ZcreateInvite`, `ZdeleteInvite`
+
+**Role functions**
+`ZroleMemberCount`, `ZroleMembers`
+
+**User functions**
+`ZisModerator`
+
+**Message functions**
+`ZmessageLink`
+
+**HTTP functions**
+`ZhttpGetHeader`, `ZhttpRemoveHeader`
+
+**Stage functions**
+`ZstageCreate`, `ZstageEdit`, `ZstageDelete`, `ZstageTopic`
+
+**Sticker functions**
+`ZserverStickers`, `ZstickerCount`, `ZstickerName`, `ZstickerID`, `ZstickerExists`, `ZstickerDescription`, `ZstickerEmoji`, `ZdeleteSticker`
+
+**Event functions**
+`ZserverEvents`, `ZeventCount`, `ZcreateEvent`, `ZeditEvent`, `ZdeleteEvent`, `ZeventName`, `ZeventDescription`, `ZeventStart`, `ZeventEnd`, `ZeventStatus`, `ZeventChannel`, `ZeventSubscribers`
+
+**Forum functions**
+`ZforumTags`, `ZforumTagID`, `ZforumTagEmoji`, `ZforumTagModerated`, `ZcreateForumTag`, `ZeditForumTag`, `ZdeleteForumTag`, `ZforumPosts`, `ZforumPostCount`, `ZcreatePost`, `ZpostTags`, `ZsetPostTags`
+
+---
+
 ## Alpha v4
 
 Moderation, message operations, HTTP requests, JSON manipulation, full control flow, error handling, and the component/interaction system.

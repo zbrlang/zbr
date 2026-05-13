@@ -1,0 +1,12 @@
+pub mod isInVoice;
+pub mod userSelfDeafened;
+pub mod userSelfMuted;
+pub mod userServerDeafened;
+pub mod userServerMuted;
+pub mod userStreaming;
+pub mod userVoiceChannel;
+pub mod voiceBitrate;
+pub mod voiceKick;
+pub mod voiceMemberCount;
+pub mod voiceMembers;
+pub mod voiceMove;

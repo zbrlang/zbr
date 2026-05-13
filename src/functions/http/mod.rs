@@ -7,5 +7,7 @@ pub mod httpPut;
 pub mod httpDelete;
 pub mod httpPatch;
 pub mod httpAddHeader;
+pub mod httpGetHeader;
+pub mod httpRemoveHeader;
 pub mod httpStatus;
 pub mod httpResult;

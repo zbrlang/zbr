@@ -4,18 +4,33 @@ use serenity::model::id::{ChannelId, MessageId};
 /// ZgetMessage{channelID;messageID;type?}
 /// type: content (default), authorID, username, avatar
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = match args.get(0) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("getMessage", "channelID is required"),
+    let (cid_str, mid_str, msg_type) = match args.len() {
+        0 => (
+            ctx.channel_id.clone(),
+            String::new(),
+            "content".to_string(),
+        ),
+        1 => (
+            ctx.channel_id.clone(),
+            args[0].clone(),
+            "content".to_string(),
+        ),
+        _ => {
+            let cid_str = match args.get(0) {
+                Some(s) if !s.is_empty() => s.clone(),
+                _ => ctx.channel_id.clone(),
+            };
+            let mid_str = args.get(1).cloned().unwrap_or_default();
+            let msg_type = match args.get(2) {
+                Some(s) if !s.is_empty() => s.clone(),
+                _ => "content".to_string(),
+            };
+            (cid_str, mid_str, msg_type)
+        }
     };
-    let mid_str = match args.get(1) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("getMessage", "messageID is required"),
-    };
-    let msg_type = match args.get(2) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => "content".to_string(),
-    };
+    if mid_str.is_empty() {
+        return FnOutput::error("getMessage", "messageID is required");
+    }
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,

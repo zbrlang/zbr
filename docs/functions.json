@@ -1,5 +1,22 @@
 [
   {
+    "name": "Zabs",
+    "category": "math",
+    "description": "Returns the absolute value of a number.",
+    "syntax": "Zabs{value}",
+    "args": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "description": "The number to get the absolute value of."
+      }
+    ],
+    "returns": "string",
+    "errors": ["argument 1 is required", "argument 1 must be a number"],
+    "examples": []
+  },
+  {
     "name": "ZaddButton",
     "category": "components",
     "description": "Adds a button to the bot's response. Buttons are grouped into action rows automatically.",
@@ -47,9 +64,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "customID is required"
-    ],
+    "errors": ["customID is required"],
     "examples": [
       {
         "code": "ZaddButton{false;confirm_ban;✅ Confirm;success}",
@@ -193,9 +208,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "menuID is required"
-    ],
+    "errors": ["menuID is required"],
     "examples": []
   },
   {
@@ -246,9 +259,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one emoji is required"
-    ],
+    "errors": ["at least one emoji is required"],
     "examples": []
   },
   {
@@ -286,9 +297,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "menuID is required"
-    ],
+    "errors": ["menuID is required"],
     "examples": []
   },
   {
@@ -446,9 +455,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "menuID is required"
-    ],
+    "errors": ["menuID is required"],
     "examples": [
       {
         "code": "ZaddUserSelect{pick_user;1;1;Select a user...}",
@@ -485,10 +492,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -584,10 +588,36 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "min is required"
-    ],
+    "errors": ["min is required"],
     "examples": []
+  },
+  {
+    "name": "Zasync",
+    "category": "loops",
+    "description": "Spawns the code block in a background tokio task identified by name. Returns immediately without blocking. Use Zawait{name} to collect its text output. Side-effects (DB writes, variable changes) are applied to the shared execution context.",
+    "syntax": "Zasync{name;code}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "A unique identifier for this async block."
+      },
+      {
+        "name": "code",
+        "type": "code",
+        "required": true,
+        "description": "The code block to run in the background."
+      }
+    ],
+    "returns": "nothing",
+    "errors": ["name and code are required", "name cannot be empty"],
+    "examples": [
+      {
+        "code": "Zasync{heavy; ZsetVar{counter;0}}\nMoney set to 0\nZawait{heavy}",
+        "output": "Runs block in background, waits at Zawait."
+      }
+    ]
   },
   {
     "name": "Zauthor",
@@ -623,9 +653,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "ZauthorIcon requires an author to be set first"
-    ],
+    "errors": ["ZauthorIcon requires an author to be set first"],
     "examples": [],
     "notes": "Embed setter function; returns nothing and writes to the selected embed index."
   },
@@ -644,11 +672,35 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "ZauthorURL requires an author to be set first"
-    ],
+    "errors": ["ZauthorURL requires an author to be set first"],
     "examples": [],
     "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "Zawait",
+    "category": "loops",
+    "description": "Blocks until the named async task (started with Zasync{name;...}) finishes, then returns its text output. Each block can only be awaited once.",
+    "syntax": "Zawait{name}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name matching the Zasync block."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "name is required",
+      "name cannot be empty",
+      "no async block named '...'"
+    ],
+    "examples": [
+      {
+        "code": "Zasync{calc; Zcalculate{100*200}}\nDoing other work...\nResult: Zawait{calc}",
+        "output": "Doing other work...\nResult: 20000"
+      }
+    ]
   },
   {
     "name": "Zban",
@@ -709,9 +761,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one user ID is required"
-    ],
+    "errors": ["at least one user ID is required"],
     "examples": []
   },
   {
@@ -797,9 +847,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one server ID is required"
-    ],
+    "errors": ["at least one server ID is required"],
     "examples": []
   },
   {
@@ -824,9 +872,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one username is required"
-    ],
+    "errors": ["at least one username is required"],
     "examples": []
   },
   {
@@ -844,10 +890,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -857,10 +900,7 @@
     "syntax": "ZboostLevel{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -898,9 +938,7 @@
     "syntax": "ZbotOwnerID{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -910,10 +948,7 @@
     "syntax": "ZbotTyping{}",
     "args": [],
     "returns": "nothing",
-    "errors": [
-      "invalid channel ID",
-      "no HTTP client available"
-    ],
+    "errors": ["invalid channel ID", "no HTTP client available"],
     "examples": []
   },
   {
@@ -949,9 +984,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "expression cannot be empty"
-    ],
+    "errors": ["expression cannot be empty"],
     "examples": []
   },
   {
@@ -1138,6 +1171,24 @@
     "examples": []
   },
   {
+    "name": "ZchannelCreated",
+    "category": "channels",
+    "description": "Returns the channel's creation timestamp as Unix seconds extracted from its snowflake ID. Defaults to current channel.",
+    "syntax": "ZchannelCreated{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current channel",
+        "description": "The channel ID to get the creation timestamp of."
+      }
+    ],
+    "returns": "string",
+    "errors": ["invalid channel ID"],
+    "examples": []
+  },
+  {
     "name": "ZchannelExists",
     "category": "channels",
     "description": "Returns channel metadata or performs channel operations.",
@@ -1151,10 +1202,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "channel ID is required",
-      "no HTTP client available"
-    ],
+    "errors": ["channel ID is required", "no HTTP client available"],
     "examples": []
   },
   {
@@ -1172,10 +1220,25 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
+    "errors": ["no HTTP client available", "not in a guild"],
+    "examples": []
+  },
+  {
+    "name": "ZchannelInvites",
+    "category": "channels",
+    "description": "Returns a space-separated list of invite codes for the given channel. Defaults to current channel.",
+    "syntax": "ZchannelInvites{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current channel",
+        "description": "The channel ID to fetch invites for."
+      }
     ],
+    "returns": "string",
+    "errors": ["invalid channel ID", "no HTTP client available"],
     "examples": []
   },
   {
@@ -1297,6 +1360,28 @@
     "examples": []
   },
   {
+    "name": "ZchannelWebhooks",
+    "category": "channels",
+    "description": "Returns a space-separated list of webhook URLs for the given channel. Defaults to current channel.",
+    "syntax": "ZchannelWebhooks{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current channel",
+        "description": "The channel ID to fetch webhooks for."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid channel ID",
+      "failed to fetch webhooks",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
     "name": "ZcharCount",
     "category": "string",
     "description": "Returns the number of Unicode characters (not bytes) in the text.",
@@ -1327,9 +1412,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "condition is required"
-    ],
+    "errors": ["condition is required"],
     "examples": []
   },
   {
@@ -1353,9 +1436,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "text and at least one word are required"
-    ],
+    "errors": ["text and at least one word are required"],
     "examples": []
   },
   {
@@ -1556,9 +1637,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available"
-    ],
+    "errors": ["no database available"],
     "examples": []
   },
   {
@@ -1580,6 +1659,176 @@
       "name is required",
       "no HTTP client available",
       "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcreateEvent",
+    "category": "events",
+    "description": "Creates a scheduled voice event and returns its ID. startTime is a Unix timestamp.",
+    "syntax": "ZcreateEvent{name;channelID;startTime;description?}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name of the event."
+      },
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The voice channel ID for the event."
+      },
+      {
+        "name": "startTime",
+        "type": "number",
+        "required": true,
+        "description": "The Unix timestamp for when the event starts."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "The event description."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "name is required",
+      "channelID is required",
+      "startTime (Unix timestamp) is required",
+      "invalid channel ID",
+      "startTime must be a Unix timestamp",
+      "invalid Unix timestamp",
+      "not in a guild",
+      "failed to create event",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcreateForumTag",
+    "category": "forums",
+    "description": "Adds a new available tag to a forum channel.",
+    "syntax": "ZcreateForumTag{channelID;name;emoji?;moderated?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The name of the new tag."
+      },
+      {
+        "name": "emoji",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "The emoji for the tag (unicode character or custom emoji ID)."
+      },
+      {
+        "name": "moderated",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Whether the tag is moderator-only."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "name is required",
+      "invalid channel ID",
+      "not a forum channel",
+      "failed to fetch channel",
+      "failed to update tags",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcreateInvite",
+    "category": "invites",
+    "description": "Creates a channel invite and returns the invite code. maxUses: 0 = unlimited (default). maxAge: seconds until expiry, 0 = never expires (default).",
+    "syntax": "ZcreateInvite{channelID;maxUses?;maxAge?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The channel to create the invite for."
+      },
+      {
+        "name": "maxUses",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Maximum number of uses (0 = unlimited)."
+      },
+      {
+        "name": "maxAge",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Seconds until the invite expires (0 = never)."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "invalid channel ID",
+      "failed to create invite",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZcreatePost",
+    "category": "forums",
+    "description": "Creates a new forum post (thread) and returns its thread ID. tagIDs is a space-separated list of forum tag IDs.",
+    "syntax": "ZcreatePost{channelID;title;content?;tagIDs?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": "The title of the forum post."
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "The initial message content of the post."
+      },
+      {
+        "name": "tagIDs",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": "Space-separated list of forum tag IDs to apply."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "title is required",
+      "invalid channel ID",
+      "failed to create post",
+      "no HTTP client available"
     ],
     "examples": []
   },
@@ -1741,6 +1990,29 @@
     "examples": []
   },
   {
+    "name": "Zdeafen",
+    "category": "moderation",
+    "description": "Server-deafens a member in all voice channels. They cannot hear anything until undeafened.",
+    "syntax": "Zdeafen{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The ID of the member to server-deafen."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "userID is required",
+      "invalid user ID: '...'",
+      "not in a guild",
+      "no HTTP client available",
+      "failed to server-deafen user"
+    ],
+    "examples": []
+  },
+  {
     "name": "Zdefer",
     "category": "components",
     "description": "Defers the interaction response, showing a loading state. The bot then has 15 minutes to follow up.",
@@ -1748,6 +2020,34 @@
     "args": [],
     "returns": "nothing",
     "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zdelay",
+    "category": "loops",
+    "description": "Spawns a background task that sleeps for the given duration, then evaluates the code block. The task is in-memory and will be cancelled on bot restart.",
+    "syntax": "Zdelay{duration;code}",
+    "args": [
+      {
+        "name": "duration",
+        "type": "string",
+        "required": true,
+        "description": "How long to wait before executing the code (e.g. 5s, 1m, 2h)."
+      },
+      {
+        "name": "code",
+        "type": "code",
+        "required": true,
+        "description": "The code block to evaluate after the delay."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "code block is required",
+      "duration is required",
+      "duration must be at least 1 second",
+      "invalid duration: '...'"
+    ],
     "examples": []
   },
   {
@@ -1792,6 +2092,82 @@
       "at least one name is required",
       "no HTTP client available",
       "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZdeleteEvent",
+    "category": "events",
+    "description": "Deletes a scheduled event.",
+    "syntax": "ZdeleteEvent{eventID}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID to delete."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "not in a guild",
+      "failed to delete event",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZdeleteForumTag",
+    "category": "forums",
+    "description": "Removes a tag from a forum channel by its ID.",
+    "syntax": "ZdeleteForumTag{channelID;tagID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      },
+      {
+        "name": "tagID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum tag ID to remove."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "tagID is required",
+      "invalid channel ID",
+      "invalid tag ID",
+      "not a forum channel",
+      "failed to fetch channel",
+      "failed to update tags",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZdeleteInvite",
+    "category": "invites",
+    "description": "Deletes a Discord invite by its code.",
+    "syntax": "ZdeleteInvite{code}",
+    "args": [
+      {
+        "name": "code",
+        "type": "string",
+        "required": true,
+        "description": "The invite code to delete."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "invite code is required",
+      "failed to delete invite",
+      "no HTTP client available"
     ],
     "examples": []
   },
@@ -1843,6 +2219,28 @@
       "not in a guild",
       "role ID is required",
       "role not found"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZdeleteSticker",
+    "category": "stickers",
+    "description": "Deletes a sticker from the server.",
+    "syntax": "ZdeleteSticker{stickerID}",
+    "args": [
+      {
+        "name": "stickerID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The sticker ID to delete."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "stickerID is required",
+      "invalid sticker ID",
+      "not in a guild",
+      "no HTTP client available"
     ],
     "examples": []
   },
@@ -1909,9 +2307,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "cannot divide by zero"
-    ],
+    "errors": ["cannot divide by zero"],
     "examples": []
   },
   {
@@ -2043,6 +2439,98 @@
     "returns": "nothing",
     "errors": [
       "channelID, userOrRoleID, and at least one permission are required",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditEvent",
+    "category": "events",
+    "description": "Edits a scheduled event. Use \"!unchanged\" to skip a field.",
+    "syntax": "ZeditEvent{eventID;name?;description?;startTime?}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID to edit."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "!unchanged",
+        "description": "The new event name."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "default": "!unchanged",
+        "description": "The new event description."
+      },
+      {
+        "name": "startTime",
+        "type": "number",
+        "required": false,
+        "default": "!unchanged",
+        "description": "The new start time as a Unix timestamp."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "invalid startTime timestamp",
+      "not in a guild",
+      "failed to edit event",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeditForumTag",
+    "category": "forums",
+    "description": "Edits an existing forum tag. Use \"!unchanged\" to skip a field.",
+    "syntax": "ZeditForumTag{channelID;tagID;name?;moderated?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      },
+      {
+        "name": "tagID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum tag ID to edit."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "!unchanged",
+        "description": "The new tag name."
+      },
+      {
+        "name": "moderated",
+        "type": "boolean",
+        "required": false,
+        "default": "!unchanged",
+        "description": "Whether the tag is moderator-only."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "tagID is required",
+      "invalid channel ID",
+      "invalid tag ID",
+      "not a forum channel",
+      "tag not found",
+      "failed to fetch channel",
+      "failed to update tags",
       "no HTTP client available"
     ],
     "examples": []
@@ -2214,9 +2702,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "index must be 1 or greater"
-    ],
+    "errors": ["index must be 1 or greater"],
     "examples": []
   },
   {
@@ -2269,9 +2755,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -2289,10 +2773,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -2310,10 +2791,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -2323,10 +2801,7 @@
     "syntax": "ZemoteCount{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -2350,6 +2825,29 @@
       }
     ],
     "returns": "nothing",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZendsWith",
+    "category": "string",
+    "description": "Returns true if text ends with suffix, false otherwise.",
+    "syntax": "ZendsWith{text;suffix}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text to check."
+      },
+      {
+        "name": "suffix",
+        "type": "string",
+        "required": true,
+        "description": "The suffix to look for."
+      }
+    ],
+    "returns": "string",
     "errors": [],
     "examples": []
   },
@@ -2382,13 +2880,185 @@
     "examples": []
   },
   {
-    "name": "ZexecutionTime",
-    "category": "bot",
-    "description": "Returns information for the executionTime function.",
-    "syntax": "ZexecutionTime{}",
-    "args": [],
+    "name": "Zeval",
+    "category": "control",
+    "description": "Evaluates a string as ZBR code. Each statement in the string is parsed and executed in order.",
+    "syntax": "Zeval{code}",
+    "args": [
+      {
+        "name": "code",
+        "type": "string",
+        "required": true,
+        "description": "The ZBR code string to evaluate."
+      }
+    ],
     "returns": "string",
     "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZeventChannel",
+    "category": "events",
+    "description": "Returns the channel ID of a scheduled event, or empty string for external events.",
+    "syntax": "ZeventChannel{eventID}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeventCount",
+    "category": "events",
+    "description": "Returns the number of scheduled events in the server.",
+    "syntax": "ZeventCount{}",
+    "args": [],
+    "returns": "string",
+    "errors": ["not in a guild", "no HTTP client available"],
+    "examples": []
+  },
+  {
+    "name": "ZeventDescription",
+    "category": "events",
+    "description": "Returns the description of a scheduled event.",
+    "syntax": "ZeventDescription{eventID}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeventEnd",
+    "category": "events",
+    "description": "Returns the end time of a scheduled event as a Unix timestamp, or empty string if none set.",
+    "syntax": "ZeventEnd{eventID}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeventName",
+    "category": "events",
+    "description": "Returns the name of a scheduled event.",
+    "syntax": "ZeventName{eventID}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "not in a guild",
+      "failed to fetch event",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeventStart",
+    "category": "events",
+    "description": "Returns the start time of a scheduled event as a Unix timestamp.",
+    "syntax": "ZeventStart{eventID}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeventStatus",
+    "category": "events",
+    "description": "Returns the status of a scheduled event: scheduled, active, completed, or cancelled.",
+    "syntax": "ZeventStatus{eventID}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZeventSubscribers",
+    "category": "events",
+    "description": "Returns the number of users subscribed to a scheduled event.",
+    "syntax": "ZeventSubscribers{eventID}",
+    "args": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The scheduled event ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "eventID is required",
+      "invalid event ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
     "examples": []
   },
   {
@@ -2452,11 +3122,242 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "ZfooterIcon requires a footer to be set first"
-    ],
+    "errors": ["ZfooterIcon requires a footer to be set first"],
     "examples": [],
     "notes": "Embed setter function; returns nothing and writes to the selected embed index."
+  },
+  {
+    "name": "ZforJson",
+    "category": "loops",
+    "description": "Iterates over a JSON array at the given key path. ZloopIndex{} returns the current 1-based position, ZloopValue{} returns the current element. Requires a parsed JSON object (ZjsonParse).",
+    "syntax": "ZforJson{key;...;code}",
+    "args": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "One or more key path segments to navigate to the target array.",
+        "variadic": true
+      },
+      {
+        "name": "code",
+        "type": "code",
+        "required": true,
+        "description": "The code block to execute for each element."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "at least one key and a code block are required",
+      "key path not found",
+      "no JSON object — call ZjsonParse first",
+      "target is not an array"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZforSplit",
+    "category": "loops",
+    "description": "Iterates over the current split text (set by ZtextSplit). ZloopIndex{} returns the current 1-based position, ZloopValue{} returns the current element.",
+    "syntax": "ZforSplit{code}",
+    "args": [
+      {
+        "name": "code",
+        "type": "code",
+        "required": true,
+        "description": "The code block to execute for each split element."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "code is required",
+      "no split text available — call ZtextSplit first"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZforumPostCount",
+    "category": "forums",
+    "description": "Returns the number of active posts in a forum channel.",
+    "syntax": "ZforumPostCount{channelID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "invalid channel ID",
+      "not in a guild",
+      "failed to fetch threads",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZforumPosts",
+    "category": "forums",
+    "description": "Returns a space-separated list of active post (thread) IDs in a forum channel.",
+    "syntax": "ZforumPosts{channelID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "invalid channel ID",
+      "not in a guild",
+      "failed to fetch threads",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZforumTagEmoji",
+    "category": "forums",
+    "description": "Returns the emoji of a forum tag. For unicode emojis returns the character, for custom emojis returns the emoji ID.",
+    "syntax": "ZforumTagEmoji{channelID;tagID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      },
+      {
+        "name": "tagID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum tag ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "tagID is required",
+      "invalid channel ID",
+      "invalid tag ID",
+      "not a forum channel",
+      "tag not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZforumTagID",
+    "category": "forums",
+    "description": "Finds a forum tag's ID by its name (case-insensitive). Returns empty string if not found.",
+    "syntax": "ZforumTagID{channelID;tagName}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      },
+      {
+        "name": "tagName",
+        "type": "string",
+        "required": true,
+        "description": "The tag name to look up."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "tagName is required",
+      "invalid channel ID",
+      "not a forum channel",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZforumTagModerated",
+    "category": "forums",
+    "description": "Returns true if the forum tag is moderator-only, false otherwise.",
+    "syntax": "ZforumTagModerated{channelID;tagID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      },
+      {
+        "name": "tagID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum tag ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "tagID is required",
+      "invalid channel ID",
+      "invalid tag ID",
+      "not a forum channel",
+      "tag not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZforumTags",
+    "category": "forums",
+    "description": "Returns a space-separated list of available tag names in a forum channel.",
+    "syntax": "ZforumTags{channelID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum channel ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "invalid channel ID",
+      "not a forum channel",
+      "failed to fetch channel",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZfromTimestamp",
+    "category": "time",
+    "description": "Formats a Unix timestamp into a date/time string. format options: full (default), date, time, relative.",
+    "syntax": "ZfromTimestamp{unix;format?}",
+    "args": [
+      {
+        "name": "unix",
+        "type": "number",
+        "required": true,
+        "description": "The Unix timestamp to format."
+      },
+      {
+        "name": "format",
+        "type": "string",
+        "required": false,
+        "default": "full",
+        "description": "The output format: full, date, time, or relative."
+      }
+    ],
+    "returns": "string",
+    "errors": ["unix timestamp is required", "invalid unix timestamp"],
+    "examples": []
   },
   {
     "name": "ZgetAttachments",
@@ -2502,10 +3403,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "userID is required"
-    ],
+    "errors": ["no HTTP client available", "userID is required"],
     "examples": []
   },
   {
@@ -2529,10 +3427,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -2550,9 +3445,7 @@
       }
     ],
     "returns": "integer",
-    "errors": [
-      "no database available"
-    ],
+    "errors": ["no database available"],
     "examples": []
   },
   {
@@ -2621,9 +3514,7 @@
       }
     ],
     "returns": "snowflake",
-    "errors": [
-      "index is required"
-    ],
+    "errors": ["index is required"],
     "examples": []
   },
   {
@@ -2748,9 +3639,7 @@
       }
     ],
     "returns": "snowflake",
-    "errors": [
-      "index is required"
-    ],
+    "errors": ["index is required"],
     "examples": []
   },
   {
@@ -2799,10 +3688,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -2897,9 +3783,7 @@
       }
     ],
     "returns": "snowflake",
-    "errors": [
-      "index is required"
-    ],
+    "errors": ["index is required"],
     "examples": [
       {
         "code": "ZgetUserSelectUserID{1}",
@@ -2960,10 +3844,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -2980,10 +3861,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -3008,9 +3886,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available"
-    ],
+    "errors": ["no database available"],
     "examples": []
   },
   {
@@ -3028,10 +3904,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -3049,9 +3922,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -3105,10 +3976,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -3165,10 +4033,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "header name is required",
-      "header value is required"
-    ],
+    "errors": ["header name is required", "header value is required"],
     "examples": []
   },
   {
@@ -3192,9 +4057,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "url is required"
-    ],
+    "errors": ["url is required"],
     "examples": []
   },
   {
@@ -3211,9 +4074,24 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "url is required"
+    "errors": ["url is required"],
+    "examples": []
+  },
+  {
+    "name": "ZhttpGetHeader",
+    "category": "http",
+    "description": "Returns the value of a header previously set via ZhttpAddHeader.",
+    "syntax": "ZhttpGetHeader{name}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The header name to retrieve."
+      }
     ],
+    "returns": "string",
+    "errors": ["header name is required"],
     "examples": []
   },
   {
@@ -3237,9 +4115,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "url is required"
-    ],
+    "errors": ["url is required"],
     "examples": []
   },
   {
@@ -3263,9 +4139,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "url is required"
-    ],
+    "errors": ["url is required"],
     "examples": []
   },
   {
@@ -3289,9 +4163,24 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "url is required"
+    "errors": ["url is required"],
+    "examples": []
+  },
+  {
+    "name": "ZhttpRemoveHeader",
+    "category": "http",
+    "description": "Removes a header previously set via ZhttpAddHeader.",
+    "syntax": "ZhttpRemoveHeader{name}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The header name to remove."
+      }
     ],
+    "returns": "nothing",
+    "errors": ["header name is required"],
     "examples": []
   },
   {
@@ -3309,9 +4198,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "response is not valid JSON"
-    ],
+    "errors": ["response is not valid JSON"],
     "examples": []
   },
   {
@@ -3346,9 +4233,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "internal error: Zif should be handled by the runtime"
-    ],
+    "errors": ["internal error: Zif should be handled by the runtime"],
     "examples": []
   },
   {
@@ -3373,9 +4258,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one channel ID is required"
-    ],
+    "errors": ["at least one channel ID is required"],
     "examples": [],
     "notes": "Permission guard function; returns nothing and halts on failure."
   },
@@ -3399,6 +4282,29 @@
     "notes": "Embed setter function; returns nothing and writes to the selected embed index."
   },
   {
+    "name": "ZindexOf",
+    "category": "string",
+    "description": "Returns the 1-based character position of the first match of search in text, or 0 if not found.",
+    "syntax": "ZindexOf{text;search}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text to search in."
+      },
+      {
+        "name": "search",
+        "type": "string",
+        "required": true,
+        "description": "The string to search for."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
     "name": "ZinputValue",
     "category": "components",
     "description": "Reads a submitted modal text input field value. Only valid inside an onInteraction handler for a modal submission.",
@@ -3412,9 +4318,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "fieldID is required"
-    ],
+    "errors": ["fieldID is required"],
     "examples": [
       {
         "code": "ZinputValue{feedback}",
@@ -3492,10 +4396,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "userID is required"
-    ],
+    "errors": ["no HTTP client available", "userID is required"],
     "examples": []
   },
   {
@@ -3552,10 +4453,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "invalid userID",
-      "no HTTP client available"
-    ],
+    "errors": ["invalid userID", "no HTTP client available"],
     "examples": []
   },
   {
@@ -3573,10 +4471,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -3617,6 +4512,24 @@
     ],
     "returns": "string",
     "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZisInVoice",
+    "category": "voice",
+    "description": "Returns true if the user is currently in any voice channel, false otherwise.",
+    "syntax": "ZisInVoice{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's ID",
+        "description": "The user to check. Defaults to the command author."
+      }
+    ],
+    "returns": "string",
+    "errors": ["invalid user ID: '...'", "not in a guild"],
     "examples": []
   },
   {
@@ -3688,6 +4601,29 @@
     "examples": []
   },
   {
+    "name": "ZisModerator",
+    "category": "users",
+    "description": "Returns true if the user has the Moderate Members (timeout) permission, false otherwise. Defaults to the command author.",
+    "syntax": "ZisModerator{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "command author",
+        "description": "The user ID to check."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid userID",
+      "not in a guild",
+      "user not found",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
     "name": "ZisNSFW",
     "category": "channels",
     "description": "Returns channel metadata or performs channel operations.",
@@ -3752,11 +4688,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild",
-      "user not found"
-    ],
+    "errors": ["no HTTP client available", "not in a guild", "user not found"],
     "examples": []
   },
   {
@@ -3773,10 +4705,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "invalid userID",
-      "no HTTP client available"
-    ],
+    "errors": ["invalid userID", "no HTTP client available"],
     "examples": []
   },
   {
@@ -3830,9 +4759,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one key is required"
-    ],
+    "errors": ["at least one key is required"],
     "examples": []
   },
   {
@@ -3880,10 +4807,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "at least one key is required",
-      "target is not an array"
-    ],
+    "errors": ["at least one key is required", "target is not an array"],
     "examples": []
   },
   {
@@ -4061,9 +4985,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "at least one key is required"
-    ],
+    "errors": ["at least one key is required"],
     "examples": []
   },
   {
@@ -4081,9 +5003,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "at least one key is required"
-    ],
+    "errors": ["at least one key is required"],
     "examples": []
   },
   {
@@ -4128,9 +5048,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "JSON string is required"
-    ],
+    "errors": ["JSON string is required"],
     "examples": []
   },
   {
@@ -4148,9 +5066,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "failed to serialize JSON"
-    ],
+    "errors": ["failed to serialize JSON"],
     "examples": []
   },
   {
@@ -4205,9 +5121,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one key is required"
-    ],
+    "errors": ["at least one key is required"],
     "examples": []
   },
   {
@@ -4315,9 +5229,27 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no database available"
-    ],
+    "errors": ["no database available"],
+    "examples": []
+  },
+  {
+    "name": "ZloopIndex",
+    "category": "loops",
+    "description": "Returns the current 1-based loop iteration index. Returns 0 if called outside a loop.",
+    "syntax": "ZloopIndex{}",
+    "args": [],
+    "returns": "integer",
+    "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZloopValue",
+    "category": "loops",
+    "description": "Returns the current loop element value. Returns an empty string if called outside a loop.",
+    "syntax": "ZloopValue{}",
+    "args": [],
+    "returns": "string",
+    "errors": [],
     "examples": []
   },
   {
@@ -4353,10 +5285,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -4424,11 +5353,7 @@
       }
     ],
     "returns": "integer",
-    "errors": [
-      "guild not found",
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["guild not found", "no HTTP client available", "not in a guild"],
     "examples": [],
     "notes": "Presence filtering requires the GUILD_PRESENCES intent."
   },
@@ -4453,9 +5378,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "index is required"
-    ],
+    "errors": ["index is required"],
     "examples": []
   },
   {
@@ -4485,6 +5408,30 @@
     "args": [],
     "returns": "string",
     "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZmessageLink",
+    "category": "message",
+    "description": "Builds and returns a Discord jump URL for a message. channelID defaults to the current channel.",
+    "syntax": "ZmessageLink{messageID;channelID?}",
+    "args": [
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The message ID to link to."
+      },
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current channel",
+        "description": "The channel ID the message is in."
+      }
+    ],
+    "returns": "string",
+    "errors": ["messageID is required"],
     "examples": []
   },
   {
@@ -4673,9 +5620,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "cannot modulo by zero"
-    ],
+    "errors": ["cannot modulo by zero"],
     "examples": []
   },
   {
@@ -4714,6 +5659,29 @@
     "examples": []
   },
   {
+    "name": "Zmute",
+    "category": "moderation",
+    "description": "Server-mutes a member so they cannot speak in voice channels. Use Zunmute to reverse.",
+    "syntax": "Zmute{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The ID of the member to server-mute."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "userID is required",
+      "invalid user ID: '...'",
+      "not in a guild",
+      "no HTTP client available",
+      "failed to server-mute user"
+    ],
+    "examples": []
+  },
+  {
     "name": "ZnewModal",
     "category": "components",
     "description": "Creates a modal dialog. Only valid inside an onInteraction handler. Add fields with ZaddTextInput.",
@@ -4733,10 +5701,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "modalID is required",
-      "title is required"
-    ],
+    "errors": ["modalID is required", "title is required"],
     "examples": [
       {
         "code": "ZnewModal{feedback_form;Submit Feedback}",
@@ -4779,9 +5744,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "menuID is required"
-    ],
+    "errors": ["menuID is required"],
     "examples": [
       {
         "code": "ZnewSelectMenu{color_picker;1;1;Choose a color...}",
@@ -4972,9 +5935,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one channel ID is required"
-    ],
+    "errors": ["at least one channel ID is required"],
     "examples": [],
     "notes": "Permission guard function; returns nothing and halts on failure."
   },
@@ -5000,9 +5961,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one user ID is required"
-    ],
+    "errors": ["at least one user ID is required"],
     "examples": [],
     "notes": "Permission guard function; returns nothing and halts on failure."
   },
@@ -5091,9 +6050,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one server ID is required"
-    ],
+    "errors": ["at least one server ID is required"],
     "examples": [],
     "notes": "Permission guard function; returns nothing and halts on failure."
   },
@@ -5119,9 +6076,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "at least one username is required"
-    ],
+    "errors": ["at least one username is required"],
     "examples": [],
     "notes": "Permission guard function; returns nothing and halts on failure."
   },
@@ -5145,10 +6100,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "condition is required",
-      "error message is required"
-    ],
+    "errors": ["condition is required", "error message is required"],
     "examples": []
   },
   {
@@ -5178,9 +6130,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "message, at least one word, and an error message are required"
-    ],
+    "errors": ["message, at least one word, and an error message are required"],
     "examples": [],
     "notes": "Permission guard function; returns nothing and halts on failure."
   },
@@ -5199,10 +6149,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "invalid channel ID",
-      "no HTTP client available"
-    ],
+    "errors": ["invalid channel ID", "no HTTP client available"],
     "examples": [],
     "notes": "Permission guard function; returns nothing and halts on failure."
   },
@@ -5252,6 +6199,66 @@
     ],
     "returns": "string",
     "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZpadLeft",
+    "category": "string",
+    "description": "Pads text on the left to reach the given width.",
+    "syntax": "ZpadLeft{text;width;char?}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text to pad."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true,
+        "description": "The total desired width after padding."
+      },
+      {
+        "name": "char",
+        "type": "string",
+        "required": false,
+        "default": " ",
+        "description": "The character to pad with."
+      }
+    ],
+    "returns": "string",
+    "errors": ["width is required"],
+    "examples": []
+  },
+  {
+    "name": "ZpadRight",
+    "category": "string",
+    "description": "Pads text on the right to reach the given width.",
+    "syntax": "ZpadRight{text;width;char?}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text to pad."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true,
+        "description": "The total desired width after padding."
+      },
+      {
+        "name": "char",
+        "type": "string",
+        "required": false,
+        "default": " ",
+        "description": "The character to pad with."
+      }
+    ],
+    "returns": "string",
+    "errors": ["width is required"],
     "examples": []
   },
   {
@@ -5315,6 +6322,56 @@
     "examples": []
   },
   {
+    "name": "ZpostTags",
+    "category": "forums",
+    "description": "Returns a space-separated list of applied tag IDs on a forum post (thread).",
+    "syntax": "ZpostTags{threadID}",
+    "args": [
+      {
+        "name": "threadID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum post (thread) ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "threadID is required",
+      "invalid thread ID",
+      "failed to fetch thread",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zpow",
+    "category": "math",
+    "description": "Returns base raised to the power of exp.",
+    "syntax": "Zpow{base;exp}",
+    "args": [
+      {
+        "name": "base",
+        "type": "number",
+        "required": true,
+        "description": "The base number."
+      },
+      {
+        "name": "exp",
+        "type": "number",
+        "required": true,
+        "description": "The exponent."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "base is required",
+      "base must be a number",
+      "exponent is required",
+      "exponent must be a number"
+    ],
+    "examples": []
+  },
+  {
     "name": "ZpublishMessage",
     "category": "message",
     "description": "Crossposts a message in an announcement channel.",
@@ -5372,10 +6429,7 @@
     "syntax": "ZrandomCategoryID{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -5385,10 +6439,7 @@
     "syntax": "ZrandomChannelID{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -5398,9 +6449,7 @@
     "syntax": "ZrandomGuildID{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -5410,10 +6459,7 @@
     "syntax": "ZrandomMention{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -5423,10 +6469,7 @@
     "syntax": "ZrandomRoleID{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -5443,9 +6486,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "length must be greater than 0"
-    ],
+    "errors": ["length must be greater than 0"],
     "examples": []
   },
   {
@@ -5463,9 +6504,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "at least one value is required"
-    ],
+    "errors": ["at least one value is required"],
     "examples": []
   },
   {
@@ -5475,10 +6514,7 @@
     "syntax": "ZrandomUser{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -5488,10 +6524,59 @@
     "syntax": "ZrandomUserID{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
+    "errors": ["no HTTP client available", "not in a guild"],
+    "examples": []
+  },
+  {
+    "name": "ZregexMatch",
+    "category": "string",
+    "description": "Returns true if the regex pattern matches text, false otherwise.",
+    "syntax": "ZregexMatch{text;pattern}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text to match against."
+      },
+      {
+        "name": "pattern",
+        "type": "string",
+        "required": true,
+        "description": "The regex pattern to match."
+      }
     ],
+    "returns": "string",
+    "errors": ["pattern is required", "invalid pattern: ..."],
+    "examples": []
+  },
+  {
+    "name": "ZregexReplace",
+    "category": "string",
+    "description": "Replaces all regex matches in text with replacement.",
+    "syntax": "ZregexReplace{text;pattern;replacement}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text to search and replace in."
+      },
+      {
+        "name": "pattern",
+        "type": "string",
+        "required": true,
+        "description": "The regex pattern to match."
+      },
+      {
+        "name": "replacement",
+        "type": "string",
+        "required": true,
+        "description": "The string to replace matches with."
+      }
+    ],
+    "returns": "string",
+    "errors": ["pattern is required", "invalid pattern: ..."],
     "examples": []
   },
   {
@@ -5583,10 +6668,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -5622,8 +6704,33 @@
       }
     ],
     "returns": "nothing",
+    "errors": ["index must be 1 or greater"],
+    "examples": []
+  },
+  {
+    "name": "Zrepeat",
+    "category": "loops",
+    "description": "Runs the code block N times. ZloopIndex{} returns the current 1-based iteration. Maximum 1000 iterations.",
+    "syntax": "Zrepeat{N;code}",
+    "args": [
+      {
+        "name": "N",
+        "type": "integer",
+        "required": true,
+        "description": "The number of times to repeat the code block (1–1000)."
+      },
+      {
+        "name": "code",
+        "type": "code",
+        "required": true,
+        "description": "The code block to execute on each iteration."
+      }
+    ],
+    "returns": "string",
     "errors": [
-      "index must be 1 or greater"
+      "maximum loop iterations (1000) exceeded",
+      "N and code are required",
+      "N must be a positive integer"
     ],
     "examples": []
   },
@@ -5685,10 +6792,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "message not found",
-      "no HTTP client available"
-    ],
+    "errors": ["message not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -5699,6 +6803,36 @@
     "args": [],
     "returns": "string",
     "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZreplyIn",
+    "category": "actions",
+    "description": "Spawns an in-memory task that sleeps for the given duration, then replies to the trigger message. The task is cancelled if the bot restarts.",
+    "syntax": "ZreplyIn{duration;content}",
+    "args": [
+      {
+        "name": "duration",
+        "type": "string",
+        "required": true,
+        "description": "How long to wait before sending the reply (e.g. 5s, 1m, 2h)."
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "The message content to reply with."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "content is required",
+      "duration is required",
+      "duration must be at least 1 second",
+      "invalid duration: '...'",
+      "no HTTP client available",
+      "no trigger message available"
+    ],
     "examples": []
   },
   {
@@ -5715,10 +6849,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -5735,10 +6866,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -5755,10 +6883,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -5811,9 +6936,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "could not get author's top role"
-    ],
+    "errors": ["could not get author's top role"],
     "examples": []
   },
   {
@@ -5866,6 +6989,52 @@
       "invalid author ID",
       "no HTTP client available",
       "not in a guild"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleMemberCount",
+    "category": "roles",
+    "description": "Returns the number of members that have the specified role. Defaults to the author's highest role.",
+    "syntax": "ZroleMemberCount{roleID?}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's highest role",
+        "description": "The role ID to count members for."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "not in a guild",
+      "invalid author ID",
+      "invalid role ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZroleMembers",
+    "category": "roles",
+    "description": "Returns a space-separated list of member IDs that have the specified role. Defaults to the author's highest role.",
+    "syntax": "ZroleMembers{roleID?}",
+    "args": [
+      {
+        "name": "roleID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's highest role",
+        "description": "The role ID to list members for."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "not in a guild",
+      "invalid author ID",
+      "invalid role ID",
+      "no HTTP client available"
     ],
     "examples": []
   },
@@ -5965,6 +7134,30 @@
     "examples": []
   },
   {
+    "name": "Zround",
+    "category": "math",
+    "description": "Rounds a number to the specified decimal places.",
+    "syntax": "Zround{value;decimals?}",
+    "args": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "description": "The number to round."
+      },
+      {
+        "name": "decimals",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "The number of decimal places to round to."
+      }
+    ],
+    "returns": "string",
+    "errors": ["argument 1 is required", "argument 1 must be a number"],
+    "examples": []
+  },
+  {
     "name": "ZrulesChannelID",
     "category": "channels",
     "description": "Returns channel metadata or performs channel operations.",
@@ -6011,9 +7204,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -6038,10 +7229,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "message content cannot be empty",
-      "no HTTP client available"
-    ],
+    "errors": ["message content cannot be empty", "no HTTP client available"],
     "examples": []
   },
   {
@@ -6098,9 +7286,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available"
-    ],
+    "errors": ["no database available"],
     "examples": []
   },
   {
@@ -6128,10 +7314,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -6156,10 +7339,17 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
+    "examples": []
+  },
+  {
+    "name": "ZserverEvents",
+    "category": "events",
+    "description": "Returns a space-separated list of scheduled event IDs in the server.",
+    "syntax": "ZserverEvents{}",
+    "args": [],
+    "returns": "string",
+    "errors": ["not in a guild", "no HTTP client available"],
     "examples": []
   },
   {
@@ -6177,10 +7367,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -6198,10 +7385,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -6219,10 +7403,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available"
-    ],
+    "errors": ["guild not found", "no HTTP client available"],
     "examples": []
   },
   {
@@ -6264,11 +7445,17 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["guild not found", "no HTTP client available", "not in a guild"],
+    "examples": []
+  },
+  {
+    "name": "ZserverStickers",
+    "category": "stickers",
+    "description": "Returns a space-separated list of sticker IDs in the server.",
+    "syntax": "ZserverStickers{}",
+    "args": [],
+    "returns": "string",
+    "errors": ["not in a guild", "no HTTP client available"],
     "examples": []
   },
   {
@@ -6278,11 +7465,7 @@
     "syntax": "ZserverVerificationLevel{}",
     "args": [],
     "returns": "string",
-    "errors": [
-      "guild not found",
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["guild not found", "no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -6313,9 +7496,35 @@
       }
     ],
     "returns": "nothing",
+    "errors": ["no database available", "variable name is required"],
+    "examples": []
+  },
+  {
+    "name": "ZsetPostTags",
+    "category": "forums",
+    "description": "Replaces all applied tags on a forum post.",
+    "syntax": "ZsetPostTags{threadID;tagID1;tagID2;...}",
+    "args": [
+      {
+        "name": "threadID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The forum post (thread) ID."
+      },
+      {
+        "name": "tagID",
+        "type": "snowflake",
+        "required": true,
+        "description": "One or more tag IDs to apply.",
+        "variadic": true
+      }
+    ],
+    "returns": "nothing",
     "errors": [
-      "no database available",
-      "variable name is required"
+      "threadID is required",
+      "invalid thread ID",
+      "failed to set tags",
+      "no HTTP client available"
     ],
     "examples": []
   },
@@ -6347,10 +7556,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -6420,10 +7626,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -6447,10 +7650,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no database available",
-      "variable name is required"
-    ],
+    "errors": ["no database available", "variable name is required"],
     "examples": []
   },
   {
@@ -6477,9 +7677,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "not a slash command"
-    ],
+    "errors": ["not a slash command"],
     "examples": []
   },
   {
@@ -6584,6 +7782,127 @@
     "examples": []
   },
   {
+    "name": "ZstageCreate",
+    "category": "stage",
+    "description": "Creates a stage instance in the specified stage voice channel.",
+    "syntax": "ZstageCreate{channelID;topic}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The stage channel ID."
+      },
+      {
+        "name": "topic",
+        "type": "string",
+        "required": true,
+        "description": "The topic of the stage instance."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "topic is required",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZstageDelete",
+    "category": "stage",
+    "description": "Deletes the active stage instance in a channel.",
+    "syntax": "ZstageDelete{channelID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The stage channel ID."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZstageEdit",
+    "category": "stage",
+    "description": "Edits the topic of an active stage instance.",
+    "syntax": "ZstageEdit{channelID;topic}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The stage channel ID."
+      },
+      {
+        "name": "topic",
+        "type": "string",
+        "required": true,
+        "description": "The new topic for the stage instance."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "channelID is required",
+      "topic is required",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZstageTopic",
+    "category": "stage",
+    "description": "Returns the topic of the active stage instance in a channel.",
+    "syntax": "ZstageTopic{channelID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The stage channel ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "channelID is required",
+      "invalid channel ID",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZstartsWith",
+    "category": "string",
+    "description": "Returns true if text starts with prefix, false otherwise.",
+    "syntax": "ZstartsWith{text;prefix}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text to check."
+      },
+      {
+        "name": "prefix",
+        "type": "string",
+        "required": true,
+        "description": "The prefix to look for."
+      }
+    ],
+    "returns": "string",
+    "errors": [],
+    "examples": []
+  },
+  {
     "name": "ZstartThread",
     "category": "threads",
     "description": "Creates a thread. If messageID is provided, creates from that message.",
@@ -6626,9 +7945,125 @@
       }
     ],
     "returns": "integer",
+    "errors": ["no HTTP client available", "thread name cannot be empty"],
+    "examples": []
+  },
+  {
+    "name": "ZstickerCount",
+    "category": "stickers",
+    "description": "Returns the total number of stickers in the server.",
+    "syntax": "ZstickerCount{}",
+    "args": [],
+    "returns": "string",
+    "errors": ["not in a guild", "no HTTP client available"],
+    "examples": []
+  },
+  {
+    "name": "ZstickerDescription",
+    "category": "stickers",
+    "description": "Returns the description of a sticker.",
+    "syntax": "ZstickerDescription{stickerID}",
+    "args": [
+      {
+        "name": "stickerID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The sticker ID."
+      }
+    ],
+    "returns": "string",
     "errors": [
-      "no HTTP client available",
-      "thread name cannot be empty"
+      "stickerID is required",
+      "invalid sticker ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZstickerEmoji",
+    "category": "stickers",
+    "description": "Returns the related emoji tag(s) of a sticker (comma-separated).",
+    "syntax": "ZstickerEmoji{stickerID}",
+    "args": [
+      {
+        "name": "stickerID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The sticker ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "stickerID is required",
+      "invalid sticker ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZstickerExists",
+    "category": "stickers",
+    "description": "Returns true if the sticker exists in the server, false otherwise.",
+    "syntax": "ZstickerExists{stickerID}",
+    "args": [
+      {
+        "name": "stickerID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The sticker ID to check."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "stickerID is required",
+      "invalid sticker ID",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZstickerID",
+    "category": "stickers",
+    "description": "Finds a sticker ID by its name (case-insensitive). Returns empty string if not found.",
+    "syntax": "ZstickerID{name}",
+    "args": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "The sticker name to look up."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "name is required",
+      "not in a guild",
+      "no HTTP client available"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZstickerName",
+    "category": "stickers",
+    "description": "Returns the name of a sticker by its ID.",
+    "syntax": "ZstickerName{stickerID}",
+    "args": [
+      {
+        "name": "stickerID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The sticker ID."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "stickerID is required",
+      "invalid sticker ID",
+      "not in a guild",
+      "no HTTP client available"
     ],
     "examples": []
   },
@@ -6665,6 +8100,36 @@
     ],
     "returns": "string",
     "errors": [],
+    "examples": []
+  },
+  {
+    "name": "Zsubstring",
+    "category": "string",
+    "description": "Extracts a portion of text. start is 1-based. length defaults to rest of string.",
+    "syntax": "Zsubstring{text;start;length?}",
+    "args": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "The text to extract from."
+      },
+      {
+        "name": "start",
+        "type": "number",
+        "required": true,
+        "description": "The 1-based starting position."
+      },
+      {
+        "name": "length",
+        "type": "number",
+        "required": false,
+        "default": "end of string",
+        "description": "The number of characters to extract."
+      }
+    ],
+    "returns": "string",
+    "errors": ["start is required", "start must be at least 1"],
     "examples": []
   },
   {
@@ -6714,9 +8179,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "embed index must be 1 or greater"
-    ],
+    "errors": ["embed index must be 1 or greater"],
     "examples": []
   },
   {
@@ -6778,9 +8241,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -6797,9 +8258,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -6822,9 +8281,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -6841,9 +8298,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available"
-    ],
+    "errors": ["no HTTP client available"],
     "examples": []
   },
   {
@@ -6881,6 +8336,39 @@
     ],
     "returns": "string",
     "errors": [],
+    "examples": []
+  },
+  {
+    "name": "ZtimeDiff",
+    "category": "time",
+    "description": "Returns the absolute difference between two Unix timestamps. unit options: seconds (default), minutes, hours, days.",
+    "syntax": "ZtimeDiff{timestamp1;timestamp2;unit?}",
+    "args": [
+      {
+        "name": "timestamp1",
+        "type": "number",
+        "required": true,
+        "description": "The first Unix timestamp."
+      },
+      {
+        "name": "timestamp2",
+        "type": "number",
+        "required": true,
+        "description": "The second Unix timestamp."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "required": false,
+        "default": "seconds",
+        "description": "The unit for the result: seconds, minutes, hours, or days."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "timestamp1 is required and must be a number",
+      "timestamp2 is required and must be a number"
+    ],
     "examples": []
   },
   {
@@ -6985,9 +8473,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "ZtitleURL requires a title to be set first"
-    ],
+    "errors": ["ZtitleURL requires a title to be set first"],
     "examples": [],
     "notes": "Embed setter function; returns nothing and writes to the selected embed index."
   },
@@ -7041,9 +8527,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "internal error: ZtryRun should be handled by the runtime"
-    ],
+    "errors": ["internal error: ZtryRun should be handled by the runtime"],
     "examples": []
   },
   {
@@ -7065,6 +8549,82 @@
       "no HTTP client available",
       "not in a guild",
       "userID is required"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zundeafen",
+    "category": "moderation",
+    "description": "Removes server-deafen from a member. They can hear voice again.",
+    "syntax": "Zundeafen{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The ID of the member to undeafen."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "userID is required",
+      "invalid user ID: '...'",
+      "not in a guild",
+      "no HTTP client available",
+      "failed to server-undeafen user"
+    ],
+    "examples": []
+  },
+  {
+    "name": "Zunmute",
+    "category": "moderation",
+    "description": "Removes server-mute from a member. They can speak in voice again.",
+    "syntax": "Zunmute{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The ID of the member to unmute."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "userID is required",
+      "invalid user ID: '...'",
+      "not in a guild",
+      "no HTTP client available",
+      "failed to server-unmute user"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZunpinMessage",
+    "category": "message",
+    "description": "Unpins a message from a channel.",
+    "syntax": "ZunpinMessage{channelID?;messageID}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "description": "The channel ID. Defaults to the current channel.",
+        "default": "current channel ID"
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The ID of the message to unpin."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "failed to unpin message",
+      "invalid channel ID: '...'",
+      "invalid message ID: '...'",
+      "messageID is required",
+      "no HTTP client available"
     ],
     "examples": []
   },
@@ -7138,9 +8698,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "mode is required (encode or decode)"
-    ],
+    "errors": ["mode is required (encode or decode)"],
     "examples": []
   },
   {
@@ -7157,9 +8715,7 @@
       }
     ],
     "returns": "nothing",
-    "errors": [
-      "channelID is required"
-    ],
+    "errors": ["channelID is required"],
     "examples": []
   },
   {
@@ -7176,10 +8732,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "invalid userID",
-      "no HTTP client available"
-    ],
+    "errors": ["invalid userID", "no HTTP client available"],
     "examples": []
   },
   {
@@ -7203,10 +8756,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "invalid userID",
-      "no HTTP client available"
-    ],
+    "errors": ["invalid userID", "no HTTP client available"],
     "examples": []
   },
   {
@@ -7223,10 +8773,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "invalid userID",
-      "no HTTP client available"
-    ],
+    "errors": ["invalid userID", "no HTTP client available"],
     "examples": []
   },
   {
@@ -7243,10 +8790,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "invalid userID",
-      "no HTTP client available"
-    ],
+    "errors": ["invalid userID", "no HTTP client available"],
     "examples": []
   },
   {
@@ -7263,10 +8807,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "userID is required"
-    ],
+    "errors": ["no HTTP client available", "userID is required"],
     "examples": []
   },
   {
@@ -7284,10 +8825,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -7312,10 +8850,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "not in a guild"
-    ],
+    "errors": ["no HTTP client available", "not in a guild"],
     "examples": []
   },
   {
@@ -7333,10 +8868,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "user not found"
-    ],
+    "errors": ["no HTTP client available", "user not found"],
     "examples": []
   },
   {
@@ -7430,11 +8962,43 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "invalid user ID",
-      "no HTTP client available",
-      "not in a guild"
+    "errors": ["invalid user ID", "no HTTP client available", "not in a guild"],
+    "examples": []
+  },
+  {
+    "name": "ZuserSelfDeafened",
+    "category": "voice",
+    "description": "Returns true if the user has self-deafened in their current voice channel.",
+    "syntax": "ZuserSelfDeafened{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's ID",
+        "description": "Defaults to the command author."
+      }
     ],
+    "returns": "string",
+    "errors": ["invalid user ID: '...'", "not in a guild"],
+    "examples": []
+  },
+  {
+    "name": "ZuserSelfMuted",
+    "category": "voice",
+    "description": "Returns true if the user has self-muted in their current voice channel.",
+    "syntax": "ZuserSelfMuted{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's ID",
+        "description": "Defaults to the command author."
+      }
+    ],
+    "returns": "string",
+    "errors": ["invalid user ID: '...'", "not in a guild"],
     "examples": []
   },
   {
@@ -7460,6 +9024,42 @@
     "examples": []
   },
   {
+    "name": "ZuserServerDeafened",
+    "category": "voice",
+    "description": "Returns true if the user is server-deafened by a moderator.",
+    "syntax": "ZuserServerDeafened{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's ID",
+        "description": "Defaults to the command author."
+      }
+    ],
+    "returns": "string",
+    "errors": ["invalid user ID: '...'", "not in a guild"],
+    "examples": []
+  },
+  {
+    "name": "ZuserServerMuted",
+    "category": "voice",
+    "description": "Returns true if the user is server-muted by a moderator.",
+    "syntax": "ZuserServerMuted{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's ID",
+        "description": "Defaults to the command author."
+      }
+    ],
+    "returns": "string",
+    "errors": ["invalid user ID: '...'", "not in a guild"],
+    "examples": []
+  },
+  {
     "name": "ZuserStatus",
     "category": "users",
     "description": "Returns user metadata or performs user operations.",
@@ -7479,11 +9079,45 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "invalid user ID"
-    ],
+    "errors": ["invalid user ID"],
     "examples": [],
     "notes": "Presence filtering requires the GUILD_PRESENCES intent."
+  },
+  {
+    "name": "ZuserStreaming",
+    "category": "voice",
+    "description": "Returns true if the user is currently screen-sharing or streaming in a voice channel.",
+    "syntax": "ZuserStreaming{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's ID",
+        "description": "Defaults to the command author."
+      }
+    ],
+    "returns": "string",
+    "errors": ["invalid user ID: '...'", "not in a guild"],
+    "examples": []
+  },
+  {
+    "name": "ZuserVoiceChannel",
+    "category": "voice",
+    "description": "Returns the channel ID of the voice channel the user is currently in. Returns empty string if not in a voice channel.",
+    "syntax": "ZuserVoiceChannel{userID?}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's ID",
+        "description": "Defaults to the command author."
+      }
+    ],
+    "returns": "string",
+    "errors": ["invalid user ID: '...'", "not in a guild"],
+    "examples": []
   },
   {
     "name": "Zvar",
@@ -7499,9 +9133,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "variable name is required"
-    ],
+    "errors": ["variable name is required"],
     "examples": []
   },
   {
@@ -7545,9 +9177,128 @@
       }
     ],
     "returns": "string",
+    "errors": ["no database available", "variable name is required"],
+    "examples": []
+  },
+  {
+    "name": "ZvoiceBitrate",
+    "category": "voice",
+    "description": "Returns the bitrate in kbps of a voice channel. Defaults to the author's current voice channel.",
+    "syntax": "ZvoiceBitrate{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's voice channel",
+        "description": "The voice channel ID to get the bitrate of."
+      }
+    ],
+    "returns": "string",
     "errors": [
-      "no database available",
-      "variable name is required"
+      "not in a guild",
+      "invalid channel ID",
+      "invalid author ID",
+      "channelID is required (author is not in a voice channel)",
+      "channel not found or not a voice channel"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZvoiceKick",
+    "category": "voice",
+    "description": "Disconnects a member from their current voice channel.",
+    "syntax": "ZvoiceKick{userID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The ID of the member to disconnect."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "userID is required",
+      "invalid user ID: '...'",
+      "not in a guild",
+      "no HTTP client available",
+      "failed to disconnect user (are they in a voice channel?)"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZvoiceMemberCount",
+    "category": "voice",
+    "description": "Returns the number of members currently in the specified voice channel. Defaults to the author's current voice channel.",
+    "syntax": "ZvoiceMemberCount{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's voice channel",
+        "description": "The voice channel to count. Defaults to the author's current channel."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid channel ID: '...'",
+      "not in a guild",
+      "channelID is required (author is not in a voice channel)"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZvoiceMembers",
+    "category": "voice",
+    "description": "Returns a space-separated list of user IDs currently in the specified voice channel. Defaults to the author's current voice channel.",
+    "syntax": "ZvoiceMembers{channelID?}",
+    "args": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's voice channel",
+        "description": "The voice channel to list. Defaults to the author's current channel."
+      }
+    ],
+    "returns": "string",
+    "errors": [
+      "invalid channel ID: '...'",
+      "not in a guild",
+      "channelID is required (author is not in a voice channel)"
+    ],
+    "examples": []
+  },
+  {
+    "name": "ZvoiceMove",
+    "category": "voice",
+    "description": "Moves a member to a different voice channel. The member must already be in a voice channel.",
+    "syntax": "ZvoiceMove{userID;channelID}",
+    "args": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The ID of the member to move."
+      },
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true,
+        "description": "The ID of the destination voice channel."
+      }
+    ],
+    "returns": "nothing",
+    "errors": [
+      "userID is required",
+      "channelID is required",
+      "invalid user ID: '...'",
+      "invalid channel ID: '...'",
+      "not in a guild",
+      "no HTTP client available",
+      "failed to move user (are they in a voice channel?)"
     ],
     "examples": []
   },
@@ -7596,10 +9347,7 @@
       }
     ],
     "returns": "string",
-    "errors": [
-      "no HTTP client available",
-      "webhook name cannot be empty"
-    ],
+    "errors": ["no HTTP client available", "webhook name cannot be empty"],
     "examples": []
   },
   {

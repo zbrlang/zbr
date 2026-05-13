@@ -41,10 +41,11 @@ pub fn load_commands(dir: &str) -> HashMap<String, Command> {
                 description = line["#description ".len()..].trim().to_string();
             } else if line.starts_with("#type ") {
                 command_type = match line["#type ".len()..].trim() {
-                    "slash"        => CommandType::Slash,
-                    "interaction"  => CommandType::Interaction,
-                    "event"        => CommandType::Event,
-                    _              => CommandType::Prefix,
+                    "slash" => CommandType::Slash,
+                    "sub-slash" => CommandType::SubSlash,
+                    "interaction" => CommandType::Interaction,
+                    "event" => CommandType::Event,
+                    _ => CommandType::Prefix,
                 };
             } else if line.starts_with("#scope ") {
                 scope = match line["#scope ".len()..].trim() {

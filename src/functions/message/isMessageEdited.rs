@@ -1,16 +1,30 @@
 use crate::context::{DiscordContext, FnOutput};
 use serenity::model::id::{ChannelId, MessageId};
 
-/// ZisMessageEdited{channelID;messageID}
+/// ZisMessageEdited{channelID;messageID;type?}
+/// type: edited (default), timestamp
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = match args.get(0) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("isMessageEdited", "channelID is required"),
+    let (cid_str, mid_str, out_type) = match args.len() {
+        0 => (ctx.channel_id.clone(), String::new(), "edited".to_string()),
+        1 => (ctx.channel_id.clone(), args[0].clone(), "edited".to_string()),
+        _ => {
+            let cid_str = match args.get(0) {
+                Some(s) if !s.is_empty() => s.clone(),
+                _ => ctx.channel_id.clone(),
+            };
+            (
+                cid_str,
+                args.get(1).cloned().unwrap_or_default(),
+                match args.get(2) {
+                    Some(s) if !s.is_empty() => s.clone(),
+                    _ => "edited".to_string(),
+                },
+            )
+        }
     };
-    let mid_str = match args.get(1) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("isMessageEdited", "messageID is required"),
-    };
+    if mid_str.is_empty() {
+        return FnOutput::error("isMessageEdited", "messageID is required");
+    }
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
@@ -33,7 +47,18 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     });
 
     match result {
-        Ok(msg) => FnOutput::Text(msg.edited_timestamp.is_some().to_string()),
+        Ok(msg) => match out_type.as_str() {
+            "edited" => FnOutput::Text(msg.edited_timestamp.is_some().to_string()),
+            "timestamp" => FnOutput::Text(
+                msg.edited_timestamp
+                    .map(|t| t.to_string())
+                    .unwrap_or_default(),
+            ),
+            other => FnOutput::error(
+                "isMessageEdited",
+                format!("invalid type: '{}' (expected edited or timestamp)", other),
+            ),
+        },
         Err(_) => FnOutput::error("isMessageEdited", "message not found"),
     }
 }

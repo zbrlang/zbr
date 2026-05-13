@@ -4,7 +4,7 @@
   <img width="830" height="240" src="assets/images/ZBR_banner.png" alt="ZBR Banner" />
 </p>
 
-ZBR is a scripting language for Discord bots. You write commands as plain `.zbr` files using ZBR functions — no boilerplate, no event handlers, no framework knowledge required. Drop a file in the `commands/` folder and it runs.
+ZBR is a scripting language for Discord bots. You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required. Drop a file in the `commands/` folder and it runs.
 
 ---
 
@@ -95,16 +95,24 @@ Lines starting with `//` are comments.
 
 ## What's included
 
-- **Math** — `Zsum`, `Zsub`, `Zdiv`, `Zmulti`, `Zcalculate`, `Zrandom`, `Zsort`, and more
-- **String** — `Zlowercase`, `ZreplaceText`, `ZcropText`, `ZcheckContains`, `Zurl`, and more
+- **Math** — `Zsum`, `Zsub`, `Zdiv`, `Zmulti`, `Zcalculate`, `Zabs`, `Zpow`, `Zround`, `Zrandom`, `Zsort`, and more
+- **String** — `Zlowercase`, `ZreplaceText`, `ZregexMatch`, `ZregexReplace`, `ZindexOf`, `Zsubstring`, `ZpadLeft`, `ZpadRight`, `ZcheckContains`, `Zurl`, and more
 - **Embeds** — full embed builder with multi-embed support and `ZsendEmbed`
 - **Variables** — user, server, channel, global, and temp scopes persisted in SQLite
 - **Cooldowns** — per-user, per-server, and global cooldowns
 - **Moderation** — `Zban`, `Zkick`, `Zunban`, `Ztimeout`, `Zclear`, and more
-- **Roles & channels** — create, modify, delete, query roles and channels
+- **Roles & channels** — create, modify, delete, query roles and channels; `ZroleMemberCount`, `ZroleMembers`
+- **Invites** — `ZcreateInvite`, `ZdeleteInvite`, `ZchannelInvites`
+- **Voice** — voice state queries, `ZvoiceBitrate`, `ZvoiceMove`, `ZvoiceKick`
+- **Stage channels** — `ZstageCreate`, `ZstageEdit`, `ZstageDelete`, `ZstageTopic`
+- **Stickers** — `ZserverStickers`, `ZstickerCount`, `ZstickerName`, `ZstickerExists`, `ZdeleteSticker`, and more
+- **Scheduled events** — `ZcreateEvent`, `ZeditEvent`, `ZdeleteEvent`, `ZeventName`, `ZeventStatus`, `ZeventSubscribers`, and more
+- **Forum channels** — `ZcreatePost`, `ZforumTags`, `ZforumPosts`, `ZpostTags`, `ZsetPostTags`, tag management, and more
 - **Components** — buttons, select menus (string, user, role, mentionable), modals
 - **HTTP** — `ZhttpGet`, `ZhttpPost`, `ZhttpPut`, `ZhttpDelete`, `ZhttpPatch` with header support and JSON navigation via `ZhttpResult`
 - **JSON** — full mutable JSON object with `ZjsonParse`, `ZjsonSet`, `ZjsonGet`, array operations, and more
+- **Loops** — `Zrepeat{N;code}`, `ZforSplit{code}`, `ZforJson{key;...;code}` with `ZloopIndex{}` and `ZloopValue{}`
+- **Async** — `Zasync{name;code}` / `Zawait{name}` for concurrent tasks; `Zdelay{duration;code}` and `ZreplyIn{duration;content}` for deferred execution
 - **Control flow** — `Zif` with `==`, `!=`, `>`, `<`, `>=`, `<=`, `contains`, `startsWith`, `endsWith`, `&&`, `||`
 - **Error handling** — `ZtryRun`, `ZsuppressErrors`, `Zstop`, `Zerror`
 - **Interactions** — `onInteraction{id?}` handlers for buttons, select menus, and modals with `ZcustomID`, `ZinputValue`, and select value getters

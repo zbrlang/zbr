@@ -4,25 +4,37 @@ use serenity::model::id::{ChannelId, MessageId};
 /// ZgetEmbedData{channelID;messageID;embedIndex;type}
 /// type: title, description, footer, color, image, timestamp
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = match args.get(0) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("getEmbedData", "channelID is required"),
+    let (cid_str, mid_str, embed_index_str, data_type) = match args.len() {
+        0 => (ctx.channel_id.clone(), String::new(), String::new(), String::new()),
+        1 => (ctx.channel_id.clone(), args[0].clone(), String::new(), String::new()),
+        _ => {
+            let cid_str = match args.get(0) {
+                Some(s) if !s.is_empty() => s.clone(),
+                _ => ctx.channel_id.clone(),
+            };
+            (
+                cid_str,
+                args.get(1).cloned().unwrap_or_default(),
+                args.get(2).cloned().unwrap_or_default(),
+                args.get(3).cloned().unwrap_or_default(),
+            )
+        }
     };
-    let mid_str = match args.get(1) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("getEmbedData", "messageID is required"),
-    };
-    let embed_index: usize = match args.get(2) {
-        Some(s) if !s.is_empty() => match s.parse::<usize>() {
+
+    if mid_str.is_empty() {
+        return FnOutput::error("getEmbedData", "messageID is required");
+    }
+
+    let embed_index: usize = match embed_index_str.as_str() {
+        s if !s.is_empty() => match s.parse::<usize>() {
             Ok(n) if n >= 1 => n,
             _ => return FnOutput::error("getEmbedData", format!("invalid embedIndex: '{}' (must be 1 or greater)", s)),
         },
         _ => return FnOutput::error("getEmbedData", "embedIndex is required"),
     };
-    let data_type = match args.get(3) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("getEmbedData", "type is required"),
-    };
+    if data_type.is_empty() {
+        return FnOutput::error("getEmbedData", "type is required");
+    }
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,

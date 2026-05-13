@@ -1,13 +1,13 @@
 use crate::context::{DiscordContext, Embed, FnOutput};
+use serenity::model::id::ChannelId;
+use std::sync::Arc;
 
 // ── Index ─────────────────────────────────────────────────────────────────────
 
 /// Parse a 1-based embed index argument, defaulting to 1, returning 0-based.
 /// Returns `FnOutput::Error` if the value is out of range (> 10).
 pub fn parse_index(s: Option<&String>, fn_name: &str) -> Result<usize, FnOutput> {
-    let one_based = s
-        .and_then(|v| v.parse::<usize>().ok())
-        .unwrap_or(1);
+    let one_based = s.and_then(|v| v.parse::<usize>().ok()).unwrap_or(1);
 
     if one_based == 0 || one_based > 10 {
         return Err(FnOutput::error(
@@ -29,11 +29,18 @@ pub fn validate_url(url: &str, fn_name: &str) -> Result<(), FnOutput> {
     if !url.starts_with("http://") && !url.starts_with("https://") {
         return Err(FnOutput::error(
             fn_name,
-            format!("invalid URL: '{}' (must start with http:// or https://)", url),
+            format!(
+                "invalid URL: '{}' (must start with http:// or https://)",
+                url
+            ),
         ));
     }
     // Require at least one character after the scheme + "://"
-    let after_scheme = if url.starts_with("https://") { &url[8..] } else { &url[7..] };
+    let after_scheme = if url.starts_with("https://") {
+        &url[8..]
+    } else {
+        &url[7..]
+    };
     if after_scheme.is_empty() {
         return Err(FnOutput::error(fn_name, format!("invalid URL: '{}'", url)));
     }
@@ -44,7 +51,42 @@ pub fn validate_url(url: &str, fn_name: &str) -> Result<(), FnOutput> {
 pub fn validate_snowflake(id: &str, fn_name: &str, label: &str) -> Result<u64, FnOutput> {
     match id.parse::<u64>() {
         Ok(n) if n > 0 => Ok(n),
-        _ => Err(FnOutput::error(fn_name, format!("invalid {}: '{}'", label, id))),
+        _ => Err(FnOutput::error(
+            fn_name,
+            format!("invalid {}: '{}'", label, id),
+        )),
+    }
+}
+
+/// Ensure the provided channel is inside the current guild when a guild context exists.
+pub fn validate_channel_same_guild(
+    channel_id: u64,
+    ctx: &DiscordContext,
+    http: Arc<serenity::http::Http>,
+    fn_name: &str,
+) -> Result<(), FnOutput> {
+    if ctx.guild_id.is_empty() {
+        return Ok(());
+    }
+
+    let guild_id = tokio::task::block_in_place(|| {
+        tokio::runtime::Handle::current().block_on(async move {
+            match ChannelId::new(channel_id).to_channel(&http).await {
+                Ok(serenity::model::channel::Channel::Guild(channel)) => {
+                    Ok(channel.guild_id.to_string())
+                }
+                _ => Err(()),
+            }
+        })
+    });
+
+    match guild_id {
+        Ok(gid) if gid == ctx.guild_id => Ok(()),
+        Ok(_) => Err(FnOutput::Empty), // Silent failure for cross-guild attempts
+        Err(_) => Err(FnOutput::error(
+            fn_name,
+            "channel not found or not a guild channel",
+        )),
     }
 }
 
@@ -52,7 +94,10 @@ pub fn validate_snowflake(id: &str, fn_name: &str, label: &str) -> Result<u64, F
 pub fn validate_color(hex: &str, fn_name: &str) -> Result<u32, FnOutput> {
     let stripped = hex.trim_start_matches('#');
     if stripped.is_empty() || stripped.len() > 6 {
-        return Err(FnOutput::error(fn_name, format!("invalid hex color: '{}'", hex)));
+        return Err(FnOutput::error(
+            fn_name,
+            format!("invalid hex color: '{}'", hex),
+        ));
     }
     u32::from_str_radix(stripped, 16)
         .map_err(|_| FnOutput::error(fn_name, format!("invalid hex color: '{}'", hex)))
@@ -61,7 +106,7 @@ pub fn validate_color(hex: &str, fn_name: &str) -> Result<u32, FnOutput> {
 /// Validate a boolean string: must be exactly "true" or "false".
 pub fn validate_bool(s: &str, fn_name: &str) -> Result<bool, FnOutput> {
     match s {
-        "true"  => Ok(true),
+        "true" => Ok(true),
         "false" => Ok(false),
         _ => Err(FnOutput::error(
             fn_name,
@@ -96,9 +141,8 @@ where
     F: FnOnce(&Embed) -> Option<T>,
 {
     tokio::task::block_in_place(|| {
-        tokio::runtime::Handle::current().block_on(async {
-            ctx.embed.lock().await.get(index).and_then(f)
-        })
+        tokio::runtime::Handle::current()
+            .block_on(async { ctx.embed.lock().await.get(index).and_then(f) })
     })
 }
 

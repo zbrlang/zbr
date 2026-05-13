@@ -1,8 +1,8 @@
-use std::collections::HashSet;
-use std::collections::HashMap;
-use crate::functions;
 use crate::ast::Node;
 use crate::context::{DiscordContext, EvalResult, FnMeta, FnOutput};
+use crate::functions;
+use std::collections::HashMap;
+use std::collections::HashSet;
 
 /// Groups physical lines into logical statements by tracking brace depth.
 /// Lines inside unclosed braces are joined with `\n` so multiline arguments
@@ -14,8 +14,12 @@ fn group_statements(code: &str) -> Vec<String> {
 
     for line in code.lines() {
         let trimmed = line.trim();
-        if trimmed.is_empty() && depth == 0 { continue; }
-        if trimmed.starts_with("//") && depth == 0 { continue; }
+        if trimmed.is_empty() && depth == 0 {
+            continue;
+        }
+        if trimmed.starts_with("//") && depth == 0 {
+            continue;
+        }
 
         if !current.is_empty() {
             current.push('\n');
@@ -176,15 +180,13 @@ impl Runtime {
         }
 
         let embeds = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current().block_on(async {
-                self.context.embed.lock().await.clone()
-            })
+            tokio::runtime::Handle::current()
+                .block_on(async { self.context.embed.lock().await.clone() })
         });
 
         let consumed_embeds = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current().block_on(async {
-                self.context.consumed_embeds.lock().await.clone()
-            })
+            tokio::runtime::Handle::current()
+                .block_on(async { self.context.consumed_embeds.lock().await.clone() })
         });
 
         let ephemeral = tokio::task::block_in_place(|| {
@@ -202,7 +204,16 @@ impl Runtime {
                 .block_on(async { self.context.components.lock().await.clone() })
         });
 
-        EvalResult { output, should_reply, errors: vec![], embeds, consumed_embeds, ephemeral, use_channel, components }
+        EvalResult {
+            output,
+            should_reply,
+            errors: vec![],
+            embeds,
+            consumed_embeds,
+            ephemeral,
+            use_channel,
+            components,
+        }
     }
 
     pub fn evaluate(&mut self, node: Node) -> Result<FnOutput, String> {
@@ -231,6 +242,30 @@ impl Runtime {
                     return self.evaluate_try_run(args);
                 }
 
+                if name == "delay" {
+                    return self.evaluate_delay(args);
+                }
+
+                if name == "repeat" {
+                    return self.evaluate_repeat(args);
+                }
+
+                if name == "forSplit" {
+                    return self.evaluate_for_split(args);
+                }
+
+                if name == "forJson" {
+                    return self.evaluate_for_json(args);
+                }
+
+                if name == "async" {
+                    return self.evaluate_async(args);
+                }
+
+                if name == "await" {
+                    return self.evaluate_await(args);
+                }
+
                 if name == "eval" {
                     let mut resolved = Vec::new();
                     for arg in args {
@@ -250,15 +285,13 @@ impl Runtime {
                     let stmts = group_statements(&code);
                     for stmt in stmts {
                         match crate::parser::parse_line(&stmt) {
-                            Some(node) => {
-                                match self.evaluate(node)? {
-                                    FnOutput::Text(t) => eval_output.push(t),
-                                    FnOutput::Reply => return Ok(FnOutput::Reply),
-                                    FnOutput::Empty => {}
-                                    FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-                                    FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
-                                }
-                            }
+                            Some(node) => match self.evaluate(node)? {
+                                FnOutput::Text(t) => eval_output.push(t),
+                                FnOutput::Reply => return Ok(FnOutput::Reply),
+                                FnOutput::Empty => {}
+                                FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
+                                FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+                            },
                             None => {}
                         }
                     }
@@ -285,10 +318,16 @@ impl Runtime {
                     Some(meta) => {
                         let got = resolved.len();
                         if got < meta.min_args {
-                            return Err(format!("Z{} - Too few arguments, expected at least {}, got {}", name, meta.min_args, got));
+                            return Err(format!(
+                                "Z{} - Too few arguments, expected at least {}, got {}",
+                                name, meta.min_args, got
+                            ));
                         }
                         if got > meta.max_args {
-                            return Err(format!("Z{} - Too many arguments, expected up to {}, got {}", name, meta.max_args, got));
+                            return Err(format!(
+                                "Z{} - Too many arguments, expected up to {}, got {}",
+                                name, meta.max_args, got
+                            ));
                         }
                         Ok((meta.func)(resolved, &self.context))
                     }
@@ -302,7 +341,10 @@ impl Runtime {
     /// Only the winning branch is evaluated.
     fn evaluate_if(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
         if args.len() < 2 {
-            return Err("Zif - Too few arguments, expected at least 2 (condition and then branch)".to_string());
+            return Err(
+                "Zif - Too few arguments, expected at least 2 (condition and then branch)"
+                    .to_string(),
+            );
         }
 
         // Evaluate the condition arg to a string
@@ -343,15 +385,365 @@ impl Runtime {
 
         match result {
             // Error in the code branch — run the fallback if provided
-            FnOutput::Error(_) | FnOutput::UserError(_) => {
-                match args.into_iter().nth(1) {
-                    Some(fallback) => self.evaluate(fallback),
-                    None => Ok(FnOutput::Empty),
-                }
-            }
+            FnOutput::Error(_) | FnOutput::UserError(_) => match args.into_iter().nth(1) {
+                Some(fallback) => self.evaluate(fallback),
+                None => Ok(FnOutput::Empty),
+            },
             // Success — return the result as-is
             other => Ok(other),
         }
     }
-}
 
+    /// Lazy evaluation for Zdelay{duration;code}
+    /// Spawns a background task that sleeps, then evaluates the code block.
+    /// NOTE: the task is in-memory and will be cancelled on bot restart.
+    fn evaluate_delay(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
+        if args.is_empty() {
+            return Ok(FnOutput::error("delay", "duration is required"));
+        }
+        if args.len() < 2 {
+            return Ok(FnOutput::error("delay", "code block is required"));
+        }
+
+        let duration_str = match self.evaluate(args[0].clone())? {
+            FnOutput::Text(t) => t,
+            FnOutput::Empty => String::new(),
+            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
+            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+            FnOutput::Reply => return Ok(FnOutput::Reply),
+        };
+        if duration_str.is_empty() {
+            return Ok(FnOutput::error("delay", "duration is required"));
+        }
+
+        let secs: u64 = if duration_str.trim_start().starts_with('-') {
+            return Ok(FnOutput::error(
+                "delay",
+                "duration must be at least 1 second",
+            ));
+        } else {
+            match crate::functions::cooldown::helpers::parse_duration(duration_str.trim()) {
+                Ok(s) if s >= 1 => s as u64,
+                Ok(_) => {
+                    return Ok(FnOutput::error(
+                        "delay",
+                        "duration must be at least 1 second",
+                    ))
+                }
+                Err(e) => {
+                    if e.contains("must be greater than zero") {
+                        return Ok(FnOutput::error(
+                            "delay",
+                            "duration must be at least 1 second",
+                        ));
+                    }
+                    return Ok(FnOutput::error(
+                        "delay",
+                        format!("invalid duration: '{}'", duration_str),
+                    ));
+                }
+            }
+        };
+
+        let ctx = self.context.clone();
+        let code_node = args[1].clone();
+
+        tokio::spawn(async move {
+            tokio::time::sleep(std::time::Duration::from_secs(secs)).await;
+            let mut rt = Runtime::new(ctx);
+            let _ = rt.evaluate(code_node);
+        });
+
+        Ok(FnOutput::Empty)
+    }
+
+    /// Lazy evaluation for Zrepeat{N;code}
+    /// Runs code N times. ZloopIndex{} returns the current 1-based iteration.
+    /// NOTE: nested loops clobber __loop_index/__loop_value of the outer loop.
+    fn evaluate_repeat(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
+        if args.len() < 2 {
+            return Err("Zrepeat - N and code are required".to_string());
+        }
+
+        // Evaluate N eagerly
+        let n_str = match self.evaluate(args[0].clone())? {
+            FnOutput::Text(t) => t,
+            FnOutput::Empty => String::new(),
+            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
+            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+            FnOutput::Reply => return Ok(FnOutput::Reply),
+        };
+
+        let n: usize = match n_str.trim().parse::<usize>() {
+            Ok(0) | Err(_) => return Ok(FnOutput::error("repeat", "N must be a positive integer")),
+            Ok(n) => n,
+        };
+
+        if n > 1000 {
+            return Ok(FnOutput::error(
+                "repeat",
+                "maximum loop iterations (1000) exceeded",
+            ));
+        }
+
+        let body = args.into_iter().nth(1).unwrap();
+        let mut output: Vec<String> = Vec::new();
+
+        for i in 1..=n {
+            // Write loop state into temp_vars
+            tokio::task::block_in_place(|| {
+                tokio::runtime::Handle::current().block_on(async {
+                    let mut vars = self.context.temp_vars.lock().await;
+                    vars.insert("__loop_index".to_string(), i.to_string());
+                })
+            });
+
+            match self.evaluate(body.clone())? {
+                FnOutput::Text(t) => {
+                    if !t.is_empty() {
+                        output.push(t);
+                    }
+                }
+                FnOutput::Empty => {}
+                FnOutput::Reply => return Ok(FnOutput::Reply),
+                e @ FnOutput::Error(_) => return Ok(e),
+                e @ FnOutput::UserError(_) => return Ok(e),
+            }
+        }
+
+        Ok(if output.is_empty() {
+            FnOutput::Empty
+        } else {
+            FnOutput::Text(output.join("\n"))
+        })
+    }
+
+    /// Lazy evaluation for ZforSplit{code}
+    /// Iterates over the current split_text. ZloopIndex{} = position (1-based), ZloopValue{} = element.
+    /// NOTE: nested loops clobber __loop_index/__loop_value of the outer loop.
+    fn evaluate_for_split(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
+        if args.is_empty() {
+            return Err("ZforSplit - code is required".to_string());
+        }
+
+        // Snapshot split_text before the loop
+        let elements: Vec<String> = tokio::task::block_in_place(|| {
+            tokio::runtime::Handle::current()
+                .block_on(async { self.context.split_text.lock().await.clone() })
+        });
+
+        if elements.is_empty() {
+            return Ok(FnOutput::error(
+                "forSplit",
+                "no split text available — call ZtextSplit first",
+            ));
+        }
+
+        let body = args.into_iter().next().unwrap();
+        let mut output: Vec<String> = Vec::new();
+
+        for (i, element) in elements.iter().enumerate() {
+            tokio::task::block_in_place(|| {
+                tokio::runtime::Handle::current().block_on(async {
+                    let mut vars = self.context.temp_vars.lock().await;
+                    vars.insert("__loop_index".to_string(), (i + 1).to_string());
+                    vars.insert("__loop_value".to_string(), element.clone());
+                })
+            });
+
+            match self.evaluate(body.clone())? {
+                FnOutput::Text(t) => {
+                    if !t.is_empty() {
+                        output.push(t);
+                    }
+                }
+                FnOutput::Empty => {}
+                FnOutput::Reply => return Ok(FnOutput::Reply),
+                e @ FnOutput::Error(_) => return Ok(e),
+                e @ FnOutput::UserError(_) => return Ok(e),
+            }
+        }
+
+        Ok(if output.is_empty() {
+            FnOutput::Empty
+        } else {
+            FnOutput::Text(output.join("\n"))
+        })
+    }
+
+    /// Lazy evaluation for ZforJson{key;...;code}
+    /// Iterates over a JSON array at the given key path. Last arg is the code block.
+    /// ZloopIndex{} = position (1-based), ZloopValue{} = serialized element.
+    /// NOTE: nested loops clobber __loop_index/__loop_value of the outer loop.
+    fn evaluate_for_json(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
+        if args.len() < 2 {
+            return Ok(FnOutput::error(
+                "forJson",
+                "at least one key and a code block are required",
+            ));
+        }
+
+        // All args except the last are key path — evaluate them eagerly
+        let key_count = args.len() - 1;
+        let mut keys: Vec<String> = Vec::new();
+        for arg in args[..key_count].iter() {
+            match self.evaluate(arg.clone())? {
+                FnOutput::Text(t) => keys.push(t),
+                FnOutput::Empty => keys.push(String::new()),
+                FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
+                FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+                FnOutput::Reply => return Ok(FnOutput::Reply),
+            }
+        }
+
+        let body = args.into_iter().last().unwrap();
+
+        // Navigate the JSON object to find the array
+        let elements: Result<Vec<String>, String> = tokio::task::block_in_place(|| {
+            tokio::runtime::Handle::current().block_on(async {
+                let guard = self.context.json_object.lock().await;
+                match guard.as_ref() {
+                    None => Err("no JSON object — call ZjsonParse first".to_string()),
+                    Some(root) => {
+                        // Navigate key path by cloning at each step
+                        let mut cur: serde_json::Value = root.clone();
+                        for key in &keys {
+                            cur = match cur {
+                                serde_json::Value::Object(map) => map
+                                    .get(key.as_str())
+                                    .cloned()
+                                    .ok_or_else(|| "key path not found".to_string())?,
+                                serde_json::Value::Array(arr) => {
+                                    let i = key
+                                        .parse::<usize>()
+                                        .map_err(|_| "key path not found".to_string())?;
+                                    arr.get(i)
+                                        .cloned()
+                                        .ok_or_else(|| "key path not found".to_string())?
+                                }
+                                _ => return Err("key path not found".to_string()),
+                            };
+                        }
+                        match cur {
+                            serde_json::Value::Array(arr) => Ok(arr
+                                .iter()
+                                .map(|v| match v {
+                                    serde_json::Value::String(s) => s.clone(),
+                                    serde_json::Value::Null => String::new(),
+                                    other => other.to_string(),
+                                })
+                                .collect()),
+                            _ => Err("target is not an array".to_string()),
+                        }
+                    }
+                }
+            })
+        });
+
+        let elements = match elements {
+            Ok(e) => e,
+            Err(e) => return Ok(FnOutput::error("forJson", e)),
+        };
+
+        let mut output: Vec<String> = Vec::new();
+
+        for (i, element) in elements.iter().enumerate() {
+            tokio::task::block_in_place(|| {
+                tokio::runtime::Handle::current().block_on(async {
+                    let mut vars = self.context.temp_vars.lock().await;
+                    vars.insert("__loop_index".to_string(), (i + 1).to_string());
+                    vars.insert("__loop_value".to_string(), element.clone());
+                })
+            });
+
+            match self.evaluate(body.clone())? {
+                FnOutput::Text(t) => {
+                    if !t.is_empty() {
+                        output.push(t);
+                    }
+                }
+                FnOutput::Empty => {}
+                FnOutput::Reply => return Ok(FnOutput::Reply),
+                e @ FnOutput::Error(_) => return Ok(e),
+                e @ FnOutput::UserError(_) => return Ok(e),
+            }
+        }
+
+        Ok(if output.is_empty() {
+            FnOutput::Empty
+        } else {
+            FnOutput::Text(output.join("\n"))
+        })
+    }
+
+    fn evaluate_async(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
+        if args.len() < 2 {
+            return Err("Zasync - name and code are required".to_string());
+        }
+        let name_str = match self.evaluate(args[0].clone())? {
+            FnOutput::Text(t) => t.trim().to_string(),
+            FnOutput::Empty => return Err("Zasync - name cannot be empty".to_string()),
+            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
+            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+            FnOutput::Reply => return Ok(FnOutput::Reply),
+        };
+        if name_str.is_empty() {
+            return Err("Zasync - name cannot be empty".to_string());
+        }
+        let code_node = args[1].clone();
+        let ctx_clone = self.context.clone();
+        let handle = tokio::spawn(async move {
+            let mut rt = Runtime::new(ctx_clone);
+            match rt.evaluate(code_node) {
+                Ok(FnOutput::Text(t)) => t,
+                _ => String::new(),
+            }
+        });
+        tokio::task::block_in_place(|| {
+            tokio::runtime::Handle::current().block_on(async {
+                self.context
+                    .async_tasks
+                    .lock()
+                    .await
+                    .insert(name_str, handle);
+            })
+        });
+        Ok(FnOutput::Empty)
+    }
+
+    fn evaluate_await(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
+        if args.is_empty() {
+            return Err("Zawait - name is required".to_string());
+        }
+        let name_str = match self.evaluate(args[0].clone())? {
+            FnOutput::Text(t) => t.trim().to_string(),
+            FnOutput::Empty => return Err("Zawait - name cannot be empty".to_string()),
+            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
+            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+            FnOutput::Reply => return Ok(FnOutput::Reply),
+        };
+        if name_str.is_empty() {
+            return Err("Zawait - name cannot be empty".to_string());
+        }
+        let handle = tokio::task::block_in_place(|| {
+            tokio::runtime::Handle::current()
+                .block_on(async { self.context.async_tasks.lock().await.remove(&name_str) })
+        });
+        match handle {
+            None => Ok(FnOutput::error(
+                "await",
+                format!("no async block named '{}'", name_str),
+            )),
+            Some(h) => {
+                let result =
+                    tokio::task::block_in_place(|| tokio::runtime::Handle::current().block_on(h))
+                        .unwrap_or_default();
+                Ok(if result.is_empty() {
+                    FnOutput::Empty
+                } else {
+                    FnOutput::Text(result)
+                })
+            }
+        }
+    }
+}

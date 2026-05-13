@@ -1,0 +1,228 @@
+[
+  {
+    "name": "onMessage",
+    "description": "Fires when any message is sent in a channel the bot can see.",
+    "when": "Every message (including bot messages)",
+    "context": {
+      "author_id": "Message author ID",
+      "username": "Message author username",
+      "channel_id": "Channel ID where message was sent",
+      "guild_id": "Guild ID (empty for DMs)",
+      "message": "Full message content",
+      "trigger_message_id": "Message ID"
+    }
+  },
+  {
+    "name": "onMemberJoin",
+    "description": "Fires when a user joins a guild.",
+    "when": "User joins the server",
+    "context": {
+      "author_id": "User ID who joined",
+      "username": "Username of the user",
+      "guild_id": "Guild ID",
+      "channel_id": "Empty",
+      "message": "Empty"
+    }
+  },
+  {
+    "name": "onMemberLeave",
+    "description": "Fires when a user leaves or is kicked/banned from a guild.",
+    "when": "User leaves the server",
+    "context": {
+      "author_id": "User ID who left",
+      "username": "Username of the user",
+      "guild_id": "Guild ID",
+      "channel_id": "Empty",
+      "message": "Empty"
+    }
+  },
+  {
+    "name": "onMemberUpdate",
+    "description": "Fires when a member's information is updated (nickname, roles, etc.).",
+    "when": "Member data changes",
+    "context": {
+      "author_id": "Member user ID",
+      "username": "Member username",
+      "guild_id": "Guild ID",
+      "channel_id": "Empty",
+      "message": "Empty"
+    }
+  },
+  {
+    "name": "onBanAdd",
+    "description": "Fires when a user is banned from a guild.",
+    "when": "User is banned",
+    "context": {
+      "author_id": "Banned user ID",
+      "username": "Banned user username",
+      "guild_id": "Guild ID",
+      "channel_id": "Empty",
+      "message": "Empty"
+    }
+  },
+  {
+    "name": "onBanRemove",
+    "description": "Fires when a user's ban is removed from a guild.",
+    "when": "User is unbanned",
+    "context": {
+      "author_id": "Unbanned user ID",
+      "username": "Unbanned user username",
+      "guild_id": "Guild ID",
+      "channel_id": "Empty",
+      "message": "Empty"
+    }
+  },
+  {
+    "name": "onMessageDelete",
+    "description": "Fires when a message is deleted.",
+    "when": "Message is deleted",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "Channel ID",
+      "guild_id": "Guild ID (if applicable)",
+      "message": "Empty",
+      "trigger_message_id": "Deleted message ID"
+    }
+  },
+  {
+    "name": "onMessageEdit",
+    "description": "Fires when a message is edited.",
+    "when": "Message content is edited",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "Channel ID",
+      "guild_id": "Guild ID (if applicable)",
+      "message": "New message content",
+      "trigger_message_id": "Edited message ID"
+    }
+  },
+  {
+    "name": "onReactionAdd",
+    "description": "Fires when a reaction is added to a message.",
+    "when": "Reaction is added",
+    "context": {
+      "author_id": "User ID who reacted",
+      "username": "Empty",
+      "channel_id": "Channel ID",
+      "guild_id": "Guild ID (if applicable)",
+      "message": "Empty",
+      "trigger_message_id": "Message ID that was reacted to"
+    }
+  },
+  {
+    "name": "onReactionRemove",
+    "description": "Fires when a reaction is removed from a message.",
+    "when": "Reaction is removed",
+    "context": {
+      "author_id": "User ID who removed reaction",
+      "username": "Empty",
+      "channel_id": "Channel ID",
+      "guild_id": "Guild ID (if applicable)",
+      "message": "Empty",
+      "trigger_message_id": "Message ID that had reaction removed"
+    }
+  },
+  {
+    "name": "onRoleCreate",
+    "description": "Fires when a role is created in a guild.",
+    "when": "Role is created",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "Empty",
+      "guild_id": "Guild ID",
+      "message": "Empty",
+      "trigger_message_id": "Role ID"
+    }
+  },
+  {
+    "name": "onRoleDelete",
+    "description": "Fires when a role is deleted from a guild.",
+    "when": "Role is deleted",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "Empty",
+      "guild_id": "Guild ID",
+      "message": "Empty",
+      "trigger_message_id": "Deleted role ID"
+    }
+  },
+  {
+    "name": "onRoleUpdate",
+    "description": "Fires when a role is updated in a guild.",
+    "when": "Role is modified",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "Empty",
+      "guild_id": "Guild ID",
+      "message": "Empty",
+      "trigger_message_id": "Role ID"
+    }
+  },
+  {
+    "name": "onChannelCreate",
+    "description": "Fires when a channel is created in a guild.",
+    "when": "Channel is created",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "New channel ID",
+      "guild_id": "Guild ID",
+      "message": "Empty"
+    }
+  },
+  {
+    "name": "onChannelDelete",
+    "description": "Fires when a channel is deleted from a guild.",
+    "when": "Channel is deleted",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "Deleted channel ID",
+      "guild_id": "Guild ID",
+      "message": "Empty",
+      "trigger_message_id": "Channel ID"
+    }
+  },
+  {
+    "name": "onChannelUpdate",
+    "description": "Fires when a channel is updated in a guild.",
+    "when": "Channel is modified",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "Channel ID",
+      "guild_id": "Guild ID",
+      "message": "Empty",
+      "trigger_message_id": "Channel ID"
+    }
+  },
+  {
+    "name": "onGuildUpdate",
+    "description": "Fires when guild information is updated.",
+    "when": "Guild settings change",
+    "context": {
+      "author_id": "Empty",
+      "username": "Empty",
+      "channel_id": "Empty",
+      "guild_id": "Guild ID",
+      "message": "Empty"
+    }
+  },
+  {
+    "name": "onVoiceStateUpdate",
+    "description": "Fires when a user joins, leaves, or moves voice channels.",
+    "when": "Voice state changes",
+    "context": {
+      "author_id": "User ID",
+      "username": "Empty",
+      "channel_id": "Voice channel ID (if joined)",
+      "guild_id": "Guild ID",
+      "message": "Empty"
+    }
+  }
+]

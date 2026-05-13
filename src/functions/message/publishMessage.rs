@@ -4,14 +4,20 @@ use serenity::model::id::{ChannelId, MessageId};
 /// ZpublishMessage{channelID;messageID}
 /// Crossposts a message in an announcement channel.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = match args.get(0) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("publishMessage", "channelID is required"),
+    let (cid_str, mid_str) = match args.len() {
+        0 => (ctx.channel_id.clone(), String::new()),
+        1 => (ctx.channel_id.clone(), args[0].clone()),
+        _ => {
+            let cid_str = match args.get(0) {
+                Some(s) if !s.is_empty() => s.clone(),
+                _ => ctx.channel_id.clone(),
+            };
+            (cid_str, args.get(1).cloned().unwrap_or_default())
+        }
     };
-    let mid_str = match args.get(1) {
-        Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("publishMessage", "messageID is required"),
-    };
+    if mid_str.is_empty() {
+        return FnOutput::error("publishMessage", "messageID is required");
+    }
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,

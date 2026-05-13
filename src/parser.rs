@@ -1,13 +1,59 @@
 use crate::ast::Node;
 
+fn strip_inline_comments(line: &str) -> &str {
+    let mut depth = 0i32;
+    let mut chars = line.char_indices().peekable();
+
+    while let Some((i, ch)) = chars.next() {
+        // Match the parser's existing escape handling: \{, \;, and \\ are treated
+        // as literals, and the escaped '{' must not affect brace depth.
+        if ch == '\\' {
+            if let Some(&(_, next)) = chars.peek() {
+                if next == '{' || next == ';' || next == '\\' {
+                    chars.next(); // consume the escaped character
+                    continue;
+                }
+            }
+        }
+
+        match ch {
+            '{' => depth += 1,
+            '}' => depth -= 1,
+            '/' if depth == 0 => {
+                if let Some(&(_, next)) = chars.peek() {
+                    if next == '/' {
+                        return line[..i].trim_end();
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
+    line
+}
+
 pub fn parse_line(line: &str) -> Option<Node> {
     let line = line.trim();
-    if line.is_empty() { return None; }
-    if line.starts_with("//") { return None; }
+    if line.is_empty() {
+        return None;
+    }
+    if line.starts_with("//") {
+        return None;
+    }
+
+    let line = strip_inline_comments(line);
+    if line.is_empty() {
+        return None;
+    }
 
     let segments = parse_template(line);
-    if segments.is_empty() { return None; }
-    if segments.len() == 1 { return Some(segments.into_iter().next().unwrap()); }
+    if segments.is_empty() {
+        return None;
+    }
+    if segments.len() == 1 {
+        return Some(segments.into_iter().next().unwrap());
+    }
 
     Some(Node::Concat(segments))
 }
@@ -32,7 +78,12 @@ fn parse_template(line: &str) -> Vec<Node> {
             continue;
         }
 
-        if ch == 'Z' && chars.peek().map(|(_, c)| c.is_alphabetic()).unwrap_or(false) {
+        if ch == 'Z'
+            && chars
+                .peek()
+                .map(|(_, c)| c.is_alphabetic())
+                .unwrap_or(false)
+        {
             // check if this looks like a Z function call
             let rest = &line[i..];
             if let Some(end) = find_call_end(rest) {
@@ -89,11 +140,15 @@ fn find_call_end(s: &str) -> Option<usize> {
 
 pub fn parse_call(s: &str) -> Option<Node> {
     let s = s.trim();
-    if !s.starts_with('Z') { return None; }
+    if !s.starts_with('Z') {
+        return None;
+    }
 
     let brace_pos = s.find('{')?;
     let fn_name = s[1..brace_pos].to_string();
-    if fn_name.is_empty() { return None; }
+    if fn_name.is_empty() {
+        return None;
+    }
 
     let args_str = extract_args(&s[brace_pos + 1..])?;
     let arg_nodes = split_args(&args_str)
@@ -101,7 +156,10 @@ pub fn parse_call(s: &str) -> Option<Node> {
         .map(|a| parse_arg(&a))
         .collect();
 
-    Some(Node::FunctionCall { name: fn_name, args: arg_nodes })
+    Some(Node::FunctionCall {
+        name: fn_name,
+        args: arg_nodes,
+    })
 }
 
 fn parse_arg(s: &str) -> Node {
@@ -132,12 +190,19 @@ fn extract_args(s: &str) -> Option<String> {
             '{' => depth += 1,
             '}' => {
                 depth -= 1;
-                if depth == 0 { end = i; break; }
+                if depth == 0 {
+                    end = i;
+                    break;
+                }
             }
             _ => {}
         }
     }
-    if depth == 0 { Some(s[..end].to_string()) } else { None }
+    if depth == 0 {
+        Some(s[..end].to_string())
+    } else {
+        None
+    }
 }
 
 fn split_args(s: &str) -> Vec<String> {
@@ -160,8 +225,14 @@ fn split_args(s: &str) -> Vec<String> {
             continue;
         }
         match ch {
-            '{' => { depth += 1; current.push(ch); }
-            '}' => { depth -= 1; current.push(ch); }
+            '{' => {
+                depth += 1;
+                current.push(ch);
+            }
+            '}' => {
+                depth -= 1;
+                current.push(ch);
+            }
             ';' if depth == 0 => {
                 // Only trim if the result is non-empty after trimming,
                 // otherwise preserve the raw value (e.g. a space separator).
@@ -176,7 +247,9 @@ fn split_args(s: &str) -> Vec<String> {
                 args.push(value);
                 current = String::new();
             }
-            _ => { current.push(ch); }
+            _ => {
+                current.push(ch);
+            }
         }
     }
 
@@ -186,6 +259,48 @@ fn split_args(s: &str) -> Vec<String> {
     } else {
         trimmed
     };
-    if !value.is_empty() { args.push(value); }
+    if !value.is_empty() {
+        args.push(value);
+    }
     args
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn strips_inline_comment_outside_braces() {
+        let node = parse_line("Hello! // this is a comment");
+        assert!(matches!(node, Some(Node::StringLiteral(s)) if s == "Hello!"));
+    }
+
+    #[test]
+    fn keeps_comment_marker_inside_braces() {
+        let node = parse_line("Zf{arg1 // comment; arg2}").unwrap();
+        match node {
+            Node::FunctionCall { name, args } => {
+                assert_eq!(name, "f");
+                assert_eq!(args.len(), 2);
+                match &args[0] {
+                    Node::StringLiteral(s) => assert_eq!(s, "arg1 // comment"),
+                    other => panic!("unexpected arg[0]: {other:?}"),
+                }
+                match &args[1] {
+                    Node::StringLiteral(s) => assert_eq!(s, "arg2"),
+                    other => panic!("unexpected arg[1]: {other:?}"),
+                }
+            }
+            other => panic!("unexpected node: {other:?}"),
+        }
+    }
+
+    #[test]
+    fn strips_comment_after_braced_section() {
+        let node = parse_line("Hello {keep // this} world // remove");
+        assert!(matches!(
+            node,
+            Some(Node::StringLiteral(s)) if s == "Hello {keep // this} world"
+        ));
+    }
 }

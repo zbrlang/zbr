@@ -124,7 +124,7 @@ struct ModalFieldData {
     value: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct EmbedData {
     title: Option<String>,
     title_url: Option<String>,
@@ -141,7 +141,7 @@ struct EmbedData {
     fields: Vec<EmbedFieldData>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct EmbedFieldData {
     name: String,
     value: String,
@@ -194,7 +194,12 @@ async fn main() {
 
     let intents = GatewayIntents::GUILD_MESSAGES
         | GatewayIntents::MESSAGE_CONTENT
-        | GatewayIntents::GUILD_PRESENCES;
+        | GatewayIntents::GUILD_PRESENCES
+        | GatewayIntents::GUILD_MESSAGE_REACTIONS
+        | GatewayIntents::GUILD_MEMBERS
+        | GatewayIntents::GUILD_MODERATION
+        | GatewayIntents::GUILDS
+        | GatewayIntents::GUILD_VOICE_STATES;
     let mut client = Client::builder(&token, intents)
         .event_handler(bot)
         .await
@@ -270,7 +275,9 @@ async fn run_handler(
             custom_id: c.custom_id,
             modal_values: c.modal_values.unwrap_or_default(),
             selected_values: c.selected_values.unwrap_or_default(),
-        })        .unwrap_or_default();
+            async_tasks: Arc::new(tokio::sync::Mutex::new(std::collections::HashMap::new())),
+        })
+        .unwrap_or_default();
 
     let mut rt = runtime::Runtime::new(ctx);
     let result = rt.run(&payload.code);
@@ -357,41 +364,54 @@ async fn run_handler(
         ephemeral: result.ephemeral,
         use_channel: result.use_channel,
         components: ComponentData {
-            buttons: result.components.buttons.into_iter().map(|b| ButtonData {
-                custom_id: b.custom_id,
-                label: b.label,
-                style: b.style,
-                disabled: b.disabled,
-                emoji: b.emoji,
-                new_row: b.new_row,
-            }).collect(),
+            buttons: result
+                .components
+                .buttons
+                .into_iter()
+                .map(|b| ButtonData {
+                    custom_id: b.custom_id,
+                    label: b.label,
+                    style: b.style,
+                    disabled: b.disabled,
+                    emoji: b.emoji,
+                    new_row: b.new_row,
+                })
+                .collect(),
             select_menu: result.components.select_menu.map(|s| SelectMenuData {
                 menu_id: s.menu_id,
                 kind: s.kind,
                 min_values: s.min_values,
                 max_values: s.max_values,
                 placeholder: s.placeholder,
-                options: s.options.into_iter().map(|o| SelectOptionData {
-                    label: o.label,
-                    value: o.value,
-                    description: o.description,
-                    emoji: o.emoji,
-                    default: o.default,
-                }).collect(),
+                options: s
+                    .options
+                    .into_iter()
+                    .map(|o| SelectOptionData {
+                        label: o.label,
+                        value: o.value,
+                        description: o.description,
+                        emoji: o.emoji,
+                        default: o.default,
+                    })
+                    .collect(),
             }),
             modal: result.components.modal.map(|m| ModalData {
                 modal_id: m.modal_id,
                 title: m.title,
-                fields: m.fields.into_iter().map(|f| ModalFieldData {
-                    field_id: f.field_id,
-                    label: f.label,
-                    style: f.style,
-                    min_length: f.min_length,
-                    max_length: f.max_length,
-                    required: f.required,
-                    placeholder: f.placeholder,
-                    value: f.value,
-                }).collect(),
+                fields: m
+                    .fields
+                    .into_iter()
+                    .map(|f| ModalFieldData {
+                        field_id: f.field_id,
+                        label: f.label,
+                        style: f.style,
+                        min_length: f.min_length,
+                        max_length: f.max_length,
+                        required: f.required,
+                        placeholder: f.placeholder,
+                        value: f.value,
+                    })
+                    .collect(),
             }),
             deferred: result.components.deferred,
         },

@@ -1,0 +1,20 @@
+[
+  "onMessage",
+  "onMemberJoin",
+  "onMemberLeave",
+  "onMemberUpdate",
+  "onBanAdd",
+  "onBanRemove",
+  "onMessageDelete",
+  "onMessageEdit",
+  "onReactionAdd",
+  "onReactionRemove",
+  "onRoleCreate",
+  "onRoleDelete",
+  "onRoleUpdate",
+  "onChannelCreate",
+  "onChannelDelete",
+  "onChannelUpdate",
+  "onGuildUpdate",
+  "onVoiceStateUpdate"
+]
