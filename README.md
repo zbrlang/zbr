@@ -4,7 +4,35 @@
   <img width="830" height="240" src="assets/images/ZBR_banner.png" alt="ZBR Banner" />
 </p>
 
-ZBR is a scripting language for Discord bots. You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required. Drop a file in the `commands/` folder and it runs.
+ZBR is a scripting language for Discord bots. You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required.
+
+Previously a complex setup, **ZBR is now a streamlined CLI tool** distributed via npm. You can now initialize, manage, and run your entire bot engine with a single command.
+
+---
+
+## Quick Start
+
+Get your bot up and running in seconds:
+
+1. **Install the CLI globally:**
+   ```bash
+   npm install -g @zbrlang/zbr
+   ```
+
+2. **Initialize a new project:**
+   ```bash
+   zbr init
+   ```
+   This creates your `commands/` folder, `zbr.json` config, and a `.env` file.
+
+3. **Configure your token:**
+   Open the `.env` file and paste your Discord Bot Token.
+
+4. **Run the engine:**
+   ```bash
+   zbr run
+   ```
+   Your bot is now live and loading scripts from the `commands/` directory!
 
 ---
 
@@ -52,7 +80,11 @@ Done.
 
 ## How it works
 
-ZBR runs as a local HTTP server alongside your Discord bot. When a command is triggered, the bot sends the execution context to the ZBR runtime, which evaluates the script and returns the response. The bot then sends that response to Discord.
+ZBR is a high-performance execution engine built in Rust, packaged as a convenient npm CLI. 
+
+- **The CLI (`zbr`)**: Acts as your project manager and binary launcher.
+- **The Engine**: A bundled Rust binary that handles the Discord gateway, parses your `.zbr` files, and executes logic in real-time.
+- **Hot Reloading**: The engine watches your `commands/` folder. Save a `.zbr` file, and the changes are live instantly without restarting.
 
 Commands are plain text files. Each file has a header section (lines starting with `#`) that defines the trigger, name, and type, followed by the ZBR code that runs when the command is invoked.
 

@@ -1,0 +1,22 @@
+# Source code
+src/
+commands/
+docs/
+assets/
+ignore/
+
+# Rust artifacts
+target/
+Cargo.toml
+Cargo.lock
+
+# Development files
+.env
+.gitignore
+*.db
+*.txt
+
+# Include essential files
+!bin/
+!README.md
+!LICENSE

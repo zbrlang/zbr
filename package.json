@@ -1,0 +1,21 @@
+{
+  "name": "@zbrlang/zbr",
+  "version": "0.1.0",
+  "description": "ZBR CLI, A simple and powerful Discord bot scripting engine.",
+  "bin": {
+    "zbr": "./bin/cli.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "framework",
+    "rust",
+    "zbr"
+  ],
+  "author": "ZBRLang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zbrlang/zbr"
+  }
+}
