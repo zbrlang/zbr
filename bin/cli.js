@@ -70,9 +70,31 @@ You are currently in the <#ZchannelID{}> channel of Zif{ZguildID{}==;a DM;Zserve
   console.log('2. Run "zbr run" to start your bot');
 }
 
+function getBinaryPath() {
+  const platform = process.platform
+  const arch = process.arch
+
+  const binaryMap = {
+    'linux-x64':    'zbr',
+    'darwin-x64':   'zbr-darwin-x64',
+    'darwin-arm64': 'zbr-darwin-arm64',
+    'win32-x64':    'zbr.exe',
+  }
+
+  const key = `${platform}-${arch}`
+  const name = binaryMap[key]
+
+  if (!name) {
+    console.error(`Unsupported platform: ${platform}-${arch}`)
+    console.error('Please open an issue at https://github.com/zbrlang/zbr')
+    process.exit(1)
+  }
+
+  return path.join(__dirname, name)
+}
+
 function run() {
-  const binaryName = process.platform === 'win32' ? 'zbr.exe' : 'zbr';
-  const binaryPath = path.join(__dirname, binaryName);
+  const binaryPath = getBinaryPath();
 
   if (!fs.existsSync(binaryPath)) {
     console.error(`Error: Execution engine not found at ${binaryPath}`);
