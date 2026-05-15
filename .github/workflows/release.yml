@@ -60,7 +60,9 @@ jobs:
       - name: Rename binary
         shell: bash
         run: |
-          mv target/${{ matrix.target }}/release/${{ matrix.binary }} target/${{ matrix.target }}/release/${{ matrix.asset_name }}
+             if [ "${{ matrix.binary }}" != "${{ matrix.asset_name }}" ]; then
+             mv target/${{ matrix.target }}/release/${{ matrix.binary }} target/${{ matrix.target }}/release/${{ matrix.asset_name }}
+             fi
 
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v1
