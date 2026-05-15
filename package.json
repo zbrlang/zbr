@@ -5,8 +5,14 @@
   "bin": {
     "zbr": "./bin/cli.js"
   },
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
   "files": [
-    "bin/"
+    "bin/cli.js",
+    "postinstall.js",
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=16"

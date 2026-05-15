@@ -54,12 +54,18 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Rename binary
+        shell: bash
+        run: |
+          mv target/${{ matrix.target }}/release/${{ matrix.binary }} target/${{ matrix.target }}/release/${{ matrix.asset_name }}
+
+      - name: Create Release and Upload Asset
+        uses: softprops/action-gh-release@v1
         with:
-          name: ${{ matrix.asset_name }}
-          path: target/${{ matrix.target }}/release/${{ matrix.binary }}
-          retention-days: 1
+          files: target/${{ matrix.target }}/release/${{ matrix.asset_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     name: Publish to npm
@@ -75,19 +81,6 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Download all binaries
-        uses: actions/download-artifact@v4
-        with:
-          path: downloaded-binaries
-
-      - name: Copy binaries into bin/
-        run: |
-          cp downloaded-binaries/zbr/zbr bin/zbr
-          cp downloaded-binaries/zbr-darwin-x64/zbr bin/zbr-darwin-x64
-          cp downloaded-binaries/zbr-darwin-arm64/zbr bin/zbr-darwin-arm64
-          cp downloaded-binaries/zbr.exe/zbr.exe bin/zbr.exe
-          chmod +x bin/zbr bin/zbr-darwin-x64 bin/zbr-darwin-arm64
 
       - name: Publish to npm
         run: npm publish --access public
