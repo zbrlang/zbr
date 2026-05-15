@@ -2,6 +2,22 @@
 
 ---
 
+## v1.0.0 - Production Release
+
+End of Alpha and the first stable production release. This version introduces the official ZBR CLI, automated installation, and multi-OS support.
+
+### CLI & Distribution
+- **New ZBR CLI** — The entire engine is now managed via a unified global command: `zbr`.
+- **Project Initialization** — `zbr init` instantly bootstraps a new project with a recommended folder structure, configuration files, and example scripts.
+- **Unified Runner** — `zbr run` launches the high-performance Rust execution engine and starts your bot.
+- **Multi-OS Support** — Official support and pre-built binaries for **Linux (x64)**, **macOS (x64 & ARM64)**, and **Windows (x64)**.
+- **Smart Installation** — Distributed via npm with a tiny footprint; the CLI automatically downloads the correct binary for your system on install.
+
+### Features
+- Includes all features and functions from **Alpha v5** and earlier. Scroll down to see the full history from Alpha v1 to v5.
+
+---
+
 ## Alpha v5
 
 Loop system, async execution, full voice channel coverage, scheduled events, forum channels, stage channels, stickers, invite management, regex, extended string and math utilities, and more.
