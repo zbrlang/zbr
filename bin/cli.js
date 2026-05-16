@@ -24,7 +24,6 @@ function init() {
 
   // 2. Create zbr.json (config)
   const config = {
-    prefix: "!",
     status: "online",
     activity: {
       name: "ZBR Scripting",

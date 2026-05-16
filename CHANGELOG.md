@@ -1,4 +1,6 @@
-# ZBR Changelog
+# Changelog
+
+All notable changes to the ZBR project are documented here and in the [changelog](https://zbr-website.vercel.app/docs/changelog) website.
 
 ---
 

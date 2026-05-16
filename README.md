@@ -1,10 +1,7 @@
 # ZBR
 
-<p align="left">
-  <img width="830" height="240" src="assets/images/ZBR_banner.png" alt="ZBR Banner" />
-</p>
-
-ZBR is a scripting language for Discord bots. You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required.
+ZBR is a scripting language for Discord bots powered by a high-performance Rust runtime engine. 
+You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required.
 
 Previously a complex setup, **ZBR is now a streamlined CLI tool** distributed via npm. You can now initialize, manage, and run your entire bot engine with a single command.
 
@@ -46,7 +43,7 @@ Get your bot up and running in seconds:
 Zvar{xp;ZgetUserVar{xp}}
 Zvar{level;ZgetUserVar{level}}
 
-Ztitle{Zusername{}'s Rank}
+Ztitle{Zusername{}s Rank}
 Zdescription{Level: Zvar{level}
 XP: Zvar{xp}}
 Zcolor{#5865F2}
@@ -80,7 +77,7 @@ Done.
 
 ## How it works
 
-ZBR is a high-performance execution engine built in Rust, packaged as a convenient npm CLI. 
+ZBR is a high-performance runtime engine built in Rust that parses and executes bot logic, and is distributed as a convenient npm CLI. 
 
 - **The CLI (`zbr`)**: Acts as your project manager and binary launcher.
 - **The Engine**: A bundled Rust binary that handles the Discord gateway, parses your `.zbr` files, and executes logic in real-time.
@@ -167,12 +164,12 @@ The `commands/` folder contains ready-to-run examples:
 ## Built with
 
 - [Rust](https://www.rust-lang.org/)
-- [Serenity](https://github.com/serenity-rs/serenity) — Discord API
-- [Axum](https://github.com/tokio-rs/axum) — HTTP runtime server
-- [SQLite](https://www.sqlite.org/) via [sqlx](https://github.com/launchbadge/sqlx) — variable and cooldown persistence
+- [Serenity](https://github.com/serenity-rs/serenity), Discord API
+- [Axum](https://github.com/tokio-rs/axum), HTTP runtime server
+- [SQLite](https://www.sqlite.org/) via [sqlx](https://github.com/launchbadge/sqlx), variable and cooldown persistence
 
 ---
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+MIT, see [LICENSE](LICENSE)

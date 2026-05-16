@@ -436,6 +436,25 @@
     "example": "ZargsCheck{1;3;Please provide between 1 and 3 arguments.}"
   },
   {
+    "name": "Zasync",
+    "description": "Spawns a named background task that runs the provided code block concurrently.",
+    "syntax": "Zasync{name;code}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zasync{my_task;Zdelay{5s;ZsendMessage{Task complete!}}}"
+  },
+  {
     "name": "Zauthor",
     "description": "Sets the author name on the specified embed slot.",
     "syntax": "Zauthor{text;index?}",
@@ -494,6 +513,20 @@
       }
     ],
     "example": "ZauthorURL{https://example.com/profile;1}"
+  },
+  {
+    "name": "Zawait",
+    "description": "Blocks execution until the specified background task completes and returns its output.",
+    "syntax": "Zawait{name}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zawait{my_task}"
   },
   {
     "name": "Zban",
@@ -1471,6 +1504,25 @@
     "variadic": false,
     "arguments": [],
     "example": "Zdefer{}"
+  },
+  {
+    "name": "Zdelay",
+    "description": "Executes a block of code after a specified duration (e.g., 10s, 1m).",
+    "syntax": "Zdelay{duration;code}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "duration",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zdelay{10s;ZsendMessage{Hello after 10 seconds!}}"
   },
   {
     "name": "ZdeleteChannels",
