@@ -1,9 +1,8 @@
 use crate::context::{DiscordContext, FnOutput};
 use serenity::model::id::{ChannelId, RoleId, UserId};
-use serenity::builder::EditChannel;
 use serenity::model::channel::{PermissionOverwrite, PermissionOverwriteType};
 use crate::functions::permissions::helpers::parse_permission;
-use serenity::model::permissions::Permissions;
+use serenity::model::Permissions;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 3 {

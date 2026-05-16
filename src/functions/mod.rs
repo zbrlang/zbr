@@ -13,6 +13,7 @@ pub mod emojis;
 pub mod errors;
 pub mod events;
 pub mod forums;
+pub mod audit;
 pub mod http;
 pub mod id;
 pub mod invites;
@@ -2096,6 +2097,78 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
             func: servers::boostLevel::run,
             min_args: 0,
             max_args: 0,
+        },
+    );
+    registry.insert(
+        "auditCount".to_string(),
+        FnMeta {
+            func: audit::auditCount::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "auditEntries".to_string(),
+        FnMeta {
+            func: audit::auditEntries::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "auditLatest".to_string(),
+        FnMeta {
+            func: audit::auditLatest::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "auditEntryID".to_string(),
+        FnMeta {
+            func: audit::auditEntryID::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "auditEntryUser".to_string(),
+        FnMeta {
+            func: audit::auditEntryUser::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "auditEntryAction".to_string(),
+        FnMeta {
+            func: audit::auditEntryAction::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "auditEntryTarget".to_string(),
+        FnMeta {
+            func: audit::auditEntryTarget::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "auditEntryReason".to_string(),
+        FnMeta {
+            func: audit::auditEntryReason::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "auditEntryChanges".to_string(),
+        FnMeta {
+            func: audit::auditEntryChanges::run,
+            min_args: 0,
+            max_args: 2,
         },
     );
     registry.insert(

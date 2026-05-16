@@ -3,13 +3,15 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
 
 const HELP_TEXT = `
 Usage: zbr <command>
 
 Commands:
   init    Initialize a new ZBR project
-  run     Start the ZBR execution engine
+  run     Start the ZBR runtime engine
+  update  Update the ZBR runtime engine to the latest version
   help    Show this help message
 `;
 
@@ -96,7 +98,8 @@ function run() {
   const binaryPath = getBinaryPath();
 
   if (!fs.existsSync(binaryPath)) {
-    console.error(`Error: Execution engine not found at ${binaryPath}`);
+    console.error(`Error: Runtime engine not found at ${binaryPath}`);
+    console.log('Try running "zbr update" to download the latest version.');
     process.exit(1);
   }
 
@@ -113,7 +116,7 @@ function run() {
   });
 
   child.on('error', (err) => {
-    console.error('Failed to start the execution engine:', err);
+    console.error('Failed to start the runtime engine:', err);
     process.exit(1);
   });
 
@@ -132,6 +135,69 @@ function run() {
   });
 }
 
+function update() {
+  const platform = process.platform;
+  const arch = process.arch;
+
+  const binaryMap = {
+    'linux-x64':    'zbr',
+    'darwin-x64':   'zbr-darwin-x64',
+    'darwin-arm64': 'zbr-darwin-arm64',
+    'win32-x64':    'zbr.exe',
+  };
+
+  const key = `${platform}-${arch}`;
+  const binaryName = binaryMap[key];
+
+  if (!binaryName) {
+    console.error(`Unsupported platform: ${platform}-${arch}`);
+    process.exit(1);
+  }
+
+  const binaryPath = path.join(__dirname, binaryName);
+  const url = `https://github.com/zbrlang/zbr/releases/latest/download/${binaryName}`;
+
+  console.log(`Updating ZBR runtime engine for ${key}...`);
+  console.log(`Downloading from ${url}`);
+
+  function downloadFile(downloadUrl) {
+    https.get(downloadUrl, (response) => {
+      if (response.statusCode === 302 || response.statusCode === 301) {
+        // Recursively handle redirects
+        downloadFile(response.headers.location);
+        return;
+      }
+
+      if (response.statusCode !== 200) {
+        console.error(`Failed to download binary: HTTP ${response.statusCode}`);
+        process.exit(1);
+      }
+
+      const file = fs.createWriteStream(binaryPath);
+      response.pipe(file);
+
+      file.on('finish', () => {
+        file.close();
+        if (process.platform !== 'win32') {
+          fs.chmodSync(binaryPath, 0o755);
+        }
+        console.log('Update successful! ZBR runtime engine is now up to date.');
+      });
+
+      file.on('error', (err) => {
+        fs.unlink(binaryPath, () => {});
+        console.error(`File error: ${err.message}`);
+        process.exit(1);
+      });
+    }).on('error', (err) => {
+      console.error(`Update failed: ${err.message}`);
+      process.exit(1);
+    });
+  }
+
+  downloadFile(url);
+}
+
 function main() {
   const args = process.argv.slice(2);
   const command = args[0];
@@ -142,6 +208,9 @@ function main() {
       break;
     case 'run':
       run();
+      break;
+    case 'update':
+      update();
       break;
     case 'help':
     case '--help':

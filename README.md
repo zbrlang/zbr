@@ -3,6 +3,8 @@
 ZBR is a scripting language for Discord bots powered by a high-performance Rust runtime engine. 
 You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required.
 
+Release v1.1.0: added audit functions and new runtime event triggers (`onBotJoin`, `onBotLeave`, `onBoostAdd`, `onBoostRemove`).
+
 Previously a complex setup, **ZBR is now a streamlined CLI tool** distributed via npm. You can now initialize, manage, and run your entire bot engine with a single command.
 
 ---

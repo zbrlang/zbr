@@ -4,6 +4,22 @@ All notable changes to the ZBR project are documented here and in the [changelog
 
 ---
 
+## v1.1.0 - Audit & Event Additions
+
+This release adds a new audit-log function category and several gateway-based event triggers.
+
+### Audit
+- Added a new `audit` function category exposing functions:
+	- `ZauditCount`, `ZauditEntries`, `ZauditLatest`, `ZauditEntryID`, `ZauditEntryUser`, `ZauditEntryAction`, `ZauditEntryTarget`, `ZauditEntryReason`, `ZauditEntryChanges`
+- Functions fetch and return guild audit log data via the Discord API (JSON output for structured fields).
+
+### Events
+- Added new triggers: `onBotJoin`, `onBotLeave`, `onBoostAdd`, `onBoostRemove`.
+- `onBotJoin` and `onBotLeave` map to runtime guild join/leave events and fire only for guilds the bot joins or leaves while online.
+- Boost event detection implemented via guild update comparisons of `premium_subscription_count`.
+
+---
+
 ## v1.0.0 - Production Release
 
 End of Alpha and the first stable production release. This version introduces the official ZBR CLI, automated installation, and multi-OS support.

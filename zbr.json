@@ -1,0 +1,8 @@
+{
+  "status": "dnd",
+  "activity": {
+    "name": "The scripting language for discord bots.",
+    "type": "listening"
+  },
+  "logging": true
+}

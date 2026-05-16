@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -84,4 +85,23 @@ impl OptionType {
             OptionType::Attachment => CommandOptionType::Attachment,
         }
     }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct Config {
+    pub status: Option<String>,
+    pub activity: Option<ActivityConfig>,
+    #[serde(default = "default_true")]
+    pub logging: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct ActivityConfig {
+    pub name: String,
+    #[serde(rename = "type")]
+    pub activity_type: String,
+}
+
+fn default_true() -> bool {
+    true
 }

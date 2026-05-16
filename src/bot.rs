@@ -1,5 +1,6 @@
 use crate::types::{Command, CommandMap, CommandScope, CommandType, Db};
 use serde::{Deserialize, Serialize};
+use regex::Regex;
 use serenity::async_trait;
 use serenity::builder::{
     CreateActionRow, CreateAllowedMentions, CreateButton, CreateCommand, CreateCommandOption,
@@ -8,13 +9,15 @@ use serenity::builder::{
     CreateSelectMenuKind, CreateSelectMenuOption,
 };
 use serenity::model::application::{CommandOptionType, Interaction};
+use serenity::gateway::ActivityData;
 use serenity::model::gateway::Ready;
 use serenity::model::guild::Member;
 use serenity::model::id::{EmojiId, GuildId};
 use serenity::model::prelude::{
     Guild, GuildChannel, GuildMemberUpdateEvent, Message, MessageUpdateEvent, PartialGuild,
-    Reaction, ReactionType, Role, User, VoiceState,
+    Reaction, ReactionType, Role, UnavailableGuild, User, VoiceState,
 };
+use serenity::model::user::OnlineStatus;
 use serenity::prelude::*;
 use std::collections::HashMap;
 
@@ -45,6 +48,65 @@ struct RunContext {
     modal_values: HashMap<String, String>,
     #[serde(default)]
     selected_values: Vec<String>,
+}
+
+async fn resolve_trigger_vars(
+    trigger: &str,
+    db: &crate::types::Db,
+    bot_id: &str,
+    msg: &Message,
+    cache: &mut HashMap<String, String>,
+) -> String {
+    let re = Regex::new(r"Z(getVar|getServerVar|getUserVar|getChannelVar)\{([^}]+)\}").unwrap();
+    let mut result = trigger.to_string();
+
+    // Limit to 5 iterations to prevent infinite loops if values contain variable syntax
+    let mut iterations = 0;
+    while let Some(caps) = re.captures(&result.clone()) {
+        if iterations >= 5 {
+            break;
+        }
+        iterations += 1;
+
+        let full_match = caps.get(0).unwrap().as_str();
+        let func = caps.get(1).unwrap().as_str();
+        let var_name = caps.get(2).unwrap().as_str();
+
+        let cache_key = format!("{}:{}", func, var_name);
+        let value = if let Some(val) = cache.get(&cache_key) {
+            val.clone()
+        } else {
+            let val = match func {
+                "getVar" => crate::db::get_global_var(db, bot_id, var_name).await,
+                "getServerVar" => {
+                    let guild_id = msg.guild_id.map(|g| g.to_string()).unwrap_or_default();
+                    crate::db::get_server_var(db, bot_id, &guild_id, var_name).await
+                }
+                "getUserVar" => {
+                    let guild_id = msg.guild_id.map(|g| g.to_string()).unwrap_or_default();
+                    crate::db::get_user_var(
+                        db,
+                        bot_id,
+                        &guild_id,
+                        &msg.author.id.to_string(),
+                        var_name,
+                    )
+                    .await
+                }
+                "getChannelVar" => {
+                    crate::db::get_channel_var(db, bot_id, &msg.channel_id.to_string(), var_name)
+                        .await
+                }
+                _ => String::new(),
+            };
+            cache.insert(cache_key, val.clone());
+            val
+        };
+
+        result = result.replace(full_match, &value);
+    }
+
+    result
 }
 
 impl Bot {
@@ -197,6 +259,32 @@ impl EventHandler for Bot {
     async fn ready(&self, ctx: Context, ready: Ready) {
         println!("Bot connected as {}", ready.user.name);
 
+        // Load presence from zbr.json
+        let config_str = std::fs::read_to_string("zbr.json").unwrap_or_default();
+        let config = serde_json::from_str::<crate::types::Config>(&config_str).unwrap_or_else(|_| crate::types::Config {
+            status: None,
+            activity: None,
+            logging: true,
+        });
+
+        let status = match config.status.as_deref() {
+            Some("dnd") => OnlineStatus::DoNotDisturb,
+            Some("idle") => OnlineStatus::Idle,
+            Some("invisible") => OnlineStatus::Invisible,
+            _ => OnlineStatus::Online,
+        };
+
+        let activity = config.activity.as_ref().map(|a| match a.activity_type.as_str() {
+            "listening" => ActivityData::listening(a.name.clone()),
+            "watching" => ActivityData::watching(a.name.clone()),
+            "competing" => ActivityData::competing(a.name.clone()),
+            _ => ActivityData::playing(a.name.clone()),
+        });
+
+        // Small delay to ensure the session is ready for presence updates
+        tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+        ctx.set_presence(activity, status);
+
         let commands = self.commands.read().await;
 
         for cmd in commands.values() {
@@ -224,7 +312,7 @@ impl EventHandler for Bot {
                                         "Failed to register guild slash command {}: {}",
                                         cmd.name, e
                                     );
-                                } else {
+                                } else if config.logging {
                                     println!("Registered guild slash command: /{}", cmd.name);
                                 }
                             } else {
@@ -242,7 +330,7 @@ impl EventHandler for Bot {
                                     "Failed to register global slash command {}: {}",
                                     cmd.name, e
                                 );
-                            } else {
+                            } else if config.logging {
                                 println!("Registered global slash command: /{}", cmd.name);
                             }
                         }
@@ -267,11 +355,12 @@ impl EventHandler for Bot {
                                     "Failed to register global slash command {}: {}",
                                     cmd.name, e
                                 );
+                            } else if config.logging {
+                                println!(
+                                    "Registered both guild and global slash command: /{}",
+                                    cmd.name
+                                );
                             }
-                            println!(
-                                "Registered both guild and global slash command: /{}",
-                                cmd.name
-                            );
                         }
                     }
                 }
@@ -381,12 +470,21 @@ impl EventHandler for Bot {
 
         self.run_event_command(&ctx, "onMessage", on_message_context)
             .await;
+
+        let mut trigger_cache = HashMap::new();
         let commands = self.commands.read().await;
 
         for (trigger, cmd) in commands.iter() {
             if let CommandType::Prefix = cmd.command_type {
-                if content.starts_with(trigger.as_str()) && {
-                    let rest = &content[trigger.len()..];
+                let resolved_trigger = if trigger.contains('Z') && trigger.contains('{') {
+                    resolve_trigger_vars(trigger, &self.db, &self.bot_id, &msg, &mut trigger_cache)
+                        .await
+                } else {
+                    trigger.clone()
+                };
+
+                if content.starts_with(&resolved_trigger) && {
+                    let rest = &content[resolved_trigger.len()..];
                     rest.is_empty() || rest.starts_with(char::is_whitespace)
                 } {
                     let context = RunContext {
@@ -397,7 +495,7 @@ impl EventHandler for Bot {
                         message: content.clone(),
                         options: HashMap::new(),
                         options_list: Vec::new(),
-                        trigger: Some(trigger.clone()),
+                        trigger: Some(resolved_trigger),
                         command_name: cmd.name.clone(),
                         trigger_message_id: Some(msg.id.to_string()),
                         custom_id: None,
@@ -814,12 +912,104 @@ impl EventHandler for Bot {
             .await;
     }
 
+    async fn guild_create(&self, ctx: Context, guild: Guild, is_new: Option<bool>) {
+        if is_new.unwrap_or(false) {
+            let context = RunContext {
+                author_id: String::new(),
+                username: String::new(),
+                channel_id: String::new(),
+                guild_id: guild.id.to_string(),
+                message: String::new(),
+                options: HashMap::new(),
+                options_list: Vec::new(),
+                trigger: None,
+                command_name: "onBotJoin".to_string(),
+                trigger_message_id: None,
+                custom_id: None,
+                modal_values: HashMap::new(),
+                selected_values: vec![],
+            };
+
+            self.run_event_command(&ctx, "onBotJoin", context).await;
+        }
+    }
+
+    async fn guild_delete(
+        &self,
+        ctx: Context,
+        incomplete: UnavailableGuild,
+        _full: Option<Guild>,
+    ) {
+        let context = RunContext {
+            author_id: String::new(),
+            username: String::new(),
+            channel_id: String::new(),
+            guild_id: incomplete.id.to_string(),
+            message: String::new(),
+            options: HashMap::new(),
+            options_list: Vec::new(),
+            trigger: None,
+            command_name: "onBotLeave".to_string(),
+            trigger_message_id: None,
+            custom_id: None,
+            modal_values: HashMap::new(),
+            selected_values: vec![],
+        };
+
+        self.run_event_command(&ctx, "onBotLeave", context).await;
+    }
+
     async fn guild_update(
         &self,
         ctx: Context,
         _old_data_if_available: Option<Guild>,
         new_data: PartialGuild,
     ) {
+        if let Some(old_guild) = &_old_data_if_available {
+            if let Some(new_boost_count) = new_data.premium_subscription_count {
+                let old_boost_count = old_guild.premium_subscription_count.unwrap_or(0);
+                let guild_id = new_data.id.to_string();
+
+                if new_boost_count > old_boost_count {
+                    let boost_context = RunContext {
+                        author_id: String::new(),
+                        username: String::new(),
+                        channel_id: String::new(),
+                        guild_id: guild_id.clone(),
+                        message: String::new(),
+                        options: HashMap::new(),
+                        options_list: Vec::new(),
+                        trigger: None,
+                        command_name: "onBoostAdd".to_string(),
+                        trigger_message_id: None,
+                        custom_id: None,
+                        modal_values: HashMap::new(),
+                        selected_values: vec![],
+                    };
+
+                    self.run_event_command(&ctx, "onBoostAdd", boost_context).await;
+                } else if new_boost_count < old_boost_count {
+                    let unboost_context = RunContext {
+                        author_id: String::new(),
+                        username: String::new(),
+                        channel_id: String::new(),
+                        guild_id: guild_id.clone(),
+                        message: String::new(),
+                        options: HashMap::new(),
+                        options_list: Vec::new(),
+                        trigger: None,
+                        command_name: "onBoostRemove".to_string(),
+                        trigger_message_id: None,
+                        custom_id: None,
+                        modal_values: HashMap::new(),
+                        selected_values: vec![],
+                    };
+
+                    self.run_event_command(&ctx, "onBoostRemove", unboost_context).await;
+                }
+            }
+        }
+
         let context = RunContext {
             author_id: String::new(),
             username: String::new(),

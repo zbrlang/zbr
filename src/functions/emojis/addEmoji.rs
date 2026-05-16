@@ -72,7 +72,7 @@ fn base64_encode(data: &[u8]) -> String {
         let b0 = chunk[0] as usize;
         let b1 = if chunk.len() > 1 { chunk[1] as usize } else { 0 };
         let b2 = if chunk.len() > 2 { chunk[2] as usize } else { 0 };
-        out.push(CHARS[(b0 >> 2)] as char);
+        out.push(CHARS[b0 >> 2] as char);
         out.push(CHARS[((b0 & 3) << 4) | (b1 >> 4)] as char);
         out.push(if chunk.len() > 1 { CHARS[((b1 & 0xf) << 2) | (b2 >> 6)] as char } else { '=' });
         out.push(if chunk.len() > 2 { CHARS[b2 & 0x3f] as char } else { '=' });

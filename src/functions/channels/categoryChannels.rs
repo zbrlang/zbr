@@ -1,5 +1,5 @@
 use crate::context::{DiscordContext, FnOutput};
-use serenity::model::id::{GuildId, ChannelId};
+use serenity::model::id::GuildId;
 use serenity::model::channel::ChannelType;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {

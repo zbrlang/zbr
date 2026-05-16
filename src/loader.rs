@@ -1,9 +1,16 @@
-use crate::types::{Command, CommandOption, CommandScope, CommandType, OptionType};
+use crate::types::{Command, CommandOption, CommandScope, CommandType, Config, OptionType};
 use std::collections::HashMap;
 use std::fs;
 
 pub fn load_commands(dir: &str) -> HashMap<String, Command> {
     let mut commands = HashMap::new();
+
+    let config_str = fs::read_to_string("zbr.json").unwrap_or_default();
+    let config: Config = serde_json::from_str(&config_str).unwrap_or_else(|_| Config {
+        status: None,
+        activity: None,
+        logging: true,
+    });
 
     let entries = match fs::read_dir(dir) {
         Ok(e) => e,
@@ -81,7 +88,9 @@ pub fn load_commands(dir: &str) -> HashMap<String, Command> {
         if let Some(t) = trigger {
             let code = code_lines.join("\n");
             let cmd_name = name.unwrap_or_else(|| t.trim_start_matches(['!', '/']).to_string());
-            println!("Loaded command: {} → {}", cmd_name, t);
+            if config.logging {
+                println!("Loaded command: {} → {}", cmd_name, t);
+            }
             commands.insert(
                 t.clone(),
                 Command {

@@ -200,6 +200,7 @@ async fn main() {
         | GatewayIntents::GUILD_MODERATION
         | GatewayIntents::GUILDS
         | GatewayIntents::GUILD_VOICE_STATES;
+
     let mut client = Client::builder(&token, intents)
         .event_handler(bot)
         .await
