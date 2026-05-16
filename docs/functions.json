@@ -454,6 +454,189 @@
     ],
     "example": "Zasync{my_task;Zdelay{5s;ZsendMessage{Task complete!}}}"
   },
+    {
+    "name": "ZauditCount",
+    "description": "Fetches the guild audit log and returns the number of returned entries.",
+    "syntax": "ZauditCount{guildID?;limit?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "default": "20"
+      }
+    ],
+    "example": "ZauditCount{}"
+  },
+  {
+    "name": "ZauditEntries",
+    "description": "Fetches the latest guild audit log entries and returns them as a JSON array.",
+    "syntax": "ZauditEntries{guildID?;limit?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "default": "20"
+      }
+    ],
+    "example": "ZauditEntries{}"
+  },
+  {
+    "name": "ZauditEntryAction",
+    "description": "Returns the action name for the selected audit log entry.",
+    "syntax": "ZauditEntryAction{guildID?;entrySelector?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      },
+      {
+        "name": "entrySelector",
+        "type": "string",
+        "required": false,
+        "default": "most recent entry"
+      }
+    ],
+    "example": "ZauditEntryAction{}"
+  },
+  {
+    "name": "ZauditEntryChanges",
+    "description": "Returns the change details for the selected audit log entry as JSON.",
+    "syntax": "ZauditEntryChanges{guildID?;entrySelector?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      },
+      {
+        "name": "entrySelector",
+        "type": "string",
+        "required": false,
+        "default": "most recent entry"
+      }
+    ],
+    "example": "ZauditEntryChanges{}"
+  },
+  {
+    "name": "ZauditEntryID",
+    "description": "Returns the audit log entry ID for the selected entry.",
+    "syntax": "ZauditEntryID{guildID?;entrySelector?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      },
+      {
+        "name": "entrySelector",
+        "type": "string",
+        "required": false,
+        "default": "most recent entry"
+      }
+    ],
+    "example": "ZauditEntryID{}"
+  },
+  {
+    "name": "ZauditEntryReason",
+    "description": "Returns the reason attached to the selected audit log entry.",
+    "syntax": "ZauditEntryReason{guildID?;entrySelector?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      },
+      {
+        "name": "entrySelector",
+        "type": "string",
+        "required": false,
+        "default": "most recent entry"
+      }
+    ],
+    "example": "ZauditEntryReason{}"
+  },
+  {
+    "name": "ZauditEntryTarget",
+    "description": "Returns the target ID for the selected audit log entry.",
+    "syntax": "ZauditEntryTarget{guildID?;entrySelector?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      },
+      {
+        "name": "entrySelector",
+        "type": "string",
+        "required": false,
+        "default": "most recent entry"
+      }
+    ],
+    "example": "ZauditEntryTarget{}"
+  },
+  {
+    "name": "ZauditEntryUser",
+    "description": "Returns the user ID of the actor who created the selected audit log entry.",
+    "syntax": "ZauditEntryUser{guildID?;entrySelector?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      },
+      {
+        "name": "entrySelector",
+        "type": "string",
+        "required": false,
+        "default": "most recent entry"
+      }
+    ],
+    "example": "ZauditEntryUser{}"
+  },
+  {
+    "name": "ZauditLatest",
+    "description": "Fetches the most recent guild audit log entry and returns it as a JSON object.",
+    "syntax": "ZauditLatest{guildID?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      }
+    ],
+    "example": "ZauditLatest{}"
+  },
   {
     "name": "Zauthor",
     "description": "Sets the author name on the specified embed slot.",
@@ -676,189 +859,6 @@
     "variadic": false,
     "arguments": [],
     "example": "ZboostLevel{}"
-  },
-  {
-    "name": "ZauditCount",
-    "description": "Fetches the guild audit log and returns the number of returned entries.",
-    "syntax": "ZauditCount{guildID?;limit?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      },
-      {
-        "name": "limit",
-        "type": "integer",
-        "required": false,
-        "default": "20"
-      }
-    ],
-    "example": "ZauditCount{}"
-  },
-  {
-    "name": "ZauditEntries",
-    "description": "Fetches the latest guild audit log entries and returns them as a JSON array.",
-    "syntax": "ZauditEntries{guildID?;limit?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      },
-      {
-        "name": "limit",
-        "type": "integer",
-        "required": false,
-        "default": "20"
-      }
-    ],
-    "example": "ZauditEntries{}"
-  },
-  {
-    "name": "ZauditEntryAction",
-    "description": "Returns the action name for the selected audit log entry.",
-    "syntax": "ZauditEntryAction{guildID?;entrySelector?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      },
-      {
-        "name": "entrySelector",
-        "type": "string",
-        "required": false,
-        "default": "most recent entry"
-      }
-    ],
-    "example": "ZauditEntryAction{}"
-  },
-  {
-    "name": "ZauditEntryChanges",
-    "description": "Returns the change details for the selected audit log entry as JSON.",
-    "syntax": "ZauditEntryChanges{guildID?;entrySelector?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      },
-      {
-        "name": "entrySelector",
-        "type": "string",
-        "required": false,
-        "default": "most recent entry"
-      }
-    ],
-    "example": "ZauditEntryChanges{}"
-  },
-  {
-    "name": "ZauditEntryID",
-    "description": "Returns the audit log entry ID for the selected entry.",
-    "syntax": "ZauditEntryID{guildID?;entrySelector?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      },
-      {
-        "name": "entrySelector",
-        "type": "string",
-        "required": false,
-        "default": "most recent entry"
-      }
-    ],
-    "example": "ZauditEntryID{}"
-  },
-  {
-    "name": "ZauditEntryReason",
-    "description": "Returns the reason attached to the selected audit log entry.",
-    "syntax": "ZauditEntryReason{guildID?;entrySelector?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      },
-      {
-        "name": "entrySelector",
-        "type": "string",
-        "required": false,
-        "default": "most recent entry"
-      }
-    ],
-    "example": "ZauditEntryReason{}"
-  },
-  {
-    "name": "ZauditEntryTarget",
-    "description": "Returns the target ID for the selected audit log entry.",
-    "syntax": "ZauditEntryTarget{guildID?;entrySelector?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      },
-      {
-        "name": "entrySelector",
-        "type": "string",
-        "required": false,
-        "default": "most recent entry"
-      }
-    ],
-    "example": "ZauditEntryTarget{}"
-  },
-  {
-    "name": "ZauditEntryUser",
-    "description": "Returns the user ID of the actor who created the selected audit log entry.",
-    "syntax": "ZauditEntryUser{guildID?;entrySelector?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      },
-      {
-        "name": "entrySelector",
-        "type": "string",
-        "required": false,
-        "default": "most recent entry"
-      }
-    ],
-    "example": "ZauditEntryUser{}"
-  },
-  {
-    "name": "ZauditLatest",
-    "description": "Fetches the most recent guild audit log entry and returns it as a JSON object.",
-    "syntax": "ZauditLatest{guildID?}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "guildID",
-        "type": "snowflake",
-        "required": false,
-        "default": "current guild"
-      }
-    ],
-    "example": "ZauditLatest{}"
   },
   {
     "name": "ZbotCommands",

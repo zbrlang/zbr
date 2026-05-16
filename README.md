@@ -126,27 +126,18 @@ Lines starting with `//` are comments.
 
 ## What's included
 
-- **Math** — `Zsum`, `Zsub`, `Zdiv`, `Zmulti`, `Zcalculate`, `Zabs`, `Zpow`, `Zround`, `Zrandom`, `Zsort`, and more
-- **String** — `Zlowercase`, `ZreplaceText`, `ZregexMatch`, `ZregexReplace`, `ZindexOf`, `Zsubstring`, `ZpadLeft`, `ZpadRight`, `ZcheckContains`, `Zurl`, and more
-- **Embeds** — full embed builder with multi-embed support and `ZsendEmbed`
-- **Variables** — user, server, channel, global, and temp scopes persisted in SQLite
-- **Cooldowns** — per-user, per-server, and global cooldowns
-- **Moderation** — `Zban`, `Zkick`, `Zunban`, `Ztimeout`, `Zclear`, and more
-- **Roles & channels** — create, modify, delete, query roles and channels; `ZroleMemberCount`, `ZroleMembers`
-- **Invites** — `ZcreateInvite`, `ZdeleteInvite`, `ZchannelInvites`
-- **Voice** — voice state queries, `ZvoiceBitrate`, `ZvoiceMove`, `ZvoiceKick`
-- **Stage channels** — `ZstageCreate`, `ZstageEdit`, `ZstageDelete`, `ZstageTopic`
-- **Stickers** — `ZserverStickers`, `ZstickerCount`, `ZstickerName`, `ZstickerExists`, `ZdeleteSticker`, and more
-- **Scheduled events** — `ZcreateEvent`, `ZeditEvent`, `ZdeleteEvent`, `ZeventName`, `ZeventStatus`, `ZeventSubscribers`, and more
-- **Forum channels** — `ZcreatePost`, `ZforumTags`, `ZforumPosts`, `ZpostTags`, `ZsetPostTags`, tag management, and more
-- **Components** — buttons, select menus (string, user, role, mentionable), modals
-- **HTTP** — `ZhttpGet`, `ZhttpPost`, `ZhttpPut`, `ZhttpDelete`, `ZhttpPatch` with header support and JSON navigation via `ZhttpResult`
-- **JSON** — full mutable JSON object with `ZjsonParse`, `ZjsonSet`, `ZjsonGet`, array operations, and more
-- **Loops** — `Zrepeat{N;code}`, `ZforSplit{code}`, `ZforJson{key;...;code}` with `ZloopIndex{}` and `ZloopValue{}`
-- **Async** — `Zasync{name;code}` / `Zawait{name}` for concurrent tasks; `Zdelay{duration;code}` and `ZreplyIn{duration;content}` for deferred execution
-- **Control flow** — `Zif` with `==`, `!=`, `>`, `<`, `>=`, `<=`, `contains`, `startsWith`, `endsWith`, `&&`, `||`
-- **Error handling** — `ZtryRun`, `ZsuppressErrors`, `Zstop`, `Zerror`
-- **Interactions** — `onInteraction{id?}` handlers for buttons, select menus, and modals with `ZcustomID`, `ZinputValue`, and select value getters
+- **Math** — Zsum, Zsub, Zmulti, Zdiv, Zpow, Zcalculate  
+- **String** — Zlowercase, Zuppercase, ZreplaceText, Zsubstring, ZcheckContains, ZregexMatch  
+- **Embeds** — Ztitle, Zdescription, Zcolor, ZaddField, ZsendEmbed, Zauthor  
+- **Components** — ZaddButton, ZaddSelectMenuOption, ZaddTextInput, ZaddUserSelect, ZeditButton, ZremoveComponent  
+- **Moderation** — Zban, Zkick, Zmute, Ztimeout, Zclear, Zunban  
+- **Channels** — ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZchannelExists, ZchannelName, ZslowMode  
+- **Roles** — ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole  
+- **Runtime & Control** — Zasync, Zawait, Zdelay, Zif, ZcheckCondition, ZargsCheck  
+- **HTTP** — ZhttpGet, ZhttpPost, ZhttpPut, ZhttpPatch, ZhttpDelete, ZhttpResult  
+- **Audit Logs** — ZauditCount, ZauditEntries, ZauditEntryAction, ZauditEntryTarget, ZauditEntryReason, ZauditLatest  
+
+> Full function reference: [Docs](https://zbr-website.vercel.app/docs)
 
 ---
 
