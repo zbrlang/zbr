@@ -3,8 +3,6 @@
 ZBR is a scripting language for Discord bots powered by a high-performance Rust runtime engine. 
 You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required.
 
-Release v1.1.0: added audit functions and new runtime event triggers (`onBotJoin`, `onBotLeave`, `onBoostAdd`, `onBoostRemove`).
-
 Previously a complex setup, **ZBR is now a streamlined CLI tool** distributed via npm. You can now initialize, manage, and run your entire bot engine with a single command.
 
 ---
@@ -79,7 +77,7 @@ Done.
 
 ## How it works
 
-ZBR is a high-performance runtime engine built in Rust that parses and executes bot logic, and is distributed as a convenient npm CLI. 
+ZBR is powered by a high-performance runtime engine built in Rust that parses and executes bot logic, and is distributed as a convenient npm CLI. 
 
 - **The CLI (`zbr`)**: Acts as your project manager and binary launcher.
 - **The Engine**: A bundled Rust binary that handles the Discord gateway, parses your `.zbr` files, and executes logic in real-time.
@@ -126,16 +124,16 @@ Lines starting with `//` are comments.
 
 ## What's included
 
-- **Math** — Zsum, Zsub, Zmulti, Zdiv, Zpow, Zcalculate  
-- **String** — Zlowercase, Zuppercase, ZreplaceText, Zsubstring, ZcheckContains, ZregexMatch  
-- **Embeds** — Ztitle, Zdescription, Zcolor, ZaddField, ZsendEmbed, Zauthor  
-- **Components** — ZaddButton, ZaddSelectMenuOption, ZaddTextInput, ZaddUserSelect, ZeditButton, ZremoveComponent  
-- **Moderation** — Zban, Zkick, Zmute, Ztimeout, Zclear, Zunban  
-- **Channels** — ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZchannelExists, ZchannelName, ZslowMode  
-- **Roles** — ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole  
-- **Runtime & Control** — Zasync, Zawait, Zdelay, Zif, ZcheckCondition, ZargsCheck  
-- **HTTP** — ZhttpGet, ZhttpPost, ZhttpPut, ZhttpPatch, ZhttpDelete, ZhttpResult  
-- **Audit Logs** — ZauditCount, ZauditEntries, ZauditEntryAction, ZauditEntryTarget, ZauditEntryReason, ZauditLatest  
+- **Math**: Zsum, Zsub, Zmulti, Zdiv, Zpow, Zcalculate  
+- **String**: Zlowercase, Zuppercase, ZreplaceText, Zsubstring, ZcheckContains, ZregexMatch  
+- **Embeds**: Ztitle, Zdescription, Zcolor, ZaddField, ZsendEmbed, Zauthor  
+- **Components**: ZaddButton, ZaddSelectMenuOption, ZaddTextInput, ZaddUserSelect, ZeditButton, ZremoveComponent  
+- **Moderation**: Zban, Zkick, Zmute, Ztimeout, Zclear, Zunban  
+- **Channels**: ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZchannelExists, ZchannelName, ZslowMode  
+- **Roles**: ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole  
+- **Runtime & Control**: Zasync, Zawait, Zdelay, Zif, ZcheckCondition, ZargsCheck  
+- **HTTP**: ZhttpGet, ZhttpPost, ZhttpPut, ZhttpPatch, ZhttpDelete, ZhttpResult  
+- **Audit Logs**: ZauditCount, ZauditEntries, ZauditEntryAction, ZauditEntryTarget, ZauditEntryReason, ZauditLatest  
 
 > Full function reference: [Docs](https://zbr-website.vercel.app/docs)
 
