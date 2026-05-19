@@ -163,4 +163,4 @@ The `commands/` folder contains ready-to-run examples:
 
 ## License
 
-MIT, see [LICENSE](LICENSE)
+ARR, see [LICENSE](LICENSE)
