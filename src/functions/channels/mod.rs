@@ -28,3 +28,4 @@ pub mod rulesChannelID;
 pub mod slowMode;
 pub mod systemChannelID;
 pub mod voiceUserLimit;
+pub mod serverChannels;

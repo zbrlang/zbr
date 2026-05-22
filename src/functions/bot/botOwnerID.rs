@@ -17,7 +17,15 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         tokio::runtime::Handle::current().block_on(async move {
             http.get_current_application_info()
                 .await
-                .map(|info| info.owner.map(|u| u.id.to_string()).unwrap_or_default())
+                .map(|info| {
+                    if let Some(team) = info.team {
+                        team.owner_user_id.to_string()
+                    } else if let Some(owner) = info.owner {
+                        owner.id.to_string()
+                    } else {
+                        String::new()
+                    }
+                })
                 .map_err(|e| format!("failed to fetch application info: {}", e))
         })
     });

@@ -5,3 +5,6 @@ pub mod threadAddMember;
 pub mod threadRemoveMember;
 pub mod threadMessageCount;
 pub mod threadUserCount;
+pub mod threadArchived;
+pub mod threadLocked;
+pub mod threadParentID;

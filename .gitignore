@@ -1,9 +1,9 @@
 target/
 ignore/
-bin/zbr
-bin/zbr-darwin-x64
-bin/zbr-darwin-arm64
-bin/zbr.exe
+bin/*
+
+cli.js
 todo.txt
 .env
+
 *.db

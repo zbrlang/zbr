@@ -24,3 +24,4 @@ pub mod rolePerms;
 pub mod rolePosition;
 pub mod setUserRoles;
 pub mod userRoles;
+pub mod serverRoles;

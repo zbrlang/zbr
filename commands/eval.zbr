@@ -1,5 +1,6 @@
 #trigger !eval
 #name Eval Command
 #type prefix
+#description Evaluates the provided code and returns the result. Use with caution, as this command can execute arbitrary code.
 
 Zeval{Zmessage{}}

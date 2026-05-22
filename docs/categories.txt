@@ -39,6 +39,7 @@ ZblackListServers - blacklists
 ZblackListUsers - blacklists
 ZboostCount - servers
 ZboostLevel - servers
+ZserverRoles - roles
 ZbotCommands - bot
 ZbotID - bot
 ZbotOwnerID - bot
@@ -320,6 +321,7 @@ Zsecond - time
 ZsendEmbed - embeds
 ZsendMessage - actions
 ZsendWebhook - embeds
+ZserverChannels - channels
 ZserverCooldown - cooldown
 ZserverCount - bot
 ZserverDescription - servers
@@ -330,6 +332,7 @@ ZserverInvite - invites
 ZserverName - servers
 ZserverNames - bot
 ZserverOwner - servers
+ZserverRoles - roles
 ZserverStickers - stickers
 ZserverVerificationLevel - servers
 ZsetChannelVar - variables
@@ -364,7 +367,10 @@ ZsuppressErrors - errors
 ZsystemChannelID - channels
 ZtextSplit - textsplit
 ZthreadAddMember - threads
+ZthreadArchived - threads
+ZthreadLocked - threads
 ZthreadMessageCount - threads
+ZthreadParentID - threads
 ZthreadRemoveMember - threads
 ZthreadUserCount - threads
 Zthumbnail - embeds
@@ -410,8 +416,12 @@ Zvar - variables
 ZvarExistError - variables
 ZvarExists - variables
 ZvoiceBitrate - voice
+ZvoiceEmpty - voice
+ZvoiceFull - voice
 ZvoiceKick - voice
+ZvoiceNew - voice
 ZvoiceMemberCount - voice
+ZvoiceOld - voice
 ZvoiceMembers - voice
 ZvoiceMove - voice
 ZvoiceUserLimit - channels

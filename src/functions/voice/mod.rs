@@ -10,3 +10,7 @@ pub mod voiceKick;
 pub mod voiceMemberCount;
 pub mod voiceMembers;
 pub mod voiceMove;
+pub mod voiceOld;
+pub mod voiceNew;
+pub mod voiceEmpty;
+pub mod voiceFull;

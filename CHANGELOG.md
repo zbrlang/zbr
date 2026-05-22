@@ -4,6 +4,27 @@ All notable changes to the ZBR project are documented here and in the [changelog
 
 ---
 
+## v1.2.0 - Bot owner fix, server/thread/voice functions, and CLI improvements
+
+This release fixes bot owner resolution for team/group bots, adds new server/thread/voice functions, improves CLI command support, and expands project initialization.
+
+### Core
+- Fixed `botOwnerID` so it returns the actual bot owner instead of the team ID when the bot is part of a team/group.
+- Added `version`, `list`, and `new <type>` CLI commands.
+- Updated `init` to support creating a project in a new folder via `init <folder>`.
+- Removed archived bot voice helper code from `archive/bot-voice`.
+
+### Functions added
+
+**Server functions**
+- `serverChannels`, `serverRoles`
+
+**Thread functions**
+- `threadArchived`, `threadLocked`, `threadParentID`
+
+**Voice functions**
+- `voiceEmpty`, `voiceFull`, `voiceNew`, `voiceOld`
+
 ## v1.1.0 - Audit & Event Additions
 
 This release adds a new audit-log function category and several gateway-based event triggers.

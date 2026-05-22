@@ -5,64 +5,243 @@ const path = require('path');
 const fs = require('fs');
 const https = require('https');
 
+const SUPPORTED_TYPES = ['prefix', 'slash', 'sub-slash', 'interaction', 'event'];
+
 const HELP_TEXT = `
 Usage: zbr <command>
 
 Commands:
-  init    Initialize a new ZBR project
-  run     Start the ZBR runtime engine
-  update  Update the ZBR runtime engine to the latest version
-  help    Show this help message
+  init <folder>  Initialize a new ZBR project in the specified folder (defaults to current directory)
+  run            Start the ZBR runtime engine and bring your bot online
+  update         Download and install the latest ZBR runtime engine
+  version        Show the current ZBR version
+  list           List all commands in your commands/ folder
+  new <type>     Scaffold a new command file (prefix, slash, sub-slash, interaction, event)
+  help           Show this help message
 `;
 
-function init() {
-  console.log('Initializing new ZBR project...');
+function readPackageVersion() {
+  try {
+    const pkgPath = path.join(__dirname, '..', 'package.json');
+    const pkgContent = fs.readFileSync(pkgPath, 'utf8');
+    const pkg = JSON.parse(pkgContent);
+    return pkg.version;
+  } catch (err) {
+    return null;
+  }
+}
 
-  // 1. Create commands directory
+function version() {
+  const version = readPackageVersion();
+  if (!version) {
+    console.error('Unable to read version from package.json');
+    process.exit(1);
+  }
+  console.log(`zbr v${version}`);
+}
+
+function commandFileName(trigger) {
+  return `${trigger.replace(/^[/!]/, '')}.zbr`;
+}
+
+function headerValue(lines, prefix) {
+  for (const line of lines) {
+    if (line.startsWith(prefix)) {
+      return line.slice(prefix.length).trim();
+    }
+  }
+  return '';
+}
+
+function formatTable(rows) {
+  const widths = rows[0].map((_, index) =>
+    Math.max(...rows.map((row) => row[index].length))
+  );
+
+  return rows
+    .map((row) =>
+      row
+        .map((cell, index) => cell.padEnd(widths[index]))
+        .join('  ')
+    )
+    .join('\n');
+}
+
+function ensureCommandsDir() {
   if (!fs.existsSync('commands')) {
     fs.mkdirSync('commands');
+  }
+}
+
+function newCommand(type) {
+  const commandType = (type || '').trim().toLowerCase();
+  if (!commandType) {
+    console.error('Usage: zbr new <type>');
+    console.error(`Valid types: ${SUPPORTED_TYPES.join(', ')}`);
+    process.exit(1);
+  }
+
+  if (!SUPPORTED_TYPES.includes(commandType)) {
+    console.error(`Unknown type: ${type}`);
+    console.error(`Valid types: ${SUPPORTED_TYPES.join(', ')}`);
+    process.exit(1);
+  }
+
+  let trigger;
+  let name;
+  let lines = [];
+
+  switch (commandType) {
+    case 'prefix':
+      trigger = '!hello';
+      name = 'Hello Command';
+      lines = [
+        `#trigger ${trigger}`,
+        `#name ${name}`,
+        '#type prefix',
+        '',
+        'ZsendMessage{Hello! This is an example of a prefix based command in ZBR.}'
+      ];
+      break;
+    case 'slash':
+      trigger = '/ping';
+      name = 'Ping Command';
+      lines = [
+        `#trigger ${trigger}`,
+        `#name ${name}`,
+        '#type slash',
+        '#scope guild',
+        '#description An example slash based command in ZBR.',
+        '#option input|Something to say|string|required',
+        '',
+        'ZsendMessage{Hello! This is an example of a slash based command in ZBR.}'
+      ];
+      break;
+    case 'sub-slash':
+      trigger = '/admin ban';
+      name = 'Admin Ban Subcommand';
+      lines = [
+        `#trigger ${trigger}`,
+        `#name ${name}`,
+        '#type sub-slash',
+        '#scope guild',
+        '#description An example sub-slash based command in ZBR.',
+        '#option user|User to ban|user|required',
+        '',
+        'ZsendMessage{Hello! This is an example of a sub-slash based command in ZBR.}'
+      ];
+      break;
+    case 'interaction':
+      trigger = 'onInteraction{confirm_action}';
+      name = 'Interaction Handler';
+      lines = [
+        `#trigger ${trigger}`,
+        `#name ${name}`,
+        '#type interaction',
+        '#description An example interaction based command in ZBR.',
+        '',
+        'ZsendMessage{Hello! This is an example of an interaction based command in ZBR.}'
+      ];
+      break;
+    case 'event':
+      trigger = 'onMessage';
+      name = 'Message Event Handler';
+      lines = [
+        `#trigger ${trigger}`,
+        `#name ${name}`,
+        '#type event',
+        '#description An example event based command in ZBR.',
+        '',
+        'ZsendMessage{Hello! This is an example of an event based command in ZBR.}'
+      ];
+      break;
+  }
+
+  ensureCommandsDir();
+
+  const fileName = `${commandType}.zbr`;
+  const filePath = path.join('commands', fileName);
+
+  if (fs.existsSync(filePath)) {
+    console.error(`Error: ${filePath} already exists. Aborting.`);
+    process.exit(1);
+  }
+
+  fs.writeFileSync(filePath, lines.join('\n'));
+  console.log(`Created ${filePath}`);
+}
+
+function listCommands() {
+  if (!fs.existsSync('commands')) {
+    console.log('No commands/ directory found. Create one with `zbr init` or add .zbr files to commands/.');
+    return;
+  }
+
+  const files = fs.readdirSync('commands').filter((file) => file.endsWith('.zbr'));
+  if (files.length === 0) {
+    console.log('No .zbr command files found in commands/. Create one with `zbr new <type>`.');
+    return;
+  }
+
+  const rows = [['NAME', 'TRIGGER', 'TYPE']];
+  files.sort();
+
+  for (const file of files) {
+    const filePath = path.join('commands', file);
+    let content;
+
+    try {
+      content = fs.readFileSync(filePath, 'utf8');
+    } catch (err) {
+      continue;
+    }
+
+    const lines = content.split(/\r?\n/);
+    const trigger = headerValue(lines, '#trigger ');
+    const name = headerValue(lines, '#name ');
+    const type = headerValue(lines, '#type ');
+    rows.push([name || file, trigger || '-', type || 'prefix']);
+  }
+
+  console.log(formatTable(rows));
+}
+
+function init(targetDir) {
+  const root = targetDir && targetDir.length ? path.join('.', targetDir) : '.';
+  console.log('Initializing new ZBR project in', root);
+
+  const commandsDir = path.join(root, 'commands');
+  if (!fs.existsSync(commandsDir)) {
+    fs.mkdirSync(commandsDir, { recursive: true });
     console.log('- Created commands/ directory');
   }
 
-  // 2. Create zbr.json (config)
   const config = {
-    status: "online",
+    status: 'online',
     activity: {
-      name: "ZBR Scripting",
-      type: "playing"
-    }
+      name: 'ZBR Scripting',
+      type: 'playing'
+    },
+    logging: true
   };
-  fs.writeFileSync('zbr.json', JSON.stringify(config, null, 2));
+  fs.writeFileSync(path.join(root, 'zbr.json'), JSON.stringify(config, null, 2));
   console.log('- Created zbr.json');
 
-  // 3. Create .env
-  if (!fs.existsSync('.env')) {
+  if (!fs.existsSync(path.join(root, '.env'))) {
     const envContent = [
       'DISCORD_TOKEN=YOUR_BOT_TOKEN_HERE',
       'DATABASE_URL=sqlite:./zbr.db',
       ''
     ].join('\n');
-    fs.writeFileSync('.env', envContent);
+    fs.writeFileSync(path.join(root, '.env'), envContent);
     console.log('- Created .env');
   }
 
-  // 4. Create example .zbr files
-  const pingExample = `#trigger !ping
-#name Ping Command
-#type prefix
+  const pingExample = `#trigger !ping\n#name Ping Command\n#type prefix\n\nPong! 🏓\nLatency: Zping{}ms`;
+  const helloExample = `#trigger Hello\n#name Welcome Trigger\n#type trigger\n\nHello Zusername{}! 👋\nYou are currently in the <#ZchannelID{}> channel of Zif{ZguildID{}==;a DM;ZserverName{}}.`;
 
-Pong! 🏓
-Latency: Zping{}ms`;
-
-  const helloExample = `#trigger Hello
-#name Welcome Trigger
-#type trigger
-
-Hello Zusername{}! 👋
-You are currently in the <#ZchannelID{}> channel of Zif{ZguildID{}==;a DM;ZserverName{}}.`;
-
-  fs.writeFileSync(path.join('commands', 'ping.zbr'), pingExample);
-  fs.writeFileSync(path.join('commands', 'hello.zbr'), helloExample);
+  fs.writeFileSync(path.join(commandsDir, 'ping.zbr'), pingExample);
+  fs.writeFileSync(path.join(commandsDir, 'hello.zbr'), helloExample);
   console.log('- Created example commands in commands/');
 
   console.log('\nProject initialized successfully!');
@@ -72,26 +251,26 @@ You are currently in the <#ZchannelID{}> channel of Zif{ZguildID{}==;a DM;Zserve
 }
 
 function getBinaryPath() {
-  const platform = process.platform
-  const arch = process.arch
+  const platform = process.platform;
+  const arch = process.arch;
 
   const binaryMap = {
-    'linux-x64':    'zbr',
-    'darwin-x64':   'zbr-darwin-x64',
+    'linux-x64': 'zbr',
+    'darwin-x64': 'zbr-darwin-x64',
     'darwin-arm64': 'zbr-darwin-arm64',
-    'win32-x64':    'zbr.exe',
-  }
+    'win32-x64': 'zbr.exe'
+  };
 
-  const key = `${platform}-${arch}`
-  const name = binaryMap[key]
+  const key = `${platform}-${arch}`;
+  const name = binaryMap[key];
 
   if (!name) {
-    console.error(`Unsupported platform: ${platform}-${arch}`)
-    console.error('Please open an issue at https://github.com/zbrlang/zbr')
-    process.exit(1)
+    console.error(`Unsupported platform: ${platform}-${arch}`);
+    console.error('Please open an issue at https://github.com/zbrlang/zbr');
+    process.exit(1);
   }
 
-  return path.join(__dirname, name)
+  return path.join(__dirname, name);
 }
 
 function run() {
@@ -103,11 +282,10 @@ function run() {
     process.exit(1);
   }
 
-  // Grant execution permissions on Unix-like systems
   if (process.platform !== 'win32') {
     try {
       fs.chmodSync(binaryPath, 0o755);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   const child = spawn(binaryPath, [], {
@@ -124,7 +302,6 @@ function run() {
     process.exit(code === null ? 1 : code);
   });
 
-  // Handle termination signals
   const signals = ['SIGINT', 'SIGTERM', 'SIGHUP'];
   signals.forEach(signal => {
     process.on(signal, () => {
@@ -140,10 +317,10 @@ function update() {
   const arch = process.arch;
 
   const binaryMap = {
-    'linux-x64':    'zbr',
-    'darwin-x64':   'zbr-darwin-x64',
+    'linux-x64': 'zbr',
+    'darwin-x64': 'zbr-darwin-x64',
     'darwin-arm64': 'zbr-darwin-arm64',
-    'win32-x64':    'zbr.exe',
+    'win32-x64': 'zbr.exe'
   };
 
   const key = `${platform}-${arch}`;
@@ -163,7 +340,6 @@ function update() {
   function downloadFile(downloadUrl) {
     https.get(downloadUrl, (response) => {
       if (response.statusCode === 302 || response.statusCode === 301) {
-        // Recursively handle redirects
         downloadFile(response.headers.location);
         return;
       }
@@ -185,7 +361,7 @@ function update() {
       });
 
       file.on('error', (err) => {
-        fs.unlink(binaryPath, () => {});
+        fs.unlink(binaryPath, () => { });
         console.error(`File error: ${err.message}`);
         process.exit(1);
       });
@@ -204,7 +380,7 @@ function main() {
 
   switch (command) {
     case 'init':
-      init();
+      init(args[1]);
       break;
     case 'run':
       run();
@@ -212,11 +388,24 @@ function main() {
     case 'update':
       update();
       break;
+    case 'version':
+    case '--version':
+    case '-v':
+      version();
+      break;
+    case 'new':
+      newCommand(args[1]);
+      break;
+    case 'list':
+      listCommands();
+      break;
     case 'help':
     case '--help':
     case '-h':
+      console.log(HELP_TEXT);
+      break;
     default:
-      if (command && command !== 'help') {
+      if (command) {
         console.log(`Unknown command: ${command}`);
       }
       console.log(HELP_TEXT);

@@ -1005,6 +1005,30 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
             max_args: 1,
         },
     );
+    registry.insert(
+        "threadArchived".to_string(),
+        FnMeta {
+            func: threads::threadArchived::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "threadLocked".to_string(),
+        FnMeta {
+            func: threads::threadLocked::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "threadParentID".to_string(),
+        FnMeta {
+            func: threads::threadParentID::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
 
     // Reactions
     registry.insert(
@@ -1566,6 +1590,14 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         },
     );
     registry.insert(
+        "serverChannels".to_string(),
+        FnMeta {
+            func: channels::serverChannels::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+    registry.insert(
         "categoryID".to_string(),
         FnMeta {
             func: channels::categoryID::run,
@@ -1757,6 +1789,14 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
             func: roles::roleNames::run,
             min_args: 0,
             max_args: 1,
+        },
+    );
+    registry.insert(
+        "serverRoles".to_string(),
+        FnMeta {
+            func: roles::serverRoles::run,
+            min_args: 0,
+            max_args: 2,
         },
     );
     registry.insert(
@@ -2315,6 +2355,38 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         "voiceMemberCount".to_string(),
         FnMeta {
             func: voice::voiceMemberCount::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "voiceOld".to_string(),
+        FnMeta {
+            func: voice::voiceOld::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
+        "voiceNew".to_string(),
+        FnMeta {
+            func: voice::voiceNew::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
+        "voiceEmpty".to_string(),
+        FnMeta {
+            func: voice::voiceEmpty::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "voiceFull".to_string(),
+        FnMeta {
+            func: voice::voiceFull::run,
             min_args: 0,
             max_args: 1,
         },

@@ -6,8 +6,6 @@ use std::sync::OnceLock;
 
 pub static START_TIME: OnceLock<std::time::Instant> = OnceLock::new();
 
-// ── Component state types ─────────────────────────────────────────────────────
-
 #[derive(Clone, Debug, Default)]
 pub struct ButtonData {
     pub custom_id: String, // custom_id or URL for link buttons

@@ -1,6 +1,7 @@
 #trigger !rank
 #name Rank Command
 #type prefix
+#description Rank command that read's user's xp and sends an embed.
 
 // Read the user's XP and level from persistent variables
 ZsetUserVar{xp;1000}

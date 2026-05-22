@@ -454,7 +454,7 @@
     ],
     "example": "Zasync{my_task;Zdelay{5s;ZsendMessage{Task complete!}}}"
   },
-    {
+  {
     "name": "ZauditCount",
     "description": "Fetches the guild audit log and returns the number of returned entries.",
     "syntax": "ZauditCount{guildID?;limit?}",
@@ -5567,6 +5567,22 @@
     "example": "ZsendWebhook{https://discord.com/api/webhooks/123456789/token;1;true}"
   },
   {
+    "name": "ZserverChannels",
+    "description": "Returns a separator-joined list of channel IDs for the specified server.",
+    "syntax": "ZserverChannels{separator?;guildID?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "default": "\n"
+      },
+      { "name": "guildID", "type": "snowflake", "required": false }
+    ],
+    "example": "ZserverChannels{;123456789012345678}"
+  },
+  {
     "name": "ZserverCooldown",
     "description": "Applies a server-wide cooldown that prevents anyone in the server from running the command until the duration expires.",
     "syntax": "ZserverCooldown{duration;errorMessage?}",
@@ -5716,6 +5732,22 @@
       }
     ],
     "example": "ZserverOwner{}"
+  },
+  {
+    "name": "ZserverRoles",
+    "description": "Returns a separator-joined list of role IDs for the specified server.",
+    "syntax": "ZserverRoles{separator?;guildID?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "separator",
+        "type": "string",
+        "required": false,
+        "default": "\n"
+      },
+      { "name": "guildID", "type": "snowflake", "required": false }
+    ],
+    "example": "ZserverRoles{;123456789012345678}"
   },
   {
     "name": "ZserverStickers",
@@ -6304,6 +6336,26 @@
     "example": "ZthreadAddMember{123456789012345678;987654321098765432}"
   },
   {
+    "name": "ZthreadArchived",
+    "description": "Returns true if the thread is archived.",
+    "syntax": "ZthreadArchived{threadID?}",
+    "variadic": false,
+    "arguments": [
+      { "name": "threadID", "type": "snowflake", "required": false }
+    ],
+    "example": "ZthreadArchived{123456789012345678}"
+  },
+  {
+    "name": "ZthreadLocked",
+    "description": "Returns true if the thread is locked.",
+    "syntax": "ZthreadLocked{threadID?}",
+    "variadic": false,
+    "arguments": [
+      { "name": "threadID", "type": "snowflake", "required": false }
+    ],
+    "example": "ZthreadLocked{123456789012345678}"
+  },
+  {
     "name": "ZthreadMessageCount",
     "description": "Returns the number of messages in the specified thread.",
     "syntax": "ZthreadMessageCount{threadID}",
@@ -6316,6 +6368,16 @@
       }
     ],
     "example": "ZthreadMessageCount{123456789012345678}"
+  },
+  {
+    "name": "ZthreadParentID",
+    "description": "Returns the parent channel ID of the thread, or empty string.",
+    "syntax": "ZthreadParentID{threadID?}",
+    "variadic": false,
+    "arguments": [
+      { "name": "threadID", "type": "snowflake", "required": false }
+    ],
+    "example": "ZthreadParentID{123456789012345678}"
   },
   {
     "name": "ZthreadRemoveMember",
@@ -7084,6 +7146,36 @@
     "example": "ZvoiceBitrate{123456789012345678}"
   },
   {
+    "name": "ZvoiceEmpty",
+    "description": "Returns true if the specified voice channel has zero members; defaults to the author's current voice channel.",
+    "syntax": "ZvoiceEmpty{channelID?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's voice channel"
+      }
+    ],
+    "example": "ZvoiceEmpty{123456789012345678}"
+  },
+  {
+    "name": "ZvoiceFull",
+    "description": "Returns true if the specified voice channel's member count equals its user limit; defaults to the author's current voice channel.",
+    "syntax": "ZvoiceFull{channelID?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author's voice channel"
+      }
+    ],
+    "example": "ZvoiceFull{123456789012345678}"
+  },
+  {
     "name": "ZvoiceKick",
     "description": "Disconnects the specified user from their current voice channel.",
     "syntax": "ZvoiceKick{userID}",
@@ -7096,6 +7188,14 @@
       }
     ],
     "example": "ZvoiceKick{123456789012345678}"
+  },
+  {
+    "name": "ZvoiceNew",
+    "description": "Returns the new voice channel ID from the onVoiceStateUpdate event context (the channel the user moved to).",
+    "syntax": "ZvoiceNew{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZvoiceNew{}"
   },
   {
     "name": "ZvoiceMemberCount",
@@ -7111,6 +7211,14 @@
       }
     ],
     "example": "ZvoiceMemberCount{123456789012345678}"
+  },
+  {
+    "name": "ZvoiceOld",
+    "description": "Returns the previous voice channel ID from the onVoiceStateUpdate event context (the channel the user was in before).",
+    "syntax": "ZvoiceOld{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZvoiceOld{}"
   },
   {
     "name": "ZvoiceMembers",
