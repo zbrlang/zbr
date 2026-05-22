@@ -3,11 +3,7 @@
 ZBR is a scripting language for Discord bots powered by a high-performance Rust runtime engine. 
 You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required.
 
-Release v1.1.0: added audit functions and new runtime event triggers (`onBotJoin`, `onBotLeave`, `onBoostAdd`, `onBoostRemove`).
-
 Previously a complex setup, **ZBR is now a streamlined CLI tool** distributed via npm. You can now initialize, manage, and run your entire bot engine with a single command.
-
----
 
 ## Quick Start
 
@@ -32,8 +28,6 @@ Get your bot up and running in seconds:
    zbr run
    ```
    Your bot is now live and loading scripts from the `commands/` directory!
-
----
 
 ## What it looks like
 
@@ -75,19 +69,15 @@ Zban{ZgetServerVar{pending_ban}}
 Done.
 ```
 
----
-
 ## How it works
 
-ZBR is a high-performance runtime engine built in Rust that parses and executes bot logic, and is distributed as a convenient npm CLI. 
+ZBR is powered by a high-performance runtime engine built in Rust that parses and executes bot logic, and is distributed as a convenient npm CLI. 
 
 - **The CLI (`zbr`)**: Acts as your project manager and binary launcher.
 - **The Engine**: A bundled Rust binary that handles the Discord gateway, parses your `.zbr` files, and executes logic in real-time.
 - **Hot Reloading**: The engine watches your `commands/` folder. Save a `.zbr` file, and the changes are live instantly without restarting.
 
 Commands are plain text files. Each file has a header section (lines starting with `#`) that defines the trigger, name, and type, followed by the ZBR code that runs when the command is invoked.
-
----
 
 ## Command types
 
@@ -97,8 +87,6 @@ Commands are plain text files. Each file has a header section (lines starting wi
 | `slash` | `/command` | When a slash command is invoked |
 | `interaction` | `onInteraction{id?}` | When a button, select menu, or modal is submitted |
 | `event` | `onMessage`, `onMemberJoin`, etc. | When a Discord gateway event fires |
-
----
 
 ## Function syntax
 
@@ -122,24 +110,20 @@ You have Zsum{ZgetUserVar{xp};0} XP.
 
 Lines starting with `//` are comments.
 
----
-
 ## What's included
 
-- **Math** — Zsum, Zsub, Zmulti, Zdiv, Zpow, Zcalculate  
-- **String** — Zlowercase, Zuppercase, ZreplaceText, Zsubstring, ZcheckContains, ZregexMatch  
-- **Embeds** — Ztitle, Zdescription, Zcolor, ZaddField, ZsendEmbed, Zauthor  
-- **Components** — ZaddButton, ZaddSelectMenuOption, ZaddTextInput, ZaddUserSelect, ZeditButton, ZremoveComponent  
-- **Moderation** — Zban, Zkick, Zmute, Ztimeout, Zclear, Zunban  
-- **Channels** — ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZchannelExists, ZchannelName, ZslowMode  
-- **Roles** — ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole  
-- **Runtime & Control** — Zasync, Zawait, Zdelay, Zif, ZcheckCondition, ZargsCheck  
-- **HTTP** — ZhttpGet, ZhttpPost, ZhttpPut, ZhttpPatch, ZhttpDelete, ZhttpResult  
-- **Audit Logs** — ZauditCount, ZauditEntries, ZauditEntryAction, ZauditEntryTarget, ZauditEntryReason, ZauditLatest  
+- **Math**: Zsum, Zsub, Zmulti, Zdiv, Zpow, Zcalculate
+- **String**: Zlowercase, Zuppercase, ZreplaceText, Zsubstring, ZcheckContains, ZregexMatch
+- **Embeds**: Ztitle, Zdescription, Zcolor, ZaddField, ZsendEmbed, Zauthor
+- **Components**: ZaddButton, ZaddSelectMenuOption, ZaddTextInput, ZaddUserSelect, ZeditButton, ZremoveComponent
+- **Moderation**: Zban, Zkick, Zmute, Ztimeout, Zclear, Zunban
+- **Channels**: ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZchannelExists, ZchannelName, ZslowMode
+- **Roles**: ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole
+- **Runtime & Control**: Zasync, Zawait, Zdelay, Zif, ZcheckCondition, ZargsCheck
+- **HTTP**: ZhttpGet, ZhttpPost, ZhttpPut, ZhttpPatch, ZhttpDelete, ZhttpResult
+- **Audit Logs**: ZauditCount, ZauditEntries, ZauditEntryAction, ZauditEntryTarget, ZauditEntryReason, ZauditLatest
 
 > Full function reference: [Docs](https://zbr-website.vercel.app/docs)
-
----
 
 ## Example commands
 
@@ -152,8 +136,6 @@ The `commands/` folder contains ready-to-run examples:
 | `rank.zbr` | prefix | Reads user variables and sends a rank embed |
 | `eval.zbr` | prefix | Evaluates ZBR code on the fly |
 
----
-
 ## Built with
 
 - [Rust](https://www.rust-lang.org/)
@@ -161,8 +143,6 @@ The `commands/` folder contains ready-to-run examples:
 - [Axum](https://github.com/tokio-rs/axum), HTTP runtime server
 - [SQLite](https://www.sqlite.org/) via [sqlx](https://github.com/launchbadge/sqlx), variable and cooldown persistence
 
----
-
 ## License
 
-MIT, see [LICENSE](LICENSE)
+All Rights Reserved, see [LICENSE](LICENSE).
