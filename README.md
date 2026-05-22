@@ -11,19 +11,24 @@ Get your bot up and running in seconds:
 
 1. **Install the CLI globally:**
    ```bash
-   npm install -g @zbrlang/zbr
+   npm i @zbrlang/zbr
    ```
 
 2. **Initialize a new project:**
    ```bash
-   zbr init
+   zbr init my-bot
    ```
-   This creates your `commands/` folder, `zbr.json` config, and a `.env` file.
+   This creates your `commands/` folder, `zbr.json` config, and a `.env` file inside of **my-bot**.
 
-3. **Configure your token:**
+3. **Navigate to your project directory**
+   ```bash
+   cd my-bot
+   ```
+
+4. **Configure your token:**
    Open the `.env` file and paste your Discord Bot Token.
 
-4. **Run the engine:**
+5. **Run the engine:**
    ```bash
    zbr run
    ```

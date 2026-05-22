@@ -25,6 +25,8 @@ This release fixes bot owner resolution for team/group bots, adds new server/thr
 **Voice functions**
 - `voiceEmpty`, `voiceFull`, `voiceNew`, `voiceOld`
 
+---
+
 ## v1.1.0 - Audit & Event Additions
 
 This release adds a new audit-log function category and several gateway-based event triggers.
