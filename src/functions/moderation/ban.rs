@@ -1,17 +1,26 @@
 use crate::context::{DiscordContext, FnOutput};
 use serenity::model::id::{GuildId, UserId};
 
-/// Zban{userID;reason?;deleteMessageDays?}
+/// Zban{userIDs;reason?;deleteMessageDays?}
+/// userIDs: single user ID or semicolon-separated list for bulk ban.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let uid_str = match args.get(0) {
+    let uids_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("ban", "userID is required"),
+        _ => return FnOutput::error("ban", "userIDs is required"),
     };
 
-    let uid: u64 = match uid_str.parse() {
-        Ok(id) => id,
-        Err(_) => return FnOutput::error("ban", format!("invalid user ID: '{}'", uid_str)),
+    let user_ids: Vec<u64> = match uids_str
+        .split(';')
+        .map(|s| s.trim().parse())
+        .collect::<Result<Vec<_>, _>>()
+    {
+        Ok(ids) => ids,
+        Err(_) => return FnOutput::error("ban", format!("invalid user ID: '{}'", uids_str)),
     };
+
+    if user_ids.is_empty() {
+        return FnOutput::error("ban", "userIDs is required");
+    }
 
     let reason = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
@@ -40,20 +49,38 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         None => return FnOutput::error("ban", "no HTTP client available"),
     };
 
-    let result = tokio::task::block_in_place(|| {
+    let gid = GuildId::new(gid);
+    let mut errors: Vec<String> = Vec::new();
+    let mut banned: Vec<String> = Vec::new();
+
+    let results: Vec<(String, bool)> = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
-            if reason.is_empty() {
-                GuildId::new(gid).ban(&http, UserId::new(uid), delete_days).await
-            } else {
-                GuildId::new(gid)
-                    .ban_with_reason(&http, UserId::new(uid), delete_days, &reason)
-                    .await
+            let mut results = Vec::new();
+            for uid in &user_ids {
+                let r = if reason.is_empty() {
+                    gid.ban(&http, UserId::new(*uid), delete_days).await
+                } else {
+                    gid.ban_with_reason(&http, UserId::new(*uid), delete_days, &reason).await
+                };
+                match r {
+                    Ok(_) => results.push((uid.to_string(), true)),
+                    Err(_e) => results.push((uid.to_string(), false)),
+                }
             }
+            results
         })
     });
 
-    match result {
-        Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("ban", "failed to ban user"),
+    for (id, ok) in results {
+        if ok { banned.push(id); } else { errors.push(id); }
     }
+
+    let mut parts = Vec::new();
+    if !banned.is_empty() {
+        parts.push(format!("banned: {}", banned.join(", ")));
+    }
+    if !errors.is_empty() {
+        parts.push(format!("failed: {}", errors.join(", ")));
+    }
+    FnOutput::Text(parts.join(" | "))
 }

@@ -4,6 +4,8 @@ pub mod createPost;
 pub mod deleteForumTag;
 pub mod editForumTag;
 pub mod forumPostCount;
+pub mod forumPostLock;
+pub mod forumPostPin;
 pub mod forumPosts;
 pub mod forumTagEmoji;
 pub mod forumTagID;

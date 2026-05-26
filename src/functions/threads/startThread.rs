@@ -1,12 +1,13 @@
 use crate::context::{DiscordContext, FnOutput};
 use crate::functions::embeds::helpers::{validate_bool, validate_snowflake};
 use serenity::builder::CreateThread;
-use serenity::model::channel::AutoArchiveDuration;
+use serenity::model::channel::{AutoArchiveDuration, ChannelType};
 use serenity::model::id::{ChannelId, MessageId};
 
-/// ZstartThread{name;channelID;(messageID);(archiveDuration);(returnID)}
+/// ZstartThread{name;channelID;(messageID);(archiveDuration);(returnID);(private)}
 /// Creates a thread. If messageID is provided, creates from that message.
 /// archiveDuration: 60, 1440, 4320, or 10080 (minutes). Defaults to 60.
+/// private: true/false — ignored for message threads. Defaults to private for standalone threads.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = args.get(0).cloned().unwrap_or_default();
     if name.is_empty() {
@@ -42,6 +43,17 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         _ => false,
     };
 
+    let is_private = args.get(5).map(|s| s.as_str()).unwrap_or("!unchanged");
+    let builder = {
+        let mut b = CreateThread::new(&name).auto_archive_duration(archive_duration);
+        match is_private {
+            "true"  => b = b.kind(ChannelType::PrivateThread),
+            "false" => b = b.kind(ChannelType::PublicThread),
+            _ => {},
+        }
+        b
+    };
+
     let http = match &ctx.http {
         Some(h) => h.clone(),
         None => return FnOutput::error("startThread", "no HTTP client available"),
@@ -49,16 +61,11 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let result: Result<String, String> = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
-            let builder = CreateThread::new(&name)
-                .auto_archive_duration(archive_duration);
-
             let thread = if let Some(msg_id) = message_id {
-                // Thread from message
                 ChannelId::new(channel_id)
                     .create_thread_from_message(&http, MessageId::new(msg_id), builder).await
                     .map_err(|e| format!("failed to create thread: {}", e))?
             } else {
-                // Standalone thread
                 ChannelId::new(channel_id)
                     .create_thread(&http, builder).await
                     .map_err(|e| format!("failed to create thread: {}", e))?

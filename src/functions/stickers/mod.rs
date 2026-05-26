@@ -6,4 +6,6 @@ pub mod stickerDescription;
 pub mod stickerEmoji;
 pub mod stickerExists;
 pub mod stickerID;
+pub mod stickerCreate;
+pub mod stickerEdit;
 pub mod stickerName;

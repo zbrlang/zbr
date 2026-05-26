@@ -14,3 +14,6 @@ pub mod voiceOld;
 pub mod voiceNew;
 pub mod voiceEmpty;
 pub mod voiceFull;
+pub mod voiceRequestToSpeak;
+pub mod voiceStatus;
+pub mod voiceSuppress;

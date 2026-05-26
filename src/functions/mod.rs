@@ -23,10 +23,12 @@ pub mod math;
 pub mod message;
 pub mod moderation;
 pub mod permissions;
+pub mod polls;
 pub mod random;
 pub mod reactions;
 pub mod roles;
 pub mod servers;
+pub mod soundboard;
 pub mod stage;
 pub mod stickers;
 pub mod string;
@@ -36,6 +38,9 @@ pub mod time;
 pub mod users;
 pub mod variables;
 pub mod voice;
+
+pub mod automod;
+pub mod utility;
 
 use crate::context::FnMeta;
 use crate::context::FnOutput;
@@ -982,25 +987,9 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         },
     );
     registry.insert(
-        "threadRemoveMember".to_string(),
+        "threadArchive".to_string(),
         FnMeta {
-            func: threads::threadRemoveMember::run,
-            min_args: 2,
-            max_args: 2,
-        },
-    );
-    registry.insert(
-        "threadMessageCount".to_string(),
-        FnMeta {
-            func: threads::threadMessageCount::run,
-            min_args: 1,
-            max_args: 1,
-        },
-    );
-    registry.insert(
-        "threadUserCount".to_string(),
-        FnMeta {
-            func: threads::threadUserCount::run,
+            func: threads::threadArchive::run,
             min_args: 1,
             max_args: 1,
         },
@@ -1022,10 +1011,50 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         },
     );
     registry.insert(
+        "threadMessageCount".to_string(),
+        FnMeta {
+            func: threads::threadMessageCount::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
         "threadParentID".to_string(),
         FnMeta {
             func: threads::threadParentID::run,
             min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "threadPin".to_string(),
+        FnMeta {
+            func: threads::threadPin::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "threadRemoveMember".to_string(),
+        FnMeta {
+            func: threads::threadRemoveMember::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "threadUnarchive".to_string(),
+        FnMeta {
+            func: threads::threadUnarchive::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "threadUserCount".to_string(),
+        FnMeta {
+            func: threads::threadUserCount::run,
+            min_args: 1,
             max_args: 1,
         },
     );
@@ -3561,6 +3590,408 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         FnMeta {
             func: forums::forumPostCount::run,
             min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "forumPostLock".to_string(),
+        FnMeta {
+            func: forums::forumPostLock::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "forumPostPin".to_string(),
+        FnMeta {
+            func: forums::forumPostPin::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // Polls
+    registry.insert(
+        "pollAddAnswer".to_string(),
+        FnMeta {
+            func: polls::pollAddAnswer::run,
+            min_args: 1,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "pollAllowMultiselect".to_string(),
+        FnMeta {
+            func: polls::pollAllowMultiselect::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "pollAnswerVoters".to_string(),
+        FnMeta {
+            func: polls::pollAnswerVoters::run,
+            min_args: 2,
+            max_args: 3,
+        },
+    );
+    registry.insert(
+        "pollAnswerVotes".to_string(),
+        FnMeta {
+            func: polls::pollAnswerVotes::run,
+            min_args: 2,
+            max_args: 3,
+        },
+    );
+    registry.insert(
+        "pollCreate".to_string(),
+        FnMeta {
+            func: polls::pollCreate::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "pollEnd".to_string(),
+        FnMeta {
+            func: polls::pollEnd::run,
+            min_args: 1,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "pollGet".to_string(),
+        FnMeta {
+            func: polls::pollGet::run,
+            min_args: 1,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "pollSend".to_string(),
+        FnMeta {
+            func: polls::pollSend::run,
+            min_args: 0,
+            max_args: 2,
+        },
+    );
+
+    // Soundboard
+    registry.insert(
+        "soundboardSounds".to_string(),
+        FnMeta {
+            func: soundboard::soundboardSounds::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
+        "soundboardSound".to_string(),
+        FnMeta {
+            func: soundboard::soundboardSound::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "soundboardCreate".to_string(),
+        FnMeta {
+            func: soundboard::soundboardCreate::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "soundboardEdit".to_string(),
+        FnMeta {
+            func: soundboard::soundboardEdit::run,
+            min_args: 1,
+            max_args: 4,
+        },
+    );
+    registry.insert(
+        "soundboardDelete".to_string(),
+        FnMeta {
+            func: soundboard::soundboardDelete::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "soundboardPlay".to_string(),
+        FnMeta {
+            func: soundboard::soundboardPlay::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "soundboardDefaultSounds".to_string(),
+        FnMeta {
+            func: soundboard::soundboardDefaultSounds::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+
+    // automod
+    registry.insert(
+        "automodRules".to_string(),
+        FnMeta {
+            func: automod::automodRules::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "automodRule".to_string(),
+        FnMeta {
+            func: automod::automodRule::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "automodRuleCreate".to_string(),
+        FnMeta {
+            func: automod::automodRuleCreate::run,
+            min_args: 5,
+            max_args: 8,
+        },
+    );
+    registry.insert(
+        "automodRuleEdit".to_string(),
+        FnMeta {
+            func: automod::automodRuleEdit::run,
+            min_args: 2,
+            max_args: 9,
+        },
+    );
+    registry.insert(
+        "automodRuleDelete".to_string(),
+        FnMeta {
+            func: automod::automodRuleDelete::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+
+    // app emojis
+    registry.insert(
+        "appEmojis".to_string(),
+        FnMeta {
+            func: emojis::appEmojis::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
+        "appEmojiCreate".to_string(),
+        FnMeta {
+            func: emojis::appEmojiCreate::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "appEmojiDelete".to_string(),
+        FnMeta {
+            func: emojis::appEmojiDelete::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // base64
+    registry.insert(
+        "base64Encode".to_string(),
+        FnMeta {
+            func: utility::base64Encode::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "base64Decode".to_string(),
+        FnMeta {
+            func: utility::base64Decode::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // duration
+    registry.insert(
+        "duration".to_string(),
+        FnMeta {
+            func: utility::duration::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // editWelcomeScreen
+    registry.insert(
+        "editWelcomeScreen".to_string(),
+        FnMeta {
+            func: servers::editWelcomeScreen::run,
+            min_args: 2,
+            max_args: 4,
+        },
+    );
+
+    // entitlements
+    registry.insert(
+        "entitlements".to_string(),
+        FnMeta {
+            func: utility::entitlements::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+
+    // md5
+    registry.insert(
+        "md5".to_string(),
+        FnMeta {
+            func: utility::md5::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // pinList
+    registry.insert(
+        "pinList".to_string(),
+        FnMeta {
+            func: message::pinList::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+
+    // serverLockdown
+    registry.insert(
+        "serverLockdown".to_string(),
+        FnMeta {
+            func: servers::serverLockdown::run,
+            min_args: 1,
+            max_args: 2,
+        },
+    );
+
+    // serverModify
+    registry.insert(
+        "serverModify".to_string(),
+        FnMeta {
+            func: servers::serverModify::run,
+            min_args: 0,
+            max_args: 10,
+        },
+    );
+
+    // sha256
+    registry.insert(
+        "sha256".to_string(),
+        FnMeta {
+            func: utility::sha256::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // skus
+    registry.insert(
+        "skus".to_string(),
+        FnMeta {
+            func: utility::skus::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+
+    // stickerCreate
+    registry.insert(
+        "stickerCreate".to_string(),
+        FnMeta {
+            func: stickers::stickerCreate::run,
+            min_args: 3,
+            max_args: 4,
+        },
+    );
+
+    // stickerEdit
+    registry.insert(
+        "stickerEdit".to_string(),
+        FnMeta {
+            func: stickers::stickerEdit::run,
+            min_args: 1,
+            max_args: 4,
+        },
+    );
+
+    // syncPerms
+    registry.insert(
+        "syncPerms".to_string(),
+        FnMeta {
+            func: channels::syncPerms::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // threadList
+    registry.insert(
+        "threadList".to_string(),
+        FnMeta {
+            func: threads::threadList::run,
+            min_args: 1,
+            max_args: 3,
+        },
+    );
+
+    // threadMetadata
+    registry.insert(
+        "threadMetadata".to_string(),
+        FnMeta {
+            func: threads::threadMetadata::run,
+            min_args: 1,
+            max_args: 1,
+        },
+    );
+
+    // voice functions
+    registry.insert(
+        "voiceRequestToSpeak".to_string(),
+        FnMeta {
+            func: voice::voiceRequestToSpeak::run,
+            min_args: 0,
+            max_args: 1,
+        },
+    );
+    registry.insert(
+        "voiceStatus".to_string(),
+        FnMeta {
+            func: voice::voiceStatus::run,
+            min_args: 1,
+            max_args: 2,
+        },
+    );
+    registry.insert(
+        "voiceSuppress".to_string(),
+        FnMeta {
+            func: voice::voiceSuppress::run,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+
+    // welcomeScreen
+    registry.insert(
+        "welcomeScreen".to_string(),
+        FnMeta {
+            func: servers::welcomeScreen::run,
+            min_args: 0,
             max_args: 1,
         },
     );

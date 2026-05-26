@@ -117,18 +117,16 @@ Lines starting with `//` are comments.
 
 ## What's included
 
-- **Math**: Zsum, Zsub, Zmulti, Zdiv, Zpow, Zcalculate
-- **String**: Zlowercase, Zuppercase, ZreplaceText, Zsubstring, ZcheckContains, ZregexMatch
-- **Embeds**: Ztitle, Zdescription, Zcolor, ZaddField, ZsendEmbed, Zauthor
-- **Components**: ZaddButton, ZaddSelectMenuOption, ZaddTextInput, ZaddUserSelect, ZeditButton, ZremoveComponent
-- **Moderation**: Zban, Zkick, Zmute, Ztimeout, Zclear, Zunban
-- **Channels**: ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZchannelExists, ZchannelName, ZslowMode
-- **Roles**: ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole
-- **Runtime & Control**: Zasync, Zawait, Zdelay, Zif, ZcheckCondition, ZargsCheck
+- **Embeds**: Ztitle, Zdescription, Zcolor, ZaddField, ZsendEmbed, Zauthor, Zfooter
 - **HTTP**: ZhttpGet, ZhttpPost, ZhttpPut, ZhttpPatch, ZhttpDelete, ZhttpResult
-- **Audit Logs**: ZauditCount, ZauditEntries, ZauditEntryAction, ZauditEntryTarget, ZauditEntryReason, ZauditLatest
+- **Moderation**: Zban, Zkick, Zmute, Ztimeout, Zclear, Zunban, ZvoiceKick
+- **Components**: ZaddButton, ZaddSelectMenuOption, ZaddTextInput, ZaddUserSelect, ZeditButton, ZremoveComponent
+- **Automod**: ZautomodRule, ZautomodRuleCreate, ZautomodRuleEdit, ZautomodRuleDelete, ZautomodRules
+- **Servers**: ZserverModify, ZserverLockdown, ZeditWelcomeScreen, ZwelcomeScreen, ZboostCount, ZboostLevel
+- **Channels**: ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZsyncPerms, ZchannelExists, ZchannelName, ZslowMode
+- **Roles**: ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole
 
-> Full function reference: [Docs](https://zbr-website.vercel.app/docs)
+...and **32+ more** — see the [full function reference](https://zbr-website.vercel.app/docs).
 
 ## Example commands
 

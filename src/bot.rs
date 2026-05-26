@@ -1,5 +1,5 @@
+use crate::executor::{self, ComponentData, EmbedData, ExecState, RunContext, RunResponse};
 use crate::types::{Command, CommandMap, CommandScope, CommandType, Db};
-use serde::{Deserialize, Serialize};
 use regex::Regex;
 use serenity::async_trait;
 use serenity::builder::{
@@ -20,35 +20,6 @@ use serenity::model::prelude::{
 use serenity::model::user::OnlineStatus;
 use serenity::prelude::*;
 use std::collections::HashMap;
-
-/// Serializable payload sent to the /run HTTP endpoint.
-/// This is NOT the same as DiscordContext — it's just the JSON body.
-#[derive(Serialize)]
-struct RunRequest {
-    code: String,
-    context: RunContext,
-}
-
-/// The JSON-serializable context fields sent over HTTP to the runtime server.
-#[derive(Serialize, Clone)]
-struct RunContext {
-    author_id: String,
-    username: String,
-    channel_id: String,
-    guild_id: String,
-    message: String,
-    options: HashMap<String, String>,
-    options_list: Vec<String>,
-    trigger: Option<String>,
-    command_name: String,
-    trigger_message_id: Option<String>,
-    #[serde(default)]
-    custom_id: Option<String>,
-    #[serde(default)]
-    modal_values: HashMap<String, String>,
-    #[serde(default)]
-    selected_values: Vec<String>,
-}
 
 async fn resolve_trigger_vars(
     trigger: &str,
@@ -117,135 +88,20 @@ impl Bot {
             .filter(|c| matches!(c.command_type, CommandType::Event))
         {
             let code = cmd.code.clone();
+            let channel_id = context.channel_id.clone();
             drop(commands);
-            if let Some(data) = call_runtime(code, context.clone()).await {
-                send_event_response(ctx, &context, &data).await;
-            }
+            let state = ExecState {
+                db: self.db.clone(),
+                bot_id: self.bot_id.clone(),
+                http: Some(ctx.http.clone()),
+                cache: ctx.cache.clone(),
+            };
+            let data = executor::execute_code(&code, context, &state);
+            send_event_response(ctx, &channel_id, &data).await;
         }
     }
 }
 
-#[derive(Deserialize)]
-struct RunResponse {
-    output: Vec<String>,
-    errors: Vec<String>,
-    should_reply: bool,
-    embeds: Vec<EmbedData>,
-    pending_reactions: Vec<String>,
-    allowed_user_mentions: Option<Vec<String>>,
-    allowed_role_mentions: Option<Vec<String>>,
-    ephemeral: bool,
-    use_channel: Option<String>,
-    #[serde(default)]
-    components: ComponentData,
-}
-
-#[derive(Deserialize, Default)]
-struct ComponentData {
-    #[serde(default)]
-    buttons: Vec<ButtonData>,
-    select_menu: Option<SelectMenuData>,
-    modal: Option<ModalData>,
-    #[serde(default)]
-    deferred: bool,
-}
-
-#[derive(Deserialize)]
-struct ButtonData {
-    custom_id: String,
-    label: String,
-    style: String,
-    #[serde(default)]
-    disabled: bool,
-    emoji: Option<String>,
-    #[serde(default)]
-    new_row: bool,
-}
-
-#[derive(Deserialize)]
-struct SelectMenuData {
-    menu_id: String,
-    #[serde(default = "default_string_kind")]
-    kind: String,
-    #[serde(default = "default_one")]
-    min_values: u8,
-    #[serde(default = "default_one")]
-    max_values: u8,
-    placeholder: Option<String>,
-    #[serde(default)]
-    options: Vec<SelectOptionData>,
-}
-
-fn default_string_kind() -> String {
-    "string".to_string()
-}
-
-fn default_one() -> u8 {
-    1
-}
-
-#[derive(Deserialize)]
-struct SelectOptionData {
-    label: String,
-    value: String,
-    description: Option<String>,
-    emoji: Option<String>,
-    #[serde(default)]
-    default: bool,
-}
-
-#[derive(Deserialize)]
-struct ModalData {
-    modal_id: String,
-    title: String,
-    #[serde(default)]
-    fields: Vec<ModalFieldData>,
-}
-
-#[derive(Deserialize)]
-struct ModalFieldData {
-    field_id: String,
-    label: String,
-    #[serde(default = "default_short")]
-    style: String,
-    min_length: Option<u32>,
-    max_length: Option<u32>,
-    #[serde(default = "default_true")]
-    required: bool,
-    placeholder: Option<String>,
-    value: Option<String>,
-}
-
-fn default_short() -> String {
-    "short".to_string()
-}
-fn default_true() -> bool {
-    true
-}
-
-#[derive(Deserialize)]
-struct EmbedData {
-    title: Option<String>,
-    title_url: Option<String>,
-    description: Option<String>,
-    color: Option<u32>,
-    thumbnail: Option<String>,
-    image: Option<String>,
-    footer: Option<String>,
-    footer_icon: Option<String>,
-    author: Option<String>,
-    author_icon: Option<String>,
-    author_url: Option<String>,
-    timestamp: bool,
-    fields: Vec<EmbedFieldData>,
-}
-
-#[derive(Deserialize)]
-struct EmbedFieldData {
-    name: String,
-    value: String,
-    inline: bool,
-}
 
 pub struct Bot {
     pub commands: CommandMap,
@@ -506,10 +362,13 @@ impl EventHandler for Bot {
                     let code = cmd.code.clone();
                     drop(commands);
 
-                    let data = match call_runtime(code, context).await {
-                        Some(d) => d,
-                        None => return,
+                    let state = ExecState {
+                        db: self.db.clone(),
+                        bot_id: self.bot_id.clone(),
+                        http: Some(ctx.http.clone()),
+                        cache: ctx.cache.clone(),
                     };
+                    let data = executor::execute_code(&code, context, &state);
 
                     send_response(&ctx, &msg, &data).await;
                     return;
@@ -1080,10 +939,13 @@ impl EventHandler for Bot {
                     let code = cmd.code.clone();
                     drop(commands);
 
-                    let data = match call_runtime(code, context).await {
-                        Some(d) => d,
-                        None => return,
+                    let state = ExecState {
+                        db: self.db.clone(),
+                        bot_id: self.bot_id.clone(),
+                        http: Some(ctx.http.clone()),
+                        cache: ctx.cache.clone(),
                     };
+                    let data = executor::execute_code(&code, context, &state);
 
                     let built_embeds = build_embeds(&data.embeds);
                     let text_content = resolve_text_content(&data);
@@ -1200,16 +1062,13 @@ impl EventHandler for Bot {
                     let code = cmd.code.clone();
                     drop(commands);
 
-                    let data = match call_runtime(code, context).await {
-                        Some(d) => d,
-                        None => {
-                            // Still must acknowledge the interaction
-                            let _ = component
-                                .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                                .await;
-                            return;
-                        }
+                    let state = ExecState {
+                        db: self.db.clone(),
+                        bot_id: self.bot_id.clone(),
+                        http: Some(ctx.http.clone()),
+                        cache: ctx.cache.clone(),
                     };
+                    let data = executor::execute_code(&code, context, &state);
 
                     // If Zdefer was called, send a deferred acknowledgment
                     if data.components.deferred {
@@ -1339,15 +1198,13 @@ impl EventHandler for Bot {
                     let code = cmd.code.clone();
                     drop(commands);
 
-                    let data = match call_runtime(code, context).await {
-                        Some(d) => d,
-                        None => {
-                            let _ = modal
-                                .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                                .await;
-                            return;
-                        }
+                    let state = ExecState {
+                        db: self.db.clone(),
+                        bot_id: self.bot_id.clone(),
+                        http: Some(ctx.http.clone()),
+                        cache: ctx.cache.clone(),
                     };
+                    let data = executor::execute_code(&code, context, &state);
 
                     let built_embeds = build_embeds(&data.embeds);
                     let text_content = resolve_text_content(&data);
@@ -1520,7 +1377,7 @@ async fn send_response(ctx: &Context, msg: &Message, data: &RunResponse) {
     }
 }
 
-async fn send_event_response(ctx: &Context, event_context: &RunContext, data: &RunResponse) {
+async fn send_event_response(ctx: &Context, default_channel_id: &str, data: &RunResponse) {
     let built_embeds = build_embeds(&data.embeds);
     let text_content = resolve_text_content(data);
 
@@ -1531,12 +1388,12 @@ async fn send_event_response(ctx: &Context, event_context: &RunContext, data: &R
     let target_channel = if let Some(cid_str) = &data.use_channel {
         if let Ok(cid) = cid_str.parse::<u64>() {
             serenity::model::id::ChannelId::new(cid)
-        } else if let Ok(cid) = event_context.channel_id.parse::<u64>() {
+        } else if let Ok(cid) = default_channel_id.parse::<u64>() {
             serenity::model::id::ChannelId::new(cid)
         } else {
             return;
         }
-    } else if let Ok(cid) = event_context.channel_id.parse::<u64>() {
+    } else if let Ok(cid) = default_channel_id.parse::<u64>() {
         serenity::model::id::ChannelId::new(cid)
     } else {
         return;
@@ -1722,24 +1579,6 @@ fn build_embeds(embeds: &[EmbedData]) -> Vec<CreateEmbed> {
             embed
         })
         .collect()
-}
-
-async fn call_runtime(code: String, context: RunContext) -> Option<RunResponse> {
-    let client = reqwest::Client::new();
-    let request = RunRequest { code, context };
-
-    match client
-        .post("http://localhost:3000/run")
-        .json(&request)
-        .send()
-        .await
-    {
-        Ok(res) => res.json::<RunResponse>().await.ok(),
-        Err(e) => {
-            eprintln!("Failed to reach ZBR server: {}", e);
-            None
-        }
-    }
 }
 
 /// Parse an emoji string into a serenity ReactionType.

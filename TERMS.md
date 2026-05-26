@@ -1,6 +1,6 @@
 # Terms of Service
 
-Last Updated: May 16, 2026
+Last Updated: May 26, 2026
 
 Welcome to ZBR. By adding our bot to your Discord server or using our scripting engine, you agree to these Terms of Service.
 
@@ -13,7 +13,12 @@ By inviting ZBR to your server, you acknowledge and grant the bot permissions to
 - **Moderate Members**: Including kicking, banning, and timing out users (via `Zkick`, `Zban`, `Ztimeout`).
 - **Manage Roles**: Creating, deleting, and assigning roles (via `ZcreateRole`, `ZroleGrant`).
 - **Manage Channels**: Creating and modifying channels (via `ZcreateChannel`, `ZmodifyChannel`).
+- **Manage Server**: Server-wide modifications including lockdown, welcome screen, and server settings (via `ZserverModify`, `ZserverLockdown`, `ZeditWelcomeScreen`).
+- **Manage Automod**: Creating, editing, and deleting automod rules (via `ZautomodRuleCreate`, `ZautomodRuleEdit`, `ZautomodRuleDelete`).
 - **Manage Webhooks**: Creating and deleting webhooks for advanced notifications.
+- **Manage Voice**: Controlling stage channel voice states, including suppressing and allowing speakers (via `ZvoiceSuppress`, `ZvoiceRequestToSpeak`).
+- **Manage Soundboard**: Uploading, editing, and deleting soundboard sounds (via `ZsoundboardCreate`, `ZsoundboardEdit`, `ZsoundboardDelete`).
+- **Manage Polls**: Creating and ending polls (via `ZpollCreate`, `ZpollEnd`).
 - **Interact with Components**: Handling buttons, select menus, and modals.
 
 ## 3. User Conduct
@@ -22,15 +27,19 @@ You agree not to use ZBR for:
 - Spamming, harassment, or spreading malicious software.
 - Bypassing Discord's own Terms of Service or Developer Policy.
 - Making excessive or abusive external HTTP requests using our scripting functions.
+- Creating automod rules that discriminate against protected groups or violate Discord's community guidelines.
+- Uploading prohibited content via sticker or soundboard functions.
 
 ## 4. Scripting Responsibilities
 As ZBR is a scripting engine, the functionality of the bot is determined by the scripts provided by the user/admin. We are not responsible for:
 - The content or consequences of scripts executed by the engine.
 - Data loss or server damage resulting from poorly written or malicious scripts.
 - Unexpected bot behavior due to script logic.
+- The content of files uploaded via sticker or soundboard functions.
+- The configuration or enforcement of automod rules created through the engine.
 
 ## 5. External Communications
-ZBR scripts have the capability to make external HTTP requests (`ZhttpGet`, `ZhttpPost`, etc.). You are responsible for ensuring that these requests comply with the terms of the receiving services and do not transmit sensitive data insecurely.
+ZBR scripts have the capability to make external HTTP requests (`ZhttpGet`, `ZhttpPost`, etc.). The engine includes built-in SSRF protection that blocks requests to private, reserved, or known-dangerous IP addresses. You remain responsible for ensuring that your requests comply with the terms of the receiving services and do not transmit sensitive data insecurely.
 
 ## 6. Limitation of Liability
 ZBR is provided "as is" and "as available" without any warranties. In no event shall the developers be liable for any damages arising out of the use or inability to use the service.

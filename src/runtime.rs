@@ -233,7 +233,7 @@ impl Runtime {
                 Ok(FnOutput::Text(result))
             }
             Node::FunctionCall { name, args } => {
-                // ── Lazy special cases ────────────────────────────────────────
+                // ── Lazy special cases
                 if name == "if" {
                     return self.evaluate_if(args);
                 }

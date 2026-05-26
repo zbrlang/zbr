@@ -4,6 +4,49 @@ All notable changes to the ZBR project are documented here and in the [changelog
 
 ---
 
+## v1.3.0 - In-process engine, automod, polls, soundboard, and utility functions
+
+This release eliminates the HTTP runtime server, running the engine in-process for lower latency and simpler deployment. It also adds 5 new function categories and over 30 new functions.
+
+### Core
+- **Removed HTTP runtime server** — The Axum-based HTTP server (`/run` endpoint) is gone. Code execution now happens directly in-process via the new `executor` module, eliminating network overhead and the need for `axum`, `tower`, and `tower-http` dependencies.
+- **SSRF Protection** — HTTP functions now validate URLs against a blocklist of private/reserved IPs and known dangerous hostnames before executing requests.
+- **Header Validation** — `ZhttpAddHeader` blocks dangerous headers (cookie, host, connection, transfer-encoding, etc.) for security.
+- **Auto Content-Type** — HTTP requests with JSON-like bodies now auto-detect and set `Content-Type: application/json` when no content type header is present.
+- `ZstartThread` now accepts a 6th `private` argument to create private or public threads.
+- Commented-out `ZonlyForIDs` guard added to the eval example command.
+- Added `url`, `base64`, `sha2`, `md-5` dependencies.
+
+### New function categories
+
+**Automod**
+`ZautomodRule`, `ZautomodRuleCreate`, `ZautomodRuleEdit`, `ZautomodRuleDelete`, `ZautomodRules`
+Alias: `ZautomodRuleUpdate` → `ZautomodRuleEdit`
+
+**Application Emojis**
+`ZappEmojis`, `ZappEmojiCreate`, `ZappEmojiDelete`
+
+**Polls**
+`ZpollAddAnswer`, `ZpollAllowMultiselect`, `ZpollAnswerVoters`, `ZpollAnswerVotes`, `ZpollCreate`, `ZpollEnd`, `ZpollGet`, `ZpollSend`
+
+**Soundboard**
+`ZsoundboardCreate`, `ZsoundboardDefaultSounds`, `ZsoundboardDelete`, `ZsoundboardEdit`, `ZsoundboardPlay`, `ZsoundboardSound`, `ZsoundboardSounds`
+
+**Utility**
+`Zbase64Decode`, `Zbase64Encode`, `Zduration`, `Zentitlements`, `Zmd5`, `Zsha256`, `Zskus`
+
+### New individual functions
+
+**Channel** — `ZsyncPerms`
+**Forum** — `ZforumPostLock`, `ZforumPostPin`
+**Message** — `ZpinList`
+**Server** — `ZserverLockdown`, `ZserverModify`, `ZeditWelcomeScreen`, `ZwelcomeScreen`
+**Sticker** — `ZstickerCreate`, `ZstickerEdit`
+**Thread** — `ZthreadArchive`, `ZthreadList`, `ZthreadMetadata`, `ZthreadPin`, `ZthreadUnarchive`
+**Voice** — `ZvoiceRequestToSpeak`, `ZvoiceStatus`, `ZvoiceSuppress`
+
+---
+
 ## v1.2.0 - Bot owner fix, server/thread/voice functions, and CLI improvements
 
 This release fixes bot owner resolution for team/group bots, adds new server/thread/voice functions, improves CLI command support, and expands project initialization.

@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last Updated: May 16, 2026
+Last Updated: May 26, 2026
 
 Your privacy is important to us. This policy explains what data ZBR collects, how it is used, and your rights regarding that data.
 
@@ -22,10 +22,13 @@ ZBR collects and stores data necessary to provide its scripting and automation s
 - **SQLite Database**: All persistent data is stored in a local SQLite database.
 - **Encryption**: We recommend securing the environment where the bot is hosted, as the database itself is stored in plain text by default.
 - **Data Retention**: Data in variables is stored until explicitly deleted by a script (e.g., `ZresetUserVar`) or until the database is cleared.
+- **SSRF Protection**: HTTP functions include built-in URL validation that blocks requests to private, reserved, or known-dangerous IP addresses to prevent server-side request forgery attacks.
+- **Header Filtering**: Dangerous HTTP headers (cookie, host, connection, etc.) are blocked from being set by scripts to prevent request smuggling and header injection.
 
 ## 4. Third-Party Sharing
-- **Discord**: Data is shared with Discord as part of standard bot operations (sending messages, managing roles).
-- **External APIs**: If a script uses ZBR's HTTP functions (`ZhttpPost`, `ZhttpGet`, etc.), data may be sent to external URLs specified in the script. Users should be aware of where their scripts are sending data.
+- **Discord**: Data is shared with Discord as part of standard bot operations (sending messages, managing roles, modifying automod rules, managing polls, soundboard sounds, and stickers).
+- **External APIs**: If a script uses ZBR's HTTP functions (`ZhttpPost`, `ZhttpGet`, etc.), data may be sent to external URLs specified in the script. All URLs are validated against an SSRF blocklist before requests are made. Users should still be aware of where their scripts are sending data.
+- **File Uploads**: Functions that accept file URLs (`ZstickerCreate`, `ZsoundboardCreate`) will download content from the specified URL and relay it to Discord. The content itself is not stored by the ZBR engine.
 - **No Sale of Data**: We do not sell, trade, or otherwise transfer your personal information to outside parties for marketing purposes.
 
 ## 5. User Rights and Control

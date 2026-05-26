@@ -7,11 +7,12 @@ use serenity::model::Timestamp;
 
 const MAX_TIMEOUT_SECS: i64 = 28 * 24 * 3600; // 28 days
 
-/// Ztimeout{userID;duration}
+/// Ztimeout{userIDs;duration}
+/// userIDs: single user ID or semicolon-separated list.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let uid_str = match args.get(0) {
+    let uids_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("timeout", "userID is required"),
+        _ => return FnOutput::error("timeout", "userIDs is required"),
     };
 
     let dur_str = match args.get(1) {
@@ -19,10 +20,18 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         _ => return FnOutput::error("timeout", "duration is required"),
     };
 
-    let uid: u64 = match uid_str.parse() {
-        Ok(id) => id,
-        Err(_) => return FnOutput::error("timeout", format!("invalid user ID: '{}'", uid_str)),
+    let user_ids: Vec<u64> = match uids_str
+        .split(';')
+        .map(|s| s.trim().parse())
+        .collect::<Result<Vec<_>, _>>()
+    {
+        Ok(ids) => ids,
+        Err(_) => return FnOutput::error("timeout", format!("invalid user ID: '{}'", uids_str)),
     };
+
+    if user_ids.is_empty() {
+        return FnOutput::error("timeout", "userIDs is required");
+    }
 
     let secs = match parse_duration(&dur_str) {
         Ok(s) => s,
@@ -49,17 +58,34 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         None => return FnOutput::error("timeout", "no HTTP client available"),
     };
 
-    let result = tokio::task::block_in_place(|| {
+    let gid = GuildId::new(gid);
+    let mut timed_out: Vec<String> = Vec::new();
+    let mut errors: Vec<String> = Vec::new();
+
+    let results: Vec<(String, bool)> = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
+            let mut results = Vec::new();
             let builder = EditMember::new().disable_communication_until_datetime(timestamp);
-            GuildId::new(gid)
-                .edit_member(&http, UserId::new(uid), builder)
-                .await
+            for uid in &user_ids {
+                match gid.edit_member(&http, UserId::new(*uid), builder.clone()).await {
+                    Ok(_) => results.push((uid.to_string(), true)),
+                    Err(_) => results.push((uid.to_string(), false)),
+                }
+            }
+            results
         })
     });
 
-    match result {
-        Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("timeout", "failed to timeout user"),
+    for (id, ok) in results {
+        if ok { timed_out.push(id); } else { errors.push(id); }
     }
+
+    let mut parts = Vec::new();
+    if !timed_out.is_empty() {
+        parts.push(format!("timed out: {}", timed_out.join(", ")));
+    }
+    if !errors.is_empty() {
+        parts.push(format!("failed: {}", errors.join(", ")));
+    }
+    FnOutput::Text(parts.join(" | "))
 }

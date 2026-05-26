@@ -3,4 +3,7 @@
 #type prefix
 #description Evaluates the provided code and returns the result. Use with caution, as this command can execute arbitrary code.
 
+// Eval is a dangerous command, it allows anyone to run ZBR code like Zban without being a administrator.
+// Use only for IDs to only allow bot developers to use the command.
+// ZonlyForIDs{ZbotOwnerID{}}
 Zeval{Zmessage{}}

@@ -12,6 +12,7 @@ pub mod isMessageEdited;
 pub mod mentioned;
 pub mod messageID;
 pub mod messageLink;
+pub mod pinList;
 pub mod pinMessage;
 pub mod publishMessage;
 pub mod repliedMessageID;

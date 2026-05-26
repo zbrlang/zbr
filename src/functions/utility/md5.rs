@@ -1,0 +1,13 @@
+use crate::context::{DiscordContext, FnOutput};
+use md5::{Digest, Md5};
+
+/// Zmd5{text}
+/// Returns the MD5 hash of the input text in hexadecimal.
+pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
+    let text = args.get(0).cloned().unwrap_or_default();
+    if text.is_empty() {
+        return FnOutput::error("md5", "text is required");
+    }
+    let hash = Md5::digest(text.as_bytes());
+    FnOutput::Text(format!("{:x}", hash))
+}

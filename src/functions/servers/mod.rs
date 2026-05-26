@@ -11,4 +11,8 @@ pub mod serverEmojis;
 pub mod serverIcon;
 pub mod serverName;
 pub mod serverOwner;
+pub mod serverLockdown;
+pub mod serverModify;
 pub mod serverVerificationLevel;
+pub mod editWelcomeScreen;
+pub mod welcomeScreen;
