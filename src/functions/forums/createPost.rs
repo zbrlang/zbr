@@ -8,11 +8,11 @@ use serenity::model::id::{ChannelId, ForumTagId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("createPost", "channelID is required"),
+        _ => return FnOutput::error("createPost", crate::error_messages::required(1, "channelID")),
     };
     let title = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("createPost", "title is required"),
+        _ => return FnOutput::error("createPost", crate::error_messages::required(2, "title")),
     };
     let content = args.get(2).cloned().unwrap_or_default();
     let tag_ids: Vec<u64> = args
@@ -26,7 +26,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("createPost", "invalid channel ID"),
+        Err(_) => return FnOutput::error("createPost", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),
@@ -44,7 +44,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 .create_forum_post(&http, builder)
                 .await
                 .map(|thread| thread.id.to_string())
-                .map_err(|e| format!("failed to create post: {}", e))
+                .map_err(|e| crate::error_messages::action_failed_reason("create post", &e.to_string()))
         })
     });
 

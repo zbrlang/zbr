@@ -9,12 +9,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("automodRuleDelete", "invalid guild ID"),
+        Err(_) => return FnOutput::error("automodRuleDelete", crate::error_messages::expected_snowflake(1, "guild ID", &guild_id_str)),
     };
 
     let rule_id: u64 = match rule_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("automodRuleDelete", "invalid rule ID"),
+        Err(_) => return FnOutput::error("automodRuleDelete", crate::error_messages::expected_snowflake(2, "rule ID", &rule_id_str)),
     };
 
     let http = match &ctx.http {

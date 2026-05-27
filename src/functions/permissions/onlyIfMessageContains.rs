@@ -5,7 +5,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Last arg is always the error message.
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     if args.len() < 3 {
-        return FnOutput::error("onlyIfMessageContains", "message, at least one word, and an error message are required");
+        return FnOutput::error("onlyIfMessageContains", crate::error_messages::too_few_args(3, args.len()));
     }
 
     let message = args[0].to_lowercase();

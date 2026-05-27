@@ -8,7 +8,7 @@ use serenity::model::id::{ChannelId, MessageId};
 /// Requires MANAGE_MESSAGES permission.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 3 {
-        return FnOutput::error("clearReactions", "requires channelID, messageID, and emoji (or !all)");
+        return FnOutput::error("clearReactions", crate::error_messages::too_few_args(3, args.len()));
     }
 
     let http = match &ctx.http {

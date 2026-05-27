@@ -9,16 +9,16 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         _ => ctx.channel_id.clone(),
     };
     if cid_str.is_empty() {
-        return FnOutput::error("slowMode", "channel ID is required");
+        return FnOutput::error("slowMode", crate::error_messages::required(1, "channel ID"));
     }
     let dur_str = args.get(1).cloned().unwrap_or_default();
     if dur_str.is_empty() {
-        return FnOutput::error("slowMode", "duration is required");
+        return FnOutput::error("slowMode", crate::error_messages::required(2, "duration"));
     }
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("slowMode", format!("invalid channel ID: '{}'", cid_str)),
+        Err(_) => return FnOutput::error("slowMode", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),
     };
 
     // "0" or "0s" disables slowmode
@@ -31,7 +31,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         // duration string like "30s", "1m30s", etc.
         match parse_duration(&dur_str) {
             Ok(s) => s as u64,
-            Err(_) => return FnOutput::error("slowMode", format!("invalid duration: '{}'", dur_str)),
+            Err(_) => return FnOutput::error("slowMode", crate::error_messages::expected_duration(2, "duration", &dur_str)),
         }
     };
 
@@ -54,6 +54,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("slowMode", "channel not found"),
+        Err(_) => FnOutput::error("slowMode", crate::error_messages::not_found("channel", &cid_str)),
     }
 }

@@ -15,12 +15,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id = match guild_id_str.parse::<u64>() {
         Ok(id) => GuildId::new(id),
-        Err(_) => return FnOutput::error("serverEmojis", "guild not found"),
+        Err(_) => return FnOutput::error("serverEmojis", crate::error_messages::not_found("guild", &guild_id_str)),
     };
 
     let http = match ctx.http.as_ref() {
         Some(h) => h.clone(),
-        None => return FnOutput::error("serverEmojis", "no HTTP client available"),
+        None => return FnOutput::error("serverEmojis", crate::error_messages::action_failed("get HTTP client")),
     };
     tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
@@ -32,7 +32,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     }
                     FnOutput::Text(emojis.join(&separator))
                 }
-                Err(_) => FnOutput::error("serverEmojis", "guild not found"),
+                Err(_) => FnOutput::error("serverEmojis", crate::error_messages::not_found("guild", &guild_id_str)),
             }
         })
     })

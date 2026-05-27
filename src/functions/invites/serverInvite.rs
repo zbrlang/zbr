@@ -9,7 +9,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id = match guild_id_str.parse::<u64>() {
         Ok(id) => GuildId::new(id),
-        Err(_) => return FnOutput::error("serverInvite", "guild not found"),
+        Err(_) => return FnOutput::error("serverInvite", crate::error_messages::not_found("guild", &guild_id_str)),
     };
 
     let http = match &ctx.http {
@@ -24,9 +24,9 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 Err(e) => {
                     let err_str = e.to_string();
                     if err_str.contains("Missing Permissions") || err_str.contains("403") {
-                        return Err("missing MANAGE_GUILD permission");
+                        return Err(crate::error_messages::missing_permission("MANAGE_GUILD"));
                     }
-                    return Err("failed to fetch invites");
+                    return Err(crate::error_messages::action_failed("fetch invites"));
                 }
             };
             

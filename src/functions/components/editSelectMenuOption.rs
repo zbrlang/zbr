@@ -7,15 +7,15 @@ use serenity::model::id::{ChannelId, MessageId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let menu_id = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("editSelectMenuOption", "menuID is required"),
+        _ => return FnOutput::error("editSelectMenuOption", crate::error_messages::required(1, "menuID")),
     };
     let label = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("editSelectMenuOption", "label is required"),
+        _ => return FnOutput::error("editSelectMenuOption", crate::error_messages::required(2, "label")),
     };
     let value = match args.get(2) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("editSelectMenuOption", "value is required"),
+        _ => return FnOutput::error("editSelectMenuOption", crate::error_messages::required(3, "value")),
     };
     let description = match args.get(3) {
         Some(s) if !s.is_empty() => Some(s.clone()),
@@ -29,7 +29,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => match &ctx.trigger_message_id {
             Some(id) => id.clone(),
-            None => return FnOutput::error("editSelectMenuOption", "messageID is required"),
+            None => return FnOutput::error("editSelectMenuOption", crate::error_messages::required(7, "messageID")),
         },
     };
 
@@ -39,7 +39,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let mid: u64 = match mid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("editSelectMenuOption", format!("invalid message ID: '{}'", mid_str)),
+        Err(_) => return FnOutput::error("editSelectMenuOption", crate::error_messages::expected_snowflake(7, "message ID", &mid_str)),
     };
 
     let http = match &ctx.http {
@@ -69,6 +69,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("editSelectMenuOption", "failed to edit select menu option"),
+        Err(_) => FnOutput::error("editSelectMenuOption", crate::error_messages::action_failed("edit select menu option")),
     }
 }

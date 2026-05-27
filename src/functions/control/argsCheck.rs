@@ -8,9 +8,9 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let min: usize = match args.get(0) {
         Some(s) if !s.is_empty() => match s.parse() {
             Ok(n) => n,
-            Err(_) => return FnOutput::error("argsCheck", format!("invalid min: '{}'", s)),
+            Err(_) => return FnOutput::error("argsCheck", crate::error_messages::expected_integer(1, "min", s)),
         },
-        _ => return FnOutput::error("argsCheck", "min is required"),
+        _ => return FnOutput::error("argsCheck", crate::error_messages::required(1, "min")),
     };
 
     // If 3 args: min;max;error. If 2 args: min;error (no max).
@@ -21,7 +21,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         } else {
             match max_str.parse() {
                 Ok(n) => Some(n),
-                Err(_) => return FnOutput::error("argsCheck", format!("invalid max: '{}'", max_str)),
+                Err(_) => return FnOutput::error("argsCheck", crate::error_messages::expected_integer(2, "max", max_str)),
             }
         };
         let err = args.get(2).cloned().unwrap_or_default();

@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Halts if the author's ID is in the provided list.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("blackListIDs", "at least one user ID is required");
+        return FnOutput::error("blackListIDs", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (ids, error_msg) = split_ids_and_error(&args);

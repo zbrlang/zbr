@@ -9,7 +9,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("channelInvites", "invalid channel ID"),
+        Err(_) => return FnOutput::error("channelInvites", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),

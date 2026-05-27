@@ -5,7 +5,7 @@ use serenity::model::id::{GuildId, UserId};
 /// Halts if the author has any role matching the provided names.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("blackListRoles", "at least one role name is required");
+        return FnOutput::error("blackListRoles", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (role_names, error_msg) = split_last_as_error(&args);
@@ -20,7 +20,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("blackListRoles", "not in a guild"),
+        Err(_) => return FnOutput::error("blackListRoles", crate::error_messages::not_in_guild()),
     };
 
     let user_id: u64 = match ctx.author_id.parse() {

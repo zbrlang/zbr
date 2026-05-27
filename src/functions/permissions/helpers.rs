@@ -53,7 +53,7 @@ pub fn parse_permissions(args: &[String]) -> Result<Permissions, String> {
     for arg in args {
         match parse_permission(arg) {
             Some(p) => combined |= p,
-            None => return Err(format!("unknown permission: '{}'", arg)),
+            None => return Err(crate::error_messages::unknown_permission(arg)),
         }
     }
     Ok(combined)
@@ -67,11 +67,11 @@ pub async fn member_guild_permissions(
     member: &Member,
 ) -> Result<Permissions, String> {
     let roles = GuildId::new(guild_id).roles(http).await
-        .map_err(|e| format!("failed to fetch roles: {}", e))?;
+        .map_err(|e| crate::error_messages::action_failed_reason("fetch roles", &format!("{}", e)))?;
 
     // Check if guild owner
     let guild = GuildId::new(guild_id).to_partial_guild(http).await
-        .map_err(|e| format!("failed to fetch guild: {}", e))?;
+        .map_err(|e| crate::error_messages::action_failed_reason("fetch guild", &format!("{}", e)))?;
 
     if guild.owner_id == member.user.id {
         return Ok(Permissions::all());

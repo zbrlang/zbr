@@ -12,7 +12,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let uid: u64 = match uid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("username", format!("invalid user ID: '{}'", uid_str)),
+        Err(_) => return FnOutput::error("username", crate::error_messages::expected_snowflake(1, "userID", &uid_str)),
     };
 
     let http = match &ctx.http {
@@ -28,6 +28,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(user) => FnOutput::Text(user.name.clone()),
-        Err(_) => FnOutput::error("username", "user not found"),
+        Err(_) => FnOutput::error("username", crate::error_messages::not_found("user", &uid_str)),
     }
 }

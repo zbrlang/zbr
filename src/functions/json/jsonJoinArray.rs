@@ -5,7 +5,7 @@ use super::helpers::{with_json, get_at_path};
 /// Joins all elements of the array at the given key path into a string using separator.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 2 {
-        return FnOutput::error("jsonJoinArray", "at least one key and a separator are required");
+        return FnOutput::error("jsonJoinArray", crate::error_messages::too_few_args(2, args.len()));
     }
 
     let separator = args.last().unwrap().clone();
@@ -16,7 +16,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         .collect();
 
     if keys.is_empty() {
-        return FnOutput::error("jsonJoinArray", "at least one key is required");
+        return FnOutput::error("jsonJoinArray", crate::error_messages::required(1, "key"));
     }
 
     with_json(ctx, |obj| match obj {

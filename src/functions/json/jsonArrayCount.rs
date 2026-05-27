@@ -6,7 +6,7 @@ use super::helpers::{with_json, get_at_path};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let keys: Vec<String> = args.into_iter().filter(|s| !s.is_empty()).collect();
     if keys.is_empty() {
-        return FnOutput::error("jsonArrayCount", "at least one key is required");
+        return FnOutput::error("jsonArrayCount", crate::error_messages::required(1, "key"));
     }
 
     with_json(ctx, |obj| match obj {

@@ -2,6 +2,7 @@ mod ast;
 mod bot;
 mod context;
 mod db;
+mod error_messages;
 mod executor;
 mod functions;
 mod loader;

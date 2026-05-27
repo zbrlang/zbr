@@ -5,11 +5,11 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("varExistError", "variable name is required"),
+        _ => return FnOutput::error("varExistError", crate::error_messages::required(1, "name")),
     };
     let error_msg = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("varExistError", "error message is required"),
+        _ => return FnOutput::error("varExistError", crate::error_messages::required(2, "error")),
     };
 
     let bot_id = ctx.bot_id.clone();

@@ -9,22 +9,22 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let role_id_str = args.get(1).cloned().unwrap_or_default();
 
     if role_id_str.is_empty() {
-        return FnOutput::error("hasRole", "role ID is required");
+        return FnOutput::error("hasRole", crate::error_messages::required(2, "role ID"));
     }
 
     let uid: u64 = match user_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("hasRole", "invalid user ID"),
+        Err(_) => return FnOutput::error("hasRole", crate::error_messages::expected_snowflake(1, "user ID", &user_id_str)),
     };
 
     let rid: u64 = match role_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("hasRole", "invalid role ID"),
+        Err(_) => return FnOutput::error("hasRole", crate::error_messages::expected_snowflake(2, "role ID", &role_id_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("hasRole", "not in a guild"),
+        Err(_) => return FnOutput::error("hasRole", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -48,6 +48,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         } else {
             "false".to_string()
         }),
-        Err(_) => FnOutput::error("hasRole", "user not found"),
+        Err(_) => FnOutput::error("hasRole", crate::error_messages::not_found("user", &user_id_str)),
     }
 }

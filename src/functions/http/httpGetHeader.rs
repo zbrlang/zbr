@@ -5,7 +5,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("httpGetHeader", "header name is required"),
+        _ => return FnOutput::error("httpGetHeader", crate::error_messages::required(1, "header name")),
     };
 
     let value = tokio::task::block_in_place(|| {

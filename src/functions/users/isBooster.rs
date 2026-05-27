@@ -10,12 +10,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let uid: u64 = match user_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("isBooster", "invalid userID"),
+        Err(_) => return FnOutput::error("isBooster", crate::error_messages::expected_snowflake(1, "userID", &user_id_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("isBooster", "not in a guild"),
+        Err(_) => return FnOutput::error("isBooster", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -37,6 +37,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 FnOutput::Text("false".to_string())
             }
         }
-        Err(_) => FnOutput::error("isBooster", "user not found"),
+        Err(_) => FnOutput::error("isBooster", crate::error_messages::not_found("user", &user_id_str)),
     }
 }

@@ -9,12 +9,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id = match guild_id_str.parse::<u64>() {
         Ok(id) => GuildId::new(id),
-        Err(_) => return FnOutput::error("serverIcon", "guild not found"),
+        Err(_) => return FnOutput::error("serverIcon", crate::error_messages::not_found("guild", &guild_id_str)),
     };
 
     let http = match ctx.http.as_ref() {
         Some(h) => h.clone(),
-        None => return FnOutput::error("serverIcon", "no HTTP client available"),
+        None => return FnOutput::error("serverIcon", crate::error_messages::action_failed("get HTTP client")),
     };
     tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
@@ -23,7 +23,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     Some(url) => FnOutput::Text(url),
                     None => FnOutput::Text(String::new()),
                 },
-                Err(_) => FnOutput::error("serverIcon", "guild not found"),
+                Err(_) => FnOutput::error("serverIcon", crate::error_messages::not_found("guild", &guild_id_str)),
             }
         })
     })

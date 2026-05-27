@@ -2,5 +2,5 @@
 // This stub is never called — the runtime intercepts "forJson" before resolving args.
 use crate::context::{DiscordContext, FnOutput};
 pub fn run(_args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
-    FnOutput::error("forJson", "internal error: ZforJson should be handled by the runtime")
+    FnOutput::error("forJson", crate::error_messages::internal_error("ZforJson should be handled by the runtime"))
 }

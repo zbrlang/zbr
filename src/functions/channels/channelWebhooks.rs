@@ -13,20 +13,20 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Err(_) => {
             return FnOutput::error(
                 "channelWebhooks",
-                format!("invalid channel ID: '{}'", channel_id_str),
+                crate::error_messages::expected_snowflake(1, "channel ID", &channel_id_str),
             )
         }
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("channelWebhooks", "no HTTP client available"),
+        None => return FnOutput::error("channelWebhooks", crate::error_messages::requires_set_first("HTTP client")),
     };
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             ChannelId::new(cid)
                 .webhooks(&http)
                 .await
-                .map_err(|e| format!("failed to fetch webhooks: {}", e))
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch webhooks", &e.to_string()))
         })
     });
     match result {

@@ -12,7 +12,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Err(_) => {
             return FnOutput::error(
                 "channelCreated",
-                format!("invalid channel ID: '{}'", id_str),
+                crate::error_messages::expected_snowflake(1, "channel ID", &id_str),
             )
         }
     };

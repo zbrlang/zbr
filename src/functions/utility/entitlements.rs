@@ -7,7 +7,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("entitlements", "no HTTP client available"),
+        None => return FnOutput::error("entitlements", crate::error_messages::action_failed("get HTTP client")),
     };
 
     let token = http.token().to_string();

@@ -5,7 +5,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let gid_str = args.get(0).cloned().unwrap_or_else(|| ctx.guild_id.clone());
     let gid: u64 = match gid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("rulesChannelID", "invalid guild ID"),
+        Err(_) => return FnOutput::error("rulesChannelID", crate::error_messages::expected_snowflake(1, "guild ID", &gid_str)),
     };
 
     let http = match &ctx.http {
@@ -26,6 +26,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 None => FnOutput::Text("".to_string()),
             }
         }
-        Err(_) => FnOutput::error("rulesChannelID", "failed to fetch guild"),
+        Err(_) => FnOutput::error("rulesChannelID", crate::error_messages::action_failed("fetch guild")),
     }
 }

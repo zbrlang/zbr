@@ -4,12 +4,12 @@ use serenity::model::id::GuildId;
 pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("channelCount", "not in a guild"),
+        Err(_) => return FnOutput::error("channelCount", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("channelCount", "no HTTP client available"),
+        None => return FnOutput::error("channelCount", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -20,6 +20,6 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(channels) => FnOutput::Text(channels.len().to_string()),
-        Err(_) => FnOutput::error("channelCount", "failed to fetch channels"),
+        Err(_) => FnOutput::error("channelCount", crate::error_messages::action_failed("fetch channels")),
     }
 }

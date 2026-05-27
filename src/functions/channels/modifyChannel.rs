@@ -5,12 +5,12 @@ use serenity::builder::EditChannel;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = args.get(0).cloned().unwrap_or_default();
     if cid_str.is_empty() {
-        return FnOutput::error("modifyChannel", "channel ID is required");
+        return FnOutput::error("modifyChannel", crate::error_messages::required(1, "channel ID"));
     }
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("modifyChannel", format!("invalid channel ID: '{}'", cid_str)),
+        Err(_) => return FnOutput::error("modifyChannel", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),
     };
 
     let name = args.get(1).cloned().unwrap_or_else(|| "!unchanged".to_string());
@@ -31,14 +31,14 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         let nsfw = match nsfw_str.as_str() {
             "true" => true,
             "false" => false,
-            _ => return FnOutput::error("modifyChannel", format!("invalid boolean for nsfw: '{}'", nsfw_str)),
+            _ => return FnOutput::error("modifyChannel", crate::error_messages::expected_boolean(4, "nsfw", &nsfw_str)),
         };
         builder = builder.nsfw(nsfw);
     }
     if position_str != "!unchanged" {
         let pos: u16 = match position_str.parse() {
             Ok(p) => p,
-            Err(_) => return FnOutput::error("modifyChannel", format!("invalid position: '{}'", position_str)),
+            Err(_) => return FnOutput::error("modifyChannel", crate::error_messages::expected_integer(5, "position", &position_str)),
         };
         builder = builder.position(pos);
     }
@@ -50,7 +50,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         } else {
             let cat_id: u64 = match category_id_str.parse() {
                 Ok(id) => id,
-                Err(_) => return FnOutput::error("modifyChannel", format!("invalid category ID: '{}'", category_id_str)),
+                Err(_) => return FnOutput::error("modifyChannel", crate::error_messages::expected_snowflake(6, "category ID", &category_id_str)),
             };
             builder = builder.category(Some(ChannelId::new(cat_id)));
         }
@@ -58,7 +58,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("modifyChannel", "no HTTP client available"),
+        None => return FnOutput::error("modifyChannel", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -69,6 +69,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("modifyChannel", "channel not found"),
+        Err(_) => FnOutput::error("modifyChannel", crate::error_messages::not_found("channel", &cid_str)),
     }
 }

@@ -16,7 +16,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let user_id = match user_id_str.parse::<u64>() {
         Ok(id) => UserId::new(id),
-        Err(_) => return FnOutput::error("userStatus", "invalid user ID"),
+        Err(_) => return FnOutput::error("userStatus", crate::error_messages::expected_snowflake(1, "userID", &user_id_str)),
     };
 
     let guild_id = match ctx.guild_id.parse::<u64>() {

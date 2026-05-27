@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Lists the bot application's emojis as a JSON array.
 pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if ctx.bot_id.is_empty() {
-        return FnOutput::error("appEmojis", "no bot ID available");
+        return FnOutput::error("appEmojis", crate::error_messages::requires_set_first("bot ID"));
     }
 
     let http = match &ctx.http {

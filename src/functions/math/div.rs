@@ -6,15 +6,15 @@ use super::helpers::parse_f64;
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let mut iter = args.iter().enumerate();
     let (_, first) = iter.next().unwrap();
-    let mut result = match parse_f64(first, "div", "argument 1") {
+    let mut result = match parse_f64(first, "div", 1, "value") {
         Ok(v) => v, Err(e) => return e,
     };
     for (i, arg) in iter {
-        let n = match parse_f64(arg, "div", &format!("argument {}", i + 1)) {
+        let n = match parse_f64(arg, "div", i + 1, "divisor") {
             Ok(v) => v, Err(e) => return e,
         };
         if n == 0.0 {
-            return FnOutput::error("div", "cannot divide by zero");
+            return FnOutput::error("div", crate::error_messages::action_failed("divide by zero"));
         }
         result /= n;
     }

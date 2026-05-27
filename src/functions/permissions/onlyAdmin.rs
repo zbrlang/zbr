@@ -16,7 +16,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("onlyAdmin", "not in a guild"),
+        Err(_) => return FnOutput::error("onlyAdmin", crate::error_messages::not_in_guild()),
     };
 
     let user_id: u64 = match ctx.author_id.parse() {
@@ -27,7 +27,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             let member = GuildId::new(guild_id).member(&http, UserId::new(user_id)).await
-                .map_err(|e| format!("failed to fetch member: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch member", &format!("{}", e)))?;
             let perms = member_guild_permissions(&http, guild_id, &member).await?;
             Ok::<bool, String>(perms.contains(Permissions::ADMINISTRATOR))
         })

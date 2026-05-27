@@ -5,12 +5,12 @@ use serenity::model::id::{GuildId, UserId};
 /// Halts unless the author has any of the provided role IDs.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("onlyForRoleIDs", "at least one role ID is required");
+        return FnOutput::error("onlyForRoleIDs", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (ids, error_msg) = split_ids_and_error(&args);
     if ids.is_empty() {
-        return FnOutput::error("onlyForRoleIDs", "at least one role ID is required");
+        return FnOutput::error("onlyForRoleIDs", crate::error_messages::too_few_args(1, ids.len()));
     }
 
     let role_ids: Vec<u64> = match ids.iter().map(|s| s.parse::<u64>()).collect::<Result<Vec<_>, _>>() {
@@ -25,7 +25,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("onlyForRoleIDs", "not in a guild"),
+        Err(_) => return FnOutput::error("onlyForRoleIDs", crate::error_messages::not_in_guild()),
     };
 
     let user_id: u64 = match ctx.author_id.parse() {
@@ -36,7 +36,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             let member = GuildId::new(guild_id).member(&http, UserId::new(user_id)).await
-                .map_err(|e| format!("failed to fetch member: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch member", &format!("{}", e)))?;
             let has_role = member.roles.iter().any(|r| role_ids.contains(&r.get()));
             Ok::<bool, String>(has_role)
         })

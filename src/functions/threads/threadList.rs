@@ -12,12 +12,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("threadList", "invalid channel ID"),
+        Err(_) => return FnOutput::error("threadList", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("threadList", "not in a guild"),
+        Err(_) => return FnOutput::error("threadList", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {

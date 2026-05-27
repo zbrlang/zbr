@@ -15,7 +15,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("editWelcomeScreen", "invalid guild ID"),
+        Err(_) => return FnOutput::error("editWelcomeScreen", crate::error_messages::expected_snowflake(1, "guild ID", &guild_id_str)),
     };
 
     let enabled = match enabled_str.as_str() {

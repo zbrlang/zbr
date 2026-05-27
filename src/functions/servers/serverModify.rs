@@ -13,17 +13,17 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         .cloned()
         .unwrap_or_else(|| ctx.guild_id.clone());
     if guild_id_str.is_empty() {
-        return FnOutput::error("serverModify", "not in a guild");
+        return FnOutput::error("serverModify", crate::error_messages::not_in_guild());
     }
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("serverModify", "invalid guild ID"),
+        Err(_) => return FnOutput::error("serverModify", crate::error_messages::expected_snowflake(1, "guild ID", &guild_id_str)),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("serverModify", "no HTTP client available"),
+        None => return FnOutput::error("serverModify", crate::error_messages::action_failed("get HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -42,7 +42,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 } else {
                     let attachment = serenity::builder::CreateAttachment::url(&http, icon)
                         .await
-                        .map_err(|e| format!("failed to download icon: {}", e))?;
+                        .map_err(|e| crate::error_messages::action_failed_reason("download icon", &format!("{}", e)))?;
                     builder = builder.icon(Some(&attachment));
                 }
             }
@@ -100,7 +100,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     "medium" => VerificationLevel::Medium,
                     "high" => VerificationLevel::High,
                     "very_high" | "higher" => VerificationLevel::Higher,
-                    _ => return Err(format!("invalid verificationLevel: '{}'", ver_level)),
+                    _ => return Err(crate::error_messages::expected_choice(10, "verificationLevel", "none, low, medium, high, very_high", ver_level)),
                 };
                 builder = builder.verification_level(lvl);
             }

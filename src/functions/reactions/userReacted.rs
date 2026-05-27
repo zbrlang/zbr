@@ -7,7 +7,7 @@ use serenity::model::id::{ChannelId, MessageId, UserId};
 /// Returns "true" if the user reacted with the emoji, "false" otherwise.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 4 {
-        return FnOutput::error("userReacted", "requires channelID, messageID, userID, and emoji");
+        return FnOutput::error("userReacted", crate::error_messages::too_few_args(4, args.len()));
     }
 
     let http = match &ctx.http {

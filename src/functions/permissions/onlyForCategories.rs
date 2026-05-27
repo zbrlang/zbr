@@ -5,12 +5,12 @@ use serenity::model::id::ChannelId;
 /// Halts unless the current channel belongs to one of the provided categories.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("onlyForCategories", "at least one category ID is required");
+        return FnOutput::error("onlyForCategories", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (ids, error_msg) = split_ids_and_error(&args);
     if ids.is_empty() {
-        return FnOutput::error("onlyForCategories", "at least one category ID is required");
+        return FnOutput::error("onlyForCategories", crate::error_messages::too_few_args(1, ids.len()));
     }
 
     let http = match &ctx.http {
@@ -28,7 +28,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             let channel = ChannelId::new(channel_id).to_channel(&http).await
-                .map_err(|e| format!("failed to fetch channel: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch channel", &format!("{}", e)))?;
             let parent_id = channel.guild()
                 .and_then(|c| c.parent_id)
                 .map(|id| id.to_string());

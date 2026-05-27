@@ -11,7 +11,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let custom_id = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("addButton", "customID is required"),
+        _ => return FnOutput::error("addButton", crate::error_messages::required(2, "customID")),
     };
     let label = args.get(2).cloned().unwrap_or_default();
     let style = match args.get(3) {
@@ -21,7 +21,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let valid_styles = ["primary", "secondary", "success", "danger", "link"];
     if !valid_styles.contains(&style.as_str()) {
-        return FnOutput::error("addButton", format!("invalid style: '{}' (expected primary, secondary, success, danger, or link)", style));
+        return FnOutput::error("addButton", crate::error_messages::expected_choice(4, "style", "primary, secondary, success, danger, link", &style));
     }
 
     let disabled = match args.get(4) {

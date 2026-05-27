@@ -5,15 +5,15 @@ use serenity::model::id::ChannelId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let tid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("postTags", "threadID is required"),
+        _ => return FnOutput::error("postTags", crate::error_messages::required(1, "threadID")),
     };
     let tid: u64 = match tid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("postTags", "invalid thread ID"),
+        Err(_) => return FnOutput::error("postTags", crate::error_messages::expected_snowflake(1, "threadID", &tid_str)),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("postTags", "no HTTP client available"),
+        None => return FnOutput::error("postTags", crate::error_messages::action_failed("get HTTP client")),
     };
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {

@@ -6,12 +6,12 @@ use serenity::model::id::GuildId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let guild_id_str = args.get(0).cloned().unwrap_or_else(|| ctx.guild_id.clone());
     if guild_id_str.is_empty() {
-        return FnOutput::error("automodRules", "guildID is required");
+        return FnOutput::error("automodRules", crate::error_messages::required(1, "guild ID"));
     }
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("automodRules", "invalid guild ID"),
+        Err(_) => return FnOutput::error("automodRules", crate::error_messages::expected_snowflake(1, "guild ID", &guild_id_str)),
     };
 
     let http = match &ctx.http {

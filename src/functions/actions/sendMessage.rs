@@ -37,7 +37,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     }
 
     if content.is_empty() {
-        return FnOutput::error("sendMessage", "message content cannot be empty");
+        return FnOutput::error("sendMessage", crate::error_messages::required(1, "content"));
     }
 
     let return_id = match return_id_arg {

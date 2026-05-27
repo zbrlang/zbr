@@ -6,7 +6,7 @@ use md5::{Digest, Md5};
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let text = args.get(0).cloned().unwrap_or_default();
     if text.is_empty() {
-        return FnOutput::error("md5", "text is required");
+        return FnOutput::error("md5", crate::error_messages::required(1, "text"));
     }
     let hash = Md5::digest(text.as_bytes());
     FnOutput::Text(format!("{:x}", hash))

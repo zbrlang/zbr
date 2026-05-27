@@ -5,11 +5,11 @@ use serenity::model::id::GuildId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("stickerID", "name is required"),
+        _ => return FnOutput::error("stickerID", crate::error_messages::required(1, "name")),
     };
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("stickerID", "not in a guild"),
+        Err(_) => return FnOutput::error("stickerID", crate::error_messages::not_in_guild()),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),

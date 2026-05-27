@@ -6,7 +6,7 @@ use serenity::model::id::{GuildId, UserId};
 /// Halts unless the author has all provided permissions.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("onlyPerms", "at least one permission is required");
+        return FnOutput::error("onlyPerms", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (perm_args, error_msg) = split_perms_and_error(&args);
@@ -22,7 +22,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("onlyPerms", "not in a guild"),
+        Err(_) => return FnOutput::error("onlyPerms", crate::error_messages::not_in_guild()),
     };
 
     let user_id: u64 = match ctx.author_id.parse() {

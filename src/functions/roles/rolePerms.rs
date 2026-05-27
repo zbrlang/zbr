@@ -52,7 +52,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         });
         match member {
             Ok(m) => m.roles.first().map(|r| r.to_string()).unwrap_or_default(),
-            Err(_) => return FnOutput::error("rolePerms", "could not get author's top role"),
+            Err(_) => return FnOutput::error("rolePerms", crate::error_messages::action_failed("get author's top role")),
         }
     } else {
         args[0].clone()
@@ -67,7 +67,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("rolePerms", "not in a guild"),
+        Err(_) => return FnOutput::error("rolePerms", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {

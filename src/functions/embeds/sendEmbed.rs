@@ -10,7 +10,7 @@ use serenity::model::id::ChannelId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("sendEmbed", "no HTTP client available"),
+        None => return FnOutput::error("sendEmbed", crate::error_messages::action_failed_reason("send message", "no HTTP client available")),
     };
 
     let channel_id_str = args.get(0).cloned().unwrap_or_default();
@@ -45,9 +45,9 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let embed_data = match embed_data {
         Some(e) if e.has_content() => e,
         Some(_) => {
-            return FnOutput::error("sendEmbed", format!("embed {} has no content", index + 1))
+            return FnOutput::error("sendEmbed", crate::error_messages::action_failed_reason("send embed", &format!("embed {} has no content", index + 1)))
         }
-        None => return FnOutput::error("sendEmbed", format!("embed {} does not exist", index + 1)),
+        None => return FnOutput::error("sendEmbed", crate::error_messages::not_found("embed", &(index + 1).to_string())),
     };
 
     // Validate Discord's minimum requirements before making any API call

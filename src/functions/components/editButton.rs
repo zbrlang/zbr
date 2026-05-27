@@ -9,7 +9,7 @@ use serenity::model::id::{ChannelId, MessageId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let custom_id = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("editButton", "customID is required"),
+        _ => return FnOutput::error("editButton", crate::error_messages::required(1, "customID")),
     };
     let label = args.get(1).cloned().unwrap_or_default();
     let style_str = match args.get(2) {
@@ -24,7 +24,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => match &ctx.trigger_message_id {
             Some(id) => id.clone(),
-            None => return FnOutput::error("editButton", "messageID is required"),
+            None => return FnOutput::error("editButton", crate::error_messages::required(6, "messageID")),
         },
     };
 
@@ -34,7 +34,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let mid: u64 = match mid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("editButton", format!("invalid message ID: '{}'", mid_str)),
+        Err(_) => return FnOutput::error("editButton", crate::error_messages::expected_snowflake(6, "message ID", &mid_str)),
     };
 
     let style = match style_str.as_str() {
@@ -68,6 +68,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("editButton", "failed to edit button"),
+        Err(_) => FnOutput::error("editButton", crate::error_messages::action_failed("edit button")),
     }
 }

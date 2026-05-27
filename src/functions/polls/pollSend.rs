@@ -18,7 +18,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("pollSend", format!("invalid channel ID: '{}'", cid_str)),
+        Err(_) => return FnOutput::error("pollSend", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
     let return_id = args.get(1).and_then(|s| parse_bool(s)).unwrap_or(false);
 
@@ -40,11 +40,11 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     });
 
     if question.is_empty() {
-        return FnOutput::error("pollSend", "no poll configured");
+        return FnOutput::error("pollSend", crate::error_messages::requires_first("pollCreate"));
     }
     let duration_secs: u64 = match duration_str.parse() {
         Ok(d) => d,
-        Err(_) => return FnOutput::error("pollSend", "no poll duration configured"),
+        Err(_) => return FnOutput::error("pollSend", crate::error_messages::requires_first("pollCreate")),
     };
 
     let answers: Vec<serde_json::Value> = match serde_json::from_str(&answers_json) {

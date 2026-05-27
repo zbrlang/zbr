@@ -17,7 +17,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 }
             }
             if !is_slash {
-                return FnOutput::error("slashID", "not a slash command");
+                return FnOutput::error("slashID", crate::error_messages::requires_set_first("command type to slash"));
             }
             ctx.command_name.clone()
         }

@@ -4,6 +4,18 @@ All notable changes to the ZBR project are documented here and in the [changelog
 
 ---
 
+## v1.4.0 - Centralized error handling across all functions
+
+All 390+ ZBR functions now share a single centralized error system in `src/error_messages.rs`. Every `FnOutput::error()` call uses the same formatting helpers, producing consistent `Line N: Zfunction - message` output everywhere.
+
+### Core
+- **26 centralized error helpers** — `too_few_args`, `expected_snowflake`, `expected_url`, `out_of_range`, `not_found`, `action_failed_reason`, `not_available`, and more, all producing uniform error messages.
+- **Every function updated** — All 394+ `FnOutput::error` calls across the codebase now route through `crate::error_messages::*`.
+- **Helper modules aligned** — `math/helpers.rs` (`parse_f64`/`parse_i64`), `permissions/helpers.rs`, `audit/helpers.rs`, and `json/helpers.rs` all use the centralized system.
+- `src/error_messages.rs` added — single source of truth for error messaging.
+
+---
+
 ## v1.3.0 - In-process engine, automod, polls, soundboard, and utility functions
 
 This release eliminates the HTTP runtime server, running the engine in-process for lower latency and simpler deployment. It also adds 5 new function categories and over 30 new functions.

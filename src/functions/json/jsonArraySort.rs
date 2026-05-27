@@ -11,7 +11,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     }
 
     with_json(ctx, |obj| match obj {
-        None => FnOutput::error("jsonArraySort", "no JSON object — call ZjsonParse or ZjsonArray first"),
+        None => FnOutput::error("jsonArraySort", crate::error_messages::requires_first("ZjsonParse or ZjsonArray")),
         Some(root) => match get_mut_at_path(root, &keys) {
             Some(serde_json::Value::Array(arr)) => {
                 arr.sort_by(|a, b| {

@@ -6,16 +6,16 @@ use serenity::model::id::UserId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let uid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("dm", "userID is required"),
+        _ => return FnOutput::error("dm", crate::error_messages::required(1, "userID")),
     };
     let content = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("dm", "content is required"),
+        _ => return FnOutput::error("dm", crate::error_messages::required(2, "content")),
     };
 
     let uid: u64 = match uid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("dm", format!("invalid user ID: '{}'", uid_str)),
+        Err(_) => return FnOutput::error("dm", crate::error_messages::expected_snowflake(1, "userID", &uid_str)),
     };
 
     let http = match &ctx.http {

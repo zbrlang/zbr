@@ -3,15 +3,15 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let question = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("pollCreate", "question is required"),
+        _ => return FnOutput::error("pollCreate", crate::error_messages::required(1, "question")),
     };
     let duration_str = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("pollCreate", "duration is required"),
+        _ => return FnOutput::error("pollCreate", crate::error_messages::required(2, "duration")),
     };
     let duration_h: i64 = match duration_str.parse() {
         Ok(d) => d,
-        Err(_) => return FnOutput::error("pollCreate", format!("invalid duration: '{}'", duration_str)),
+        Err(_) => return FnOutput::error("pollCreate", crate::error_messages::expected_duration(2, "duration", &duration_str)),
     };
     let duration_s = duration_h * 3600;
 

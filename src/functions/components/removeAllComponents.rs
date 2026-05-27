@@ -10,7 +10,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => match &ctx.trigger_message_id {
             Some(id) => id.clone(),
-            None => return FnOutput::error("removeAllComponents", "messageID is required"),
+            None => return FnOutput::error("removeAllComponents", crate::error_messages::required(1, "messageID")),
         },
     };
 
@@ -20,12 +20,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let mid: u64 = match mid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("removeAllComponents", format!("invalid message ID: '{}'", mid_str)),
+        Err(_) => return FnOutput::error("removeAllComponents", crate::error_messages::expected_snowflake(1, "messageID", &mid_str)),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("removeAllComponents", "no HTTP client available"),
+        None => return FnOutput::error("removeAllComponents", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -38,6 +38,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("removeAllComponents", "failed to remove components"),
+        Err(_) => FnOutput::error("removeAllComponents", crate::error_messages::action_failed("remove components")),
     }
 }

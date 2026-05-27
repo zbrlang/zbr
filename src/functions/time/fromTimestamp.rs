@@ -8,7 +8,7 @@ use chrono::{TimeZone, Utc};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let unix: i64 = match args.get(0).and_then(|s| s.parse().ok()) {
         Some(n) => n,
-        None => return FnOutput::error("fromTimestamp", "unix timestamp is required"),
+        None => return FnOutput::error("fromTimestamp", crate::error_messages::required(1, "unix timestamp")),
     };
     let format = args.get(1).map(|s| s.as_str()).unwrap_or("full");
 

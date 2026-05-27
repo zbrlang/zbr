@@ -7,7 +7,7 @@ const CHARSET: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let len: usize = match args[0].parse() {
         Ok(n) if n > 0 && n <= 2000 => n,
-        Ok(0) => return FnOutput::error("randomString", "length must be greater than 0"),
+        Ok(0) => return FnOutput::error("randomString", crate::error_messages::must_be_positive(1, "length", 0)),
         _ => return FnOutput::error("randomString", format!("invalid length: '{}'", args[0])),
     };
     let mut rng = rand::thread_rng();

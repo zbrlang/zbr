@@ -6,7 +6,7 @@ use super::helpers::{with_json, set_at_path, infer_value};
 /// At least 2 args required: one key and one value.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 2 {
-        return FnOutput::error("jsonSet", "at least one key and a value are required");
+        return FnOutput::error("jsonSet", crate::error_messages::too_few_args(2, args.len()));
     }
 
     let value_str = args.last().unwrap().clone();
@@ -17,7 +17,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         .collect();
 
     if keys.is_empty() {
-        return FnOutput::error("jsonSet", "at least one key is required");
+        return FnOutput::error("jsonSet", crate::error_messages::required(1, "key"));
     }
 
     let value = infer_value(&value_str);

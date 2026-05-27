@@ -17,7 +17,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let result: Result<String, String> = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             let members = ChannelId::new(thread_id).get_thread_members(&http).await
-                .map_err(|e| format!("failed to fetch thread members: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch thread members", &e.to_string()))?;
             Ok(members.len().to_string())
         })
     });

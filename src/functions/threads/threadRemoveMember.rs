@@ -19,7 +19,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             ChannelId::new(thread_id).remove_thread_member(&http, UserId::new(user_id)).await
-                .map_err(|e| format!("failed to remove member: {}", e))
+                .map_err(|e| crate::error_messages::action_failed_reason("remove member", &e.to_string()))
         })
     });
 

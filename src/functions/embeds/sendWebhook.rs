@@ -28,8 +28,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let embed_data = match embed_data {
         Some(e) if e.has_content() => e,
-        Some(_) => return FnOutput::error("sendWebhook", format!("embed {} has no content", index + 1)),
-        None    => return FnOutput::error("sendWebhook", format!("embed {} does not exist", index + 1)),
+        Some(_) => return FnOutput::error("sendWebhook", crate::error_messages::action_failed_reason("send embed", &format!("embed {} has no content", index + 1))),
+        None    => return FnOutput::error("sendWebhook", crate::error_messages::not_found("embed", &(index + 1).to_string())),
     };
 
     if let Err(e) = validate_embed_sendable(&embed_data, "sendWebhook", index) { return e; }

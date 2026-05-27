@@ -8,15 +8,15 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let index: usize = match index_str.parse::<usize>() {
         Ok(i) if i > 0 => i - 1, // convert to 0-based
-        Ok(0) => return FnOutput::error("editSplitText", "index must be 1 or greater"),
-        _ => return FnOutput::error("editSplitText", format!("invalid index: '{}'", index_str)),
+        Ok(i) if i == 0 => return FnOutput::error("editSplitText", crate::error_messages::must_be_positive(1, "index", 0)),
+        _ => return FnOutput::error("editSplitText", crate::error_messages::expected_integer(1, "index", &index_str)),
     };
 
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async {
             let mut parts = ctx.split_text.lock().await;
             if index >= parts.len() {
-                return Err(format!("index {} is out of range (split has {} elements)", index + 1, parts.len()));
+                return Err(crate::error_messages::out_of_range(1, "index", 1, parts.len() as i64, (index + 1) as i64));
             }
             parts[index] = value;
             Ok(())

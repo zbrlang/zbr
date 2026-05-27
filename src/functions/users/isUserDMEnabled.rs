@@ -10,7 +10,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let uid: u64 = match user_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("isUserDMEnabled", "invalid userID"),
+        Err(_) => return FnOutput::error("isUserDMEnabled", crate::error_messages::expected_snowflake(1, "userID", &user_id_str)),
     };
 
     let http = match &ctx.http {

@@ -6,7 +6,7 @@ use serenity::model::id::{ChannelId, MessageId};
 /// Adds reactions to the message that triggered the command.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("addCmdReactions", "at least one emoji is required");
+        return FnOutput::error("addCmdReactions", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let http = match &ctx.http {

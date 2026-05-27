@@ -8,11 +8,11 @@ use serenity::model::id::ChannelId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("createInvite", "channelID is required"),
+        _ => return FnOutput::error("createInvite", crate::error_messages::required(1, "channelID")),
     };
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("createInvite", "invalid channel ID"),
+        Err(_) => return FnOutput::error("createInvite", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
     let max_uses: u8 = args.get(1).and_then(|s| s.parse().ok()).unwrap_or(0);
     let max_age: u32 = args.get(2).and_then(|s| s.parse().ok()).unwrap_or(0);

@@ -10,7 +10,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let uid: u64 = match user_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("isBot", "invalid userID"),
+        Err(_) => return FnOutput::error("isBot", crate::error_messages::expected_snowflake(1, "userID", &user_id_str)),
     };
 
     let http = match &ctx.http {
@@ -32,6 +32,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 FnOutput::Text("false".to_string())
             }
         }
-        Err(e) => FnOutput::error("isBot", format!("failed to fetch user: {}", e)),
+        Err(e) => FnOutput::error("isBot", crate::error_messages::action_failed_reason("fetch user", &e.to_string())),
     }
 }

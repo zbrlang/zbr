@@ -47,6 +47,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 .unwrap_or_default();
             FnOutput::Text(id)
         }
-        Err(_) => FnOutput::error("repliedMessageID", "message not found"),
+        Err(_) => FnOutput::error("repliedMessageID", crate::error_messages::not_found("message", &mid_str)),
     }
 }

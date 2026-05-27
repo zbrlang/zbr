@@ -9,7 +9,7 @@ pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
 
     let max: usize = match max_str.parse() {
         Ok(n) if n > 0 => n,
-        _ => return FnOutput::error("cropText", format!("invalid max characters: '{}'", max_str)),
+        _ => return FnOutput::error("cropText", crate::error_messages::expected_integer(2, "maxChars", max_str)),
     };
 
     let char_count = text.chars().count();

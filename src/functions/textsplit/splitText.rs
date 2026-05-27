@@ -6,7 +6,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let index_str = args.get(0).cloned().unwrap_or_default();
     if index_str.is_empty() {
-        return FnOutput::error("splitText", "index is required");
+        return FnOutput::error("splitText", crate::error_messages::required(1, "index"));
     }
 
     let parts = tokio::task::block_in_place(|| {
@@ -16,7 +16,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     });
 
     if parts.is_empty() {
-        return FnOutput::error("splitText", "no split text available — call ZtextSplit first");
+        return FnOutput::error("splitText", crate::error_messages::requires_first("ZtextSplit"));
     }
 
     let result = match index_str.as_str() {
@@ -25,9 +25,9 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         s => {
             match s.parse::<usize>() {
                 Ok(i) if i > 0 && i <= parts.len() => parts.get(i - 1).cloned(),
-                Ok(0) => return FnOutput::error("splitText", "index must be 1 or greater"),
-                Ok(_) => return FnOutput::error("splitText", format!("index {} is out of range (split has {} elements)", s, parts.len())),
-                Err(_) => return FnOutput::error("splitText", format!("invalid index: '{}' (use a number, '<', or '>')", s)),
+                Ok(i) if i == 0 => return FnOutput::error("splitText", crate::error_messages::must_be_positive(1, "index", 0)),
+                Ok(i) => return FnOutput::error("splitText", crate::error_messages::out_of_range(1, "index", 1, parts.len() as i64, i as i64)),
+                Err(_) => return FnOutput::error("splitText", crate::error_messages::expected_choice(1, "index", "a number, '<', or '>'", s)),
             }
         }
     };

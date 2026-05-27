@@ -6,7 +6,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = args.get(0).cloned().unwrap_or_else(|| ctx.channel_id.clone());
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceUserLimit", "invalid channel ID"),
+        Err(_) => return FnOutput::error("voiceUserLimit", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),
     };
 
     let http = match &ctx.http {
@@ -31,6 +31,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 FnOutput::error("voiceUserLimit", "channel is not a voice or stage channel")
             }
         }
-        Err(_) => FnOutput::error("voiceUserLimit", "channel not found"),
+        Err(_) => FnOutput::error("voiceUserLimit", crate::error_messages::not_found("channel", &cid_str)),
     }
 }

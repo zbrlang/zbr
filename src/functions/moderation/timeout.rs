@@ -12,12 +12,12 @@ const MAX_TIMEOUT_SECS: i64 = 28 * 24 * 3600; // 28 days
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let uids_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("timeout", "userIDs is required"),
+        _ => return FnOutput::error("timeout", crate::error_messages::required(1, "userIDs")),
     };
 
     let dur_str = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("timeout", "duration is required"),
+        _ => return FnOutput::error("timeout", crate::error_messages::required(2, "duration")),
     };
 
     let user_ids: Vec<u64> = match uids_str
@@ -26,16 +26,16 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         .collect::<Result<Vec<_>, _>>()
     {
         Ok(ids) => ids,
-        Err(_) => return FnOutput::error("timeout", format!("invalid user ID: '{}'", uids_str)),
+        Err(_) => return FnOutput::error("timeout", crate::error_messages::expected_snowflake(1, "userIDs", &uids_str)),
     };
 
     if user_ids.is_empty() {
-        return FnOutput::error("timeout", "userIDs is required");
+        return FnOutput::error("timeout", crate::error_messages::required(1, "userIDs"));
     }
 
     let secs = match parse_duration(&dur_str) {
         Ok(s) => s,
-        Err(_) => return FnOutput::error("timeout", format!("invalid duration: '{}'", dur_str)),
+        Err(_) => return FnOutput::error("timeout", crate::error_messages::expected_duration(2, "duration", &dur_str)),
     };
 
     if secs > MAX_TIMEOUT_SECS {
@@ -45,12 +45,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let until = Utc::now() + chrono::Duration::seconds(secs);
     let timestamp = match Timestamp::from_unix_timestamp(until.timestamp()) {
         Ok(ts) => ts,
-        Err(_) => return FnOutput::error("timeout", "failed to compute timeout timestamp"),
+        Err(_) => return FnOutput::error("timeout", crate::error_messages::action_failed("compute timeout timestamp")),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("timeout", "not in a guild"),
+        Err(_) => return FnOutput::error("timeout", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {

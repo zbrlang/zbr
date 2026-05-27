@@ -6,18 +6,18 @@ use serenity::model::id::{ChannelId, GuildId, UserId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceEmpty", "not in a guild"),
+        Err(_) => return FnOutput::error("voiceEmpty", crate::error_messages::not_in_guild()),
     };
 
     let channel_id: u64 = match args.get(0) {
         Some(s) if !s.is_empty() => match s.parse() {
             Ok(id) => id,
-            Err(_) => return FnOutput::error("voiceEmpty", format!("invalid channel ID: '{}'", s)),
+            Err(_) => return FnOutput::error("voiceEmpty", crate::error_messages::expected_snowflake(1, "channelID", s)),
         },
         _ => {
             let author_uid: u64 = match ctx.author_id.parse() {
                 Ok(id) => id,
-                Err(_) => return FnOutput::error("voiceEmpty", "invalid author ID"),
+                Err(_) => return FnOutput::error("voiceEmpty", crate::error_messages::expected_snowflake(1, "authorID", &ctx.author_id)),
             };
             match ctx.cache.guild(GuildId::new(gid)).and_then(|g| {
                 g.voice_states
@@ -28,7 +28,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 None => {
                     return FnOutput::error(
                         "voiceEmpty",
-                        "channelID is required (author is not in a voice channel)",
+                        crate::error_messages::required(1, "channelID"),
                     )
                 }
             }

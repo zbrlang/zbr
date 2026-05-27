@@ -8,7 +8,7 @@ use serenity::model::id::GuildId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = args.get(0).cloned().unwrap_or_default();
     if name.is_empty() {
-        return FnOutput::error("addEmoji", "emoji name cannot be empty");
+        return FnOutput::error("addEmoji", crate::error_messages::required(1, "name"));
     }
 
     let url = args.get(1).cloned().unwrap_or_default();
@@ -23,7 +23,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("addEmoji", "not in a guild"),
+        Err(_) => return FnOutput::error("addEmoji", crate::error_messages::not_in_guild()),
     };
 
     let result: Result<String, String> = tokio::task::block_in_place(|| {

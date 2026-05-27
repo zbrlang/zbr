@@ -12,10 +12,10 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let description = args.get(3).cloned().unwrap_or_default();
 
     if name.is_empty() {
-        return FnOutput::error("stickerCreate", "name is required");
+        return FnOutput::error("stickerCreate", crate::error_messages::required(1, "name"));
     }
     if file_url.is_empty() {
-        return FnOutput::error("stickerCreate", "file URL is required");
+        return FnOutput::error("stickerCreate", crate::error_messages::required(2, "fileUrl"));
     }
     if tags.is_empty() {
         return FnOutput::error("stickerCreate", "tags are required (comma-separated)");
@@ -23,7 +23,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("stickerCreate", "not in a guild"),
+        Err(_) => return FnOutput::error("stickerCreate", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {

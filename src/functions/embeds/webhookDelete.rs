@@ -16,12 +16,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let parts: Vec<&str> = url.trim_end_matches('/').split('/').collect();
     let (webhook_id, token) = match (parts.get(parts.len().wrapping_sub(2)), parts.last()) {
         (Some(id), Some(tok)) => (*id, *tok),
-        _ => return FnOutput::error("webhookDelete", "invalid webhook URL format"),
+        _ => return FnOutput::error("webhookDelete", crate::error_messages::expected_url(1, "webhook URL", &url)),
     };
 
     let webhook_id: u64 = match webhook_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("webhookDelete", "invalid webhook ID in URL"),
+        Err(_) => return FnOutput::error("webhookDelete", crate::error_messages::expected_snowflake(1, "webhook ID", webhook_id)),
     };
 
     let token = token.to_string();

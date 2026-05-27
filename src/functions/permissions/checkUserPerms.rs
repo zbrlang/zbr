@@ -6,12 +6,12 @@ use serenity::model::id::{GuildId, UserId};
 /// Returns "true" if the user has all provided permissions, "false" otherwise.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("checkUserPerms", "user ID is required");
+        return FnOutput::error("checkUserPerms", crate::error_messages::required(1, "userID"));
     }
 
     let user_id: u64 = match args[0].parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("checkUserPerms", format!("invalid user ID: '{}'", args[0])),
+        Err(_) => return FnOutput::error("checkUserPerms", crate::error_messages::expected_snowflake(1, "userID", &args[0])),
     };
 
     let required = match parse_permissions(&args[1..]) {
@@ -26,13 +26,13 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("checkUserPerms", "not in a guild"),
+        Err(_) => return FnOutput::error("checkUserPerms", crate::error_messages::not_in_guild()),
     };
 
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             let member = GuildId::new(guild_id).member(&http, UserId::new(user_id)).await
-                .map_err(|e| format!("failed to fetch member: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch member", &format!("{}", e)))?;
             let perms = member_guild_permissions(&http, guild_id, &member).await?;
             Ok::<bool, String>(perms.contains(required))
         })

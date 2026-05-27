@@ -4,12 +4,12 @@ use serenity::model::user::OnlineStatus;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if ctx.guild_id.is_empty() {
-        return FnOutput::error("membersCount", "not in a guild");
+        return FnOutput::error("membersCount", crate::error_messages::not_in_guild());
     }
 
     let guild_id = match ctx.guild_id.parse::<u64>() {
         Ok(id) => GuildId::new(id),
-        Err(_) => return FnOutput::error("membersCount", "guild not found"),
+        Err(_) => return FnOutput::error("membersCount", crate::error_messages::not_found("guild", &ctx.guild_id)),
     };
 
     let presence_filter = match args.get(0) {
@@ -55,7 +55,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     Ok(guild) => {
                         FnOutput::Text(guild.approximate_member_count.unwrap_or(0).to_string())
                     }
-                    Err(_) => FnOutput::error("membersCount", "guild not found"),
+                    Err(_) => FnOutput::error("membersCount", crate::error_messages::not_found("guild", &ctx.guild_id)),
                 }
             })
         })

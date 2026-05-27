@@ -6,7 +6,7 @@ use serenity::model::id::GuildId;
 /// Halts unless the bot itself has all provided permissions in the guild.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("onlyBotPerms", "at least one permission is required");
+        return FnOutput::error("onlyBotPerms", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (perm_args, error_msg) = split_perms_and_error(&args);
@@ -22,15 +22,15 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("onlyBotPerms", "not in a guild"),
+        Err(_) => return FnOutput::error("onlyBotPerms", crate::error_messages::not_in_guild()),
     };
 
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             let current_user = http.get_current_user().await
-                .map_err(|e| format!("failed to get bot user: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("get bot user", &format!("{}", e)))?;
             let member = GuildId::new(guild_id).member(&http, current_user.id).await
-                .map_err(|e| format!("failed to fetch bot member: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch bot member", &format!("{}", e)))?;
             let perms = member_guild_permissions(&http, guild_id, &member).await?;
             Ok::<bool, String>(perms.contains(required))
         })

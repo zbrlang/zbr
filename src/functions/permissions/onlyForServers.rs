@@ -4,12 +4,12 @@ use crate::context::{DiscordContext, FnOutput};
 /// Halts unless the current guild is in the provided list.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("onlyForServers", "at least one server ID is required");
+        return FnOutput::error("onlyForServers", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (ids, error_msg) = split_ids_and_error(&args);
     if ids.is_empty() {
-        return FnOutput::error("onlyForServers", "at least one server ID is required");
+        return FnOutput::error("onlyForServers", crate::error_messages::too_few_args(1, ids.len()));
     }
 
     if ids.iter().any(|id| id == &ctx.guild_id) {

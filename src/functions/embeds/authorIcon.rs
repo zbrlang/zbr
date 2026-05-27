@@ -8,7 +8,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     if let Err(e) = validate_url(&url, "authorIcon") { return e; }
     if read_embed(ctx, index, |e| e.author.clone()).is_none() {
-        return FnOutput::error("authorIcon", "ZauthorIcon requires an author to be set first");
+        return FnOutput::error("authorIcon", crate::error_messages::requires_set_first("author"));
     }
     with_embed(ctx, index, |e| e.author_icon = Some(url));
     FnOutput::Empty

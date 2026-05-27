@@ -14,7 +14,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("editThread", "no HTTP client available"),
+        None => return FnOutput::error("editThread", crate::error_messages::action_failed("get HTTP client")),
     };
 
     // Parse each optional field — "!unchanged" or missing = skip
@@ -33,7 +33,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some("4320")  => Some(AutoArchiveDuration::ThreeDays),
         Some("10080") => Some(AutoArchiveDuration::OneWeek),
         Some(s) if s != "!unchanged" && !s.is_empty() =>
-            return FnOutput::error("editThread", format!("invalid archive duration '{}' — use 60, 1440, 4320, or 10080", s)),
+            return FnOutput::error("editThread", crate::error_messages::expected_choice(4, "archive duration", "60, 1440, 4320, 10080", s)),
         _ => None,
     };
 
@@ -47,7 +47,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let slowmode: Option<u16> = match args.get(5).map(|s| s.as_str()) {
         Some(s) if s != "!unchanged" && !s.is_empty() => match s.parse::<u16>() {
             Ok(n) => Some(n),
-            Err(_) => return FnOutput::error("editThread", format!("invalid slowmode value: '{}'", s)),
+            Err(_) => return FnOutput::error("editThread", crate::error_messages::expected_integer(6, "slowmode", s)),
         },
         _ => None,
     };
@@ -68,7 +68,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             if let Some(s) = slowmode { builder = builder.rate_limit_per_user(s); }
 
             ChannelId::new(thread_id).edit_thread(&http, builder).await
-                .map_err(|e| format!("failed to edit thread: {}", e))
+                .map_err(|e| crate::error_messages::action_failed_reason("edit thread", &e.to_string()))
         })
     });
 

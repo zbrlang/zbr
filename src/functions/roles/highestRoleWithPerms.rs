@@ -5,20 +5,20 @@ use serenity::model::permissions::Permissions;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("highestRoleWithPerms", "at least one permission is required");
+        return FnOutput::error("highestRoleWithPerms", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let mut required = Permissions::empty();
     for p in &args {
         match parse_permission(p) {
             Some(perm) => required |= perm,
-            None => return FnOutput::error("highestRoleWithPerms", format!("unknown permission: '{}'", p)),
+            None => return FnOutput::error("highestRoleWithPerms", crate::error_messages::unknown_permission(p)),
         }
     }
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("highestRoleWithPerms", "not in a guild"),
+        Err(_) => return FnOutput::error("highestRoleWithPerms", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -40,6 +40,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             
             FnOutput::Text(highest.map(|r| r.id.to_string()).unwrap_or_default())
         }
-        Err(_) => FnOutput::error("highestRoleWithPerms", "failed to fetch roles"),
+        Err(_) => FnOutput::error("highestRoleWithPerms", crate::error_messages::action_failed("fetch roles")),
     }
 }

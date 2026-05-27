@@ -30,10 +30,10 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             Ok(n) if n >= 1 => n,
             _ => return FnOutput::error("getEmbedData", format!("invalid embedIndex: '{}' (must be 1 or greater)", s)),
         },
-        _ => return FnOutput::error("getEmbedData", "embedIndex is required"),
+        _ => return FnOutput::error("getEmbedData", crate::error_messages::required(3, "embedIndex")),
     };
     if data_type.is_empty() {
-        return FnOutput::error("getEmbedData", "type is required");
+        return FnOutput::error("getEmbedData", crate::error_messages::required(4, "type"));
     }
 
     let cid: u64 = match cid_str.parse() {
@@ -79,13 +79,13 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 other => {
                     return FnOutput::error(
                         "getEmbedData",
-                        format!("invalid type: '{}' (expected title, description, footer, color, image, or timestamp)", other),
+                        crate::error_messages::expected_choice(4, "type", "title, description, footer, color, image, or timestamp", other),
                     )
                 }
             };
 
             FnOutput::Text(value)
         }
-        Err(_) => FnOutput::error("getEmbedData", "message not found"),
+        Err(_) => FnOutput::error("getEmbedData", crate::error_messages::not_found("message", &mid_str)),
     }
 }

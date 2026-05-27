@@ -12,18 +12,18 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let rid: u64 = match rid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("colorRole", format!("invalid role ID: '{}'", rid_str)),
+        Err(_) => return FnOutput::error("colorRole", crate::error_messages::expected_snowflake(1, "role ID", &rid_str)),
     };
 
     let hex = color_str.trim_start_matches('#');
     let c = match u32::from_str_radix(hex, 16) {
         Ok(v) => v,
-        Err(_) => return FnOutput::error("colorRole", format!("invalid hex color: '{}'", color_str)),
+        Err(_) => return FnOutput::error("colorRole", crate::error_messages::expected_hex_color(2, "color", &color_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("colorRole", "not in a guild"),
+        Err(_) => return FnOutput::error("colorRole", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -41,6 +41,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("colorRole", "role not found"),
+        Err(_) => FnOutput::error("colorRole", crate::error_messages::not_found("role", &rid_str)),
     }
 }

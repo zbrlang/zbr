@@ -5,7 +5,7 @@ use serenity::model::id::{ChannelId, GuildId, RoleId, RuleId};
 
 fn parse_trigger(json_str: &str) -> Result<Trigger, String> {
     let v: serde_json::Value =
-        serde_json::from_str(json_str).map_err(|e| format!("invalid trigger JSON: {}", e))?;
+        serde_json::from_str(json_str).map_err(|e| crate::error_messages::action_failed_reason("parse trigger JSON", &format!("{}", e)))?;
 
     let t = v
         .get("type")
@@ -88,16 +88,13 @@ fn parse_trigger(json_str: &str) -> Result<Trigger, String> {
                 mention_total_limit: limit,
             })
         }
-        _ => Err(format!(
-            "unknown trigger type: '{}'",
-            t
-        )),
+        _ => Err(crate::error_messages::expected_choice(5, "trigger type", "keyword, spam, keyword_preset, mention_spam", &t)),
     }
 }
 
 fn parse_actions(json_str: &str) -> Result<Vec<Action>, String> {
     let arr: Vec<serde_json::Value> =
-        serde_json::from_str(json_str).map_err(|e| format!("invalid actions JSON: {}", e))?;
+        serde_json::from_str(json_str).map_err(|e| crate::error_messages::action_failed_reason("parse actions JSON", &format!("{}", e)))?;
 
     arr.iter()
         .map(|v| {
@@ -129,7 +126,7 @@ fn parse_actions(json_str: &str) -> Result<Vec<Action>, String> {
                         .ok_or_else(|| "timeout action requires duration_seconds".to_string())?;
                     Ok(Action::Timeout(std::time::Duration::from_secs(secs)))
                 }
-                _ => Err(format!("unknown action type: '{}'", t)),
+                _ => Err(crate::error_messages::expected_choice(6, "action type", "block_message, alert, timeout", &t)),
             }
         })
         .collect()
@@ -143,12 +140,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("automodRuleEdit", "invalid guild ID"),
+        Err(_) => return FnOutput::error("automodRuleEdit", crate::error_messages::expected_snowflake(1, "guild ID", &guild_id_str)),
     };
 
     let rule_id: u64 = match rule_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("automodRuleEdit", "invalid rule ID"),
+        Err(_) => return FnOutput::error("automodRuleEdit", crate::error_messages::expected_snowflake(2, "rule ID", &rule_id_str)),
     };
 
     let http = match &ctx.http {
@@ -173,8 +170,11 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 match event_type_str.as_str() {
                     "messagesend" => builder = builder.event_type(EventType::MessageSend),
                     _ => {
-                        return Err(format!(
-                            "eventType must be 'messagesend' or !unchanged"
+                        return Err(crate::error_messages::expected_choice(
+                            4,
+                            "eventType",
+                            "messagesend, !unchanged",
+                            &event_type_str,
                         ))
                     }
                 }
@@ -206,7 +206,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 match enabled_str {
                     "true" => builder = builder.enabled(true),
                     "false" => builder = builder.enabled(false),
-                    _ => return Err("enabled must be true, false, or !unchanged".to_string()),
+                    _ => return Err(crate::error_messages::expected_choice(
+                        7,
+                        "enabled",
+                        "true, false, !unchanged",
+                        enabled_str,
+                    )),
                 }
             }
 

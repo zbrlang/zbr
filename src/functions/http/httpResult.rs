@@ -28,7 +28,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     // Parse as JSON and navigate the key path
     let mut value: serde_json::Value = match serde_json::from_str(&body) {
         Ok(v) => v,
-        Err(_) => return FnOutput::error("httpResult", "response is not valid JSON"),
+        Err(_) => return FnOutput::error("httpResult", crate::error_messages::action_failed("parse JSON")),
     };
 
     for key in &keys {

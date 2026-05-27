@@ -3,11 +3,11 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let code = match args.get(0) {
         Some(c) => c,
-        None => return FnOutput::error("inviteInfo", "code is required"),
+        None => return FnOutput::error("inviteInfo", crate::error_messages::required(1, "code")),
     };
     let info_type = match args.get(1) {
         Some(t) => t,
-        None => return FnOutput::error("inviteInfo", "type is required"),
+        None => return FnOutput::error("inviteInfo", crate::error_messages::required(2, "type")),
     };
 
     let http = match &ctx.http {

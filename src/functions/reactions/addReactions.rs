@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Queues reactions to be added to the bot's own response after it is sent.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("addReactions", "at least one emoji is required");
+        return FnOutput::error("addReactions", crate::error_messages::too_few_args(1, args.len()));
     }
     tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async {

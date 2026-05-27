@@ -47,6 +47,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 None => FnOutput::Text(urls.join("\n")),
             }
         }
-        Err(_) => FnOutput::error("getAttachments", "failed to fetch message"),
+        Err(_) => FnOutput::error("getAttachments", crate::error_messages::action_failed("fetch message")),
     }
 }

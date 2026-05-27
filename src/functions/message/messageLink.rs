@@ -5,7 +5,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let message_id = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("messageLink", "messageID is required"),
+        _ => return FnOutput::error("messageLink", crate::error_messages::required(1, "messageID")),
     };
     let channel_id = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),

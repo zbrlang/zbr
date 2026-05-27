@@ -4,7 +4,7 @@ use super::helpers::parse_f64;
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let mut result = 1.0f64;
     for (i, arg) in args.iter().enumerate() {
-        let n = match parse_f64(arg, "multi", &format!("argument {}", i + 1)) {
+        let n = match parse_f64(arg, "multi", i + 1, "factor") {
             Ok(v) => v, Err(e) => return e,
         };
         result *= n;

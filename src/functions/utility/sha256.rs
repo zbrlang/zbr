@@ -7,7 +7,7 @@ use std::fmt::Write;
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let text = args.get(0).cloned().unwrap_or_default();
     if text.is_empty() {
-        return FnOutput::error("sha256", "text is required");
+        return FnOutput::error("sha256", crate::error_messages::required(1, "text"));
     }
     let hash = sha2::Sha256::digest(text.as_bytes());
     let hex = hash.iter().fold(String::new(), |mut s, b| {

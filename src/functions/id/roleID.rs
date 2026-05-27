@@ -13,7 +13,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("roleID", "not in a guild"),
+        Err(_) => return FnOutput::error("roleID", crate::error_messages::not_in_guild()),
     };
 
     if query.is_empty() {

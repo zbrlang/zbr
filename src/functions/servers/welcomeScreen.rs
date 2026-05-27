@@ -9,17 +9,17 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         .cloned()
         .unwrap_or_else(|| ctx.guild_id.clone());
     if guild_id_str.is_empty() {
-        return FnOutput::error("welcomeScreen", "not in a guild");
+        return FnOutput::error("welcomeScreen", crate::error_messages::not_in_guild());
     }
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("welcomeScreen", "invalid guild ID"),
+        Err(_) => return FnOutput::error("welcomeScreen", crate::error_messages::expected_snowflake(1, "guild ID", &guild_id_str)),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("welcomeScreen", "no HTTP client available"),
+        None => return FnOutput::error("welcomeScreen", crate::error_messages::action_failed("get HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {

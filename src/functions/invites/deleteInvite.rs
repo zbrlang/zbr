@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let code = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("deleteInvite", "invite code is required"),
+        _ => return FnOutput::error("deleteInvite", crate::error_messages::required(1, "code")),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),

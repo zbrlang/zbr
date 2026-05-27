@@ -5,7 +5,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let mode = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("url", "mode is required (encode or decode)"),
+        _ => return FnOutput::error("url", crate::error_messages::required(1, "mode")),
     };
     let text = args.get(1).cloned().unwrap_or_default();
 
@@ -55,6 +55,6 @@ pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
             }
             FnOutput::Text(out)
         }
-        other => FnOutput::error("url", format!("invalid mode: '{}' (expected encode or decode)", other)),
+        other => FnOutput::error("url", crate::error_messages::expected_choice(1, "mode", "encode, decode", other)),
     }
 }

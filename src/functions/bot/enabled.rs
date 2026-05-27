@@ -13,6 +13,6 @@ pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
             return FnOutput::UserError("This command is currently disabled.".to_string());
         }
     } else {
-        return FnOutput::error("enabled", format!("invalid boolean: '{}'", condition));
+        return FnOutput::error("enabled", crate::error_messages::expected_boolean(1, "condition", &condition));
     }
 }

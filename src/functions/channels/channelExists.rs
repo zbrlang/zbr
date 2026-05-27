@@ -7,7 +7,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         _ => ctx.channel_id.clone(),
     };
     if cid_str.is_empty() {
-        return FnOutput::error("channelExists", "channel ID is required");
+        return FnOutput::error("channelExists", crate::error_messages::required(1, "channel ID"));
     }
 
     let cid: u64 = match cid_str.parse() {
@@ -17,7 +17,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("channelExists", "no HTTP client available"),
+        None => return FnOutput::error("channelExists", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {

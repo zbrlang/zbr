@@ -3,13 +3,14 @@ use crate::context::{DiscordContext, FnOutput};
 
 /// Zpow{base;exp}
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
-    let base = match parse_f64(args.get(0).map(|s| s.as_str()).unwrap_or(""), "pow", "base") {
+    let base = match parse_f64(args.get(0).map(|s| s.as_str()).unwrap_or(""), "pow", 1, "base") {
         Ok(v) => v,
         Err(e) => return e,
     };
     let exp = match parse_f64(
         args.get(1).map(|s| s.as_str()).unwrap_or(""),
         "pow",
+        2,
         "exponent",
     ) {
         Ok(v) => v,

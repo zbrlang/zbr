@@ -13,7 +13,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Ok(id) => id, Err(e) => return e,
     };
     if name.is_empty() {
-        return FnOutput::error("webhookCreate", "webhook name cannot be empty");
+        return FnOutput::error("webhookCreate", crate::error_messages::required(2, "name"));
     }
 
     let http = match &ctx.http {

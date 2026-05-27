@@ -4,12 +4,12 @@ use crate::context::{DiscordContext, FnOutput};
 /// Halts unless the author's username matches one of the provided names.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("onlyForUsers", "at least one username is required");
+        return FnOutput::error("onlyForUsers", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (names, error_msg) = split_last_as_error(&args);
     if names.is_empty() {
-        return FnOutput::error("onlyForUsers", "at least one username is required");
+        return FnOutput::error("onlyForUsers", crate::error_messages::too_few_args(1, names.len()));
     }
 
     let username_lower = ctx.username.to_lowercase();

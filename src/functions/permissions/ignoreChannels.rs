@@ -5,12 +5,12 @@ use crate::context::{DiscordContext, FnOutput};
 /// Last arg is treated as error message if it doesn't parse as a snowflake.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("ignoreChannels", "at least one channel ID is required");
+        return FnOutput::error("ignoreChannels", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (ids, error_msg) = split_ids_and_error(&args);
     if ids.is_empty() {
-        return FnOutput::error("ignoreChannels", "at least one channel ID is required");
+        return FnOutput::error("ignoreChannels", crate::error_messages::too_few_args(1, ids.len()));
     }
 
     if ids.iter().any(|id| id == &ctx.channel_id) {

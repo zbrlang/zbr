@@ -6,7 +6,7 @@ use serenity::model::Permissions;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 3 {
-        return FnOutput::error("editChannelPerms", "channelID, userOrRoleID, and at least one permission are required");
+        return FnOutput::error("editChannelPerms", crate::error_messages::too_few_args(3, args.len()));
     }
 
     let cid_str = args[0].clone();
@@ -14,12 +14,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("editChannelPerms", format!("invalid channel ID: '{}'", cid_str)),
+        Err(_) => return FnOutput::error("editChannelPerms", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),
     };
 
     let target_id: u64 = match target_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("editChannelPerms", format!("invalid user or role ID: '{}'", target_str)),
+        Err(_) => return FnOutput::error("editChannelPerms", crate::error_messages::expected_snowflake(2, "user or role ID", &target_str)),
     };
 
     let mut allow = Permissions::empty();
@@ -43,7 +43,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
         let perm = match parse_permission(perm_name) {
             Some(p) => p,
-            None => return FnOutput::error("editChannelPerms", format!("unknown permission: '{}'", perm_name)),
+            None => return FnOutput::error("editChannelPerms", crate::error_messages::unknown_permission(perm_name)),
         };
 
         if prefix == "+" {
@@ -55,12 +55,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("editChannelPerms", "no HTTP client available"),
+        None => return FnOutput::error("editChannelPerms", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
-            let channel = ChannelId::new(cid).to_channel(&http).await.map_err(|_| "channel not found".to_string())?;
+            let channel = ChannelId::new(cid).to_channel(&http).await.map_err(|_| crate::error_messages::not_found("channel", &cid_str))?;
             let guild_channel = channel.guild().ok_or_else(|| "not a guild channel".to_string())?;
 
             let mut is_role = false;

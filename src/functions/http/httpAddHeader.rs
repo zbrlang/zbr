@@ -19,11 +19,11 @@ const DANGEROUS_HEADERS: &[&str] = &[
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("httpAddHeader", "header name is required"),
+        _ => return FnOutput::error("httpAddHeader", crate::error_messages::required(1, "header name")),
     };
     let value = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("httpAddHeader", "header value is required"),
+        _ => return FnOutput::error("httpAddHeader", crate::error_messages::required(2, "header value")),
     };
 
     let lower = name.to_lowercase();

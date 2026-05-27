@@ -7,7 +7,7 @@ use serenity::model::id::{ChannelId, MessageId};
 /// Returns a list of usernames who reacted with the given emoji.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 4 {
-        return FnOutput::error("getReactions", "requires channelID, messageID, separator, and emoji");
+        return FnOutput::error("getReactions", crate::error_messages::too_few_args(4, args.len()));
     }
 
     let http = match &ctx.http {

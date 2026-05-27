@@ -7,12 +7,12 @@ use serenity::model::id::{GuildId, UserId};
 pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceOld", "not in a guild"),
+        Err(_) => return FnOutput::error("voiceOld", crate::error_messages::not_in_guild()),
     };
 
     let author_uid: u64 = match ctx.author_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceOld", "invalid author ID"),
+        Err(_) => return FnOutput::error("voiceOld", crate::error_messages::expected_snowflake(1, "authorID", &ctx.author_id)),
     };
 
     let channel_id = ctx.cache.guild(GuildId::new(gid)).and_then(|g| {

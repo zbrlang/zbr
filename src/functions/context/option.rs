@@ -1,7 +1,7 @@
 use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     match args.first() {
-        Some(key) => FnOutput::Text(ctx.options.get(key).cloned().unwrap_or_else(|| format!("option '{}' not found", key))),
+        Some(key) => FnOutput::Text(ctx.options.get(key).cloned().unwrap_or_else(|| crate::error_messages::not_found("option", key))),
         None => FnOutput::Text("no option name provided".to_string()),
     }
 }

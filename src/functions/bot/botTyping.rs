@@ -4,12 +4,12 @@ use serenity::model::id::ChannelId;
 pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("botTyping", "no HTTP client available"),
+        None => return FnOutput::error("botTyping", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let channel_id: u64 = match ctx.channel_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("botTyping", "invalid channel ID"),
+        Err(_) => return FnOutput::error("botTyping", crate::error_messages::expected_snowflake(1, "channel ID", &ctx.channel_id)),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -17,12 +17,12 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             ChannelId::new(channel_id)
                 .broadcast_typing(&http)
                 .await
-                .map_err(|e| format!("failed to broadcast typing: {}", e))
+                .map_err(|e| e.to_string())
         })
     });
 
     if let Err(e) = result {
-        return FnOutput::error("botTyping", e);
+        return FnOutput::error("botTyping", crate::error_messages::action_failed_reason("broadcast typing", &e));
     }
 
     FnOutput::Empty

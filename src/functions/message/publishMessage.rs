@@ -41,6 +41,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("publishMessage", "failed to publish message"),
+        Err(_) => FnOutput::error("publishMessage", crate::error_messages::action_failed("publish message")),
     }
 }

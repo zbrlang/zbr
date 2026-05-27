@@ -13,7 +13,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         });
         match member {
             Ok(m) => m.roles.first().map(|r| r.to_string()).unwrap_or_default(),
-            Err(_) => return FnOutput::error("roleExists", "could not get author's top role"),
+            Err(_) => return FnOutput::error("roleExists", crate::error_messages::action_failed("get author's top role")),
         }
     } else {
         args[0].clone()

@@ -11,7 +11,7 @@ use serenity::model::id::{ChannelId, MessageId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = args.get(0).cloned().unwrap_or_default();
     if name.is_empty() {
-        return FnOutput::error("startThread", "thread name cannot be empty");
+        return FnOutput::error("startThread", crate::error_messages::required(1, "name"));
     }
 
     let channel_id_str = args.get(1).cloned().unwrap_or_default();
@@ -64,11 +64,11 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             let thread = if let Some(msg_id) = message_id {
                 ChannelId::new(channel_id)
                     .create_thread_from_message(&http, MessageId::new(msg_id), builder).await
-                    .map_err(|e| format!("failed to create thread: {}", e))?
+                    .map_err(|e| crate::error_messages::action_failed_reason("create thread", &e.to_string()))?
             } else {
                 ChannelId::new(channel_id)
                     .create_thread(&http, builder).await
-                    .map_err(|e| format!("failed to create thread: {}", e))?
+                    .map_err(|e| crate::error_messages::action_failed_reason("create thread", &e.to_string()))?
             };
 
             Ok(thread.id.to_string())

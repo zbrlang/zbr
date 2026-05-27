@@ -7,18 +7,18 @@ use serenity::model::id::{ChannelId, GuildId, UserId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceFull", "not in a guild"),
+        Err(_) => return FnOutput::error("voiceFull", crate::error_messages::not_in_guild()),
     };
 
     let channel_id: u64 = match args.get(0) {
         Some(s) if !s.is_empty() => match s.parse() {
             Ok(id) => id,
-            Err(_) => return FnOutput::error("voiceFull", format!("invalid channel ID: '{}'", s)),
+            Err(_) => return FnOutput::error("voiceFull", crate::error_messages::expected_snowflake(1, "channelID", s)),
         },
         _ => {
             let author_uid: u64 = match ctx.author_id.parse() {
                 Ok(id) => id,
-                Err(_) => return FnOutput::error("voiceFull", "invalid author ID"),
+                Err(_) => return FnOutput::error("voiceFull", crate::error_messages::expected_snowflake(1, "authorID", &ctx.author_id)),
             };
             match ctx.cache.guild(GuildId::new(gid)).and_then(|g| {
                 g.voice_states
@@ -29,7 +29,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 None => {
                     return FnOutput::error(
                         "voiceFull",
-                        "channelID is required (author is not in a voice channel)",
+                        crate::error_messages::required(1, "channelID"),
                     )
                 }
             }
@@ -38,7 +38,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("voiceFull", "no HTTP client available"),
+        None => return FnOutput::error("voiceFull", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -51,14 +51,14 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Ok(channel) => {
             if let Some(guild_channel) = channel.guild() {
                 if guild_channel.kind != ChannelType::Voice && guild_channel.kind != ChannelType::Stage {
-                    return FnOutput::error("voiceFull", "channel is not a voice or stage channel");
+                    return FnOutput::error("voiceFull", crate::error_messages::action_failed_reason("verify channel type", "not a voice or stage channel"));
                 }
                 guild_channel.user_limit.unwrap_or(0) as usize
             } else {
                 return FnOutput::error("voiceFull", "channel is not a voice or stage channel");
             }
         }
-        Err(_) => return FnOutput::error("voiceFull", "channel not found"),
+        Err(_) => return FnOutput::error("voiceFull", crate::error_messages::not_found("channel", &channel_id.to_string())),
     };
 
     let target = ChannelId::new(channel_id);

@@ -39,6 +39,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 FnOutput::Text(String::new())
             }
         }
-        Err(_) => FnOutput::error("threadParentID", "thread not found"),
+        Err(_) => FnOutput::error("threadParentID", crate::error_messages::not_found("thread", &cid_str)),
     }
 }

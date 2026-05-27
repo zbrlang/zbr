@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = match args.get(0) {
         Some(n) => n.clone(),
-        None => return FnOutput::error("resetServerVar", "variable name is required"),
+        None => return FnOutput::error("resetServerVar", crate::error_messages::required(1, "name")),
     };
     let bot_id = ctx.bot_id.clone();
     let db = match &ctx.db {

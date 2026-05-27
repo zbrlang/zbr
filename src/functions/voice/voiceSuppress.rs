@@ -14,28 +14,28 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let uid: u64 = match uid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceSuppress", "invalid user ID"),
+        Err(_) => return FnOutput::error("voiceSuppress", crate::error_messages::expected_snowflake(1, "userID", &uid_str)),
     };
 
     let suppress = match suppress_str.as_str() {
         "true" => true,
         "false" => false,
-        _ => return FnOutput::error("voiceSuppress", "suppress must be true or false"),
+        _ => return FnOutput::error("voiceSuppress", crate::error_messages::expected_boolean(2, "suppress", &suppress_str)),
     };
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceSuppress", "invalid channel ID"),
+        Err(_) => return FnOutput::error("voiceSuppress", crate::error_messages::expected_snowflake(3, "channelID", &cid_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceSuppress", "not in a guild"),
+        Err(_) => return FnOutput::error("voiceSuppress", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("voiceSuppress", "no HTTP client available"),
+        None => return FnOutput::error("voiceSuppress", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {

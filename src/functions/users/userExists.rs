@@ -8,7 +8,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         _ => ctx.author_id.clone(),
     };
     if user_id_str.is_empty() {
-        return FnOutput::error("userExists", "userID is required");
+        return FnOutput::error("userExists", crate::error_messages::required(1, "userID"));
     }
 
     let uid: u64 = match user_id_str.parse() {

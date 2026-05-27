@@ -16,8 +16,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let embed_index: Option<usize> = match args.get(1) {
         Some(s) if !s.is_empty() => match s.parse::<usize>() {
             Ok(n) if n >= 1 => Some(n - 1), // convert to 0-based
-            Ok(_) => return FnOutput::error("suppressErrors", "embed index must be 1 or greater"),
-            Err(_) => return FnOutput::error("suppressErrors", format!("invalid embed index: '{}'", s)),
+            Ok(n) => return FnOutput::error("suppressErrors", crate::error_messages::must_be_positive(2, "embed index", n as i64)),
+            Err(_) => return FnOutput::error("suppressErrors", crate::error_messages::expected_integer(2, "embed index", s)),
         },
         _ => None,
     };

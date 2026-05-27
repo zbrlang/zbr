@@ -10,12 +10,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("voiceStatus", "invalid channel ID"),
+        Err(_) => return FnOutput::error("voiceStatus", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("voiceStatus", "no HTTP client available"),
+        None => return FnOutput::error("voiceStatus", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let is_set = args.len() > 1;
@@ -49,7 +49,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     let s = gc.status.as_deref().unwrap_or("");
                     FnOutput::Text(s.to_string())
                 }
-                _ => FnOutput::error("voiceStatus", "not a guild channel"),
+                _ => FnOutput::error("voiceStatus", crate::error_messages::action_failed_reason("verify channel", "not a guild channel")),
             },
             Err(e) => FnOutput::error("voiceStatus", e),
         }

@@ -10,11 +10,11 @@ use serenity::model::id::{ChannelId, ForumTagId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("editForumTag", "channelID is required"),
+        _ => return FnOutput::error("editForumTag", crate::error_messages::required(1, "channelID")),
     };
     let tid_str = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("editForumTag", "tagID is required"),
+        _ => return FnOutput::error("editForumTag", crate::error_messages::required(2, "tagID")),
     };
     let new_name = args
         .get(2)
@@ -27,11 +27,11 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("editForumTag", "invalid channel ID"),
+        Err(_) => return FnOutput::error("editForumTag", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
     let tid: u64 = match tid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("editForumTag", "invalid tag ID"),
+        Err(_) => return FnOutput::error("editForumTag", crate::error_messages::expected_snowflake(2, "tagID", &tid_str)),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),
@@ -43,14 +43,14 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             let channel = http
                 .get_channel(ChannelId::new(cid))
                 .await
-                .map_err(|e| format!("failed to fetch channel: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch channel", &e.to_string()))?;
             let gc = match channel {
                 serenity::model::channel::Channel::Guild(gc) => gc,
                 _ => return Err("not a forum channel".to_string()),
             };
             let target_id = ForumTagId::new(tid);
             if !gc.available_tags.iter().any(|t| t.id == target_id) {
-                return Err("tag not found".to_string());
+                return Err(crate::error_messages::not_found("tag", &tid_str));
             }
             let tags: Vec<CreateForumTag> = gc
                 .available_tags
@@ -88,7 +88,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 .edit(&http, builder)
                 .await
                 .map(|_| ())
-                .map_err(|e| format!("failed to update tags: {}", e))
+                .map_err(|e| crate::error_messages::action_failed_reason("update tags", &e.to_string()))
         })
     });
     match result {

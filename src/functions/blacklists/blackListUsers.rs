@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Halts if the author's username matches any in the provided list.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("blackListUsers", "at least one username is required");
+        return FnOutput::error("blackListUsers", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let (names, error_msg) = split_last_as_error(&args);

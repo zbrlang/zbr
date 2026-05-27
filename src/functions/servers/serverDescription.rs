@@ -9,7 +9,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id = match guild_id_str.parse::<u64>() {
         Ok(id) => GuildId::new(id),
-        Err(_) => return FnOutput::error("serverDescription", "guild not found"),
+        Err(_) => return FnOutput::error("serverDescription", crate::error_messages::not_found("guild", &guild_id_str)),
     };
 
     let http = match ctx.http.as_ref() {
@@ -23,7 +23,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     Some(desc) => FnOutput::Text(desc.clone()),
                     None => FnOutput::Text(String::new()),
                 },
-                Err(_) => FnOutput::error("serverDescription", "guild not found"),
+                Err(_) => FnOutput::error("serverDescription", crate::error_messages::not_found("guild", &guild_id_str)),
             }
         })
     })

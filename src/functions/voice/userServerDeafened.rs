@@ -13,14 +13,14 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Err(_) => {
             return FnOutput::error(
                 "userServerDeafened",
-                format!("invalid user ID: '{}'", user_id_str),
+                crate::error_messages::expected_snowflake(1, "user ID", &user_id_str),
             )
         }
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("userServerDeafened", "not in a guild"),
+        Err(_) => return FnOutput::error("userServerDeafened", crate::error_messages::not_in_guild()),
     };
 
     let val = ctx

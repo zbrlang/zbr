@@ -10,10 +10,10 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
 
     if name.is_empty() {
-        return FnOutput::error("addField", "field name cannot be empty");
+        return FnOutput::error("addField", crate::error_messages::required(1, "name"));
     }
     if value.is_empty() {
-        return FnOutput::error("addField", "field value cannot be empty");
+        return FnOutput::error("addField", crate::error_messages::required(2, "value"));
     }
 
     let field_count = read_embed(ctx, index, |e| Some(e.fields.len())).unwrap_or(0);

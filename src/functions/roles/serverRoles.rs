@@ -14,13 +14,13 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("serverRoles", "no HTTP client available"),
+        None => return FnOutput::error("serverRoles", crate::error_messages::not_available("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             GuildId::new(gid).roles(&http).await
-                .map_err(|e| format!("failed to fetch roles: {}", e))
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch roles", &e.to_string()))
         })
     });
 

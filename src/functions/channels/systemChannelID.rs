@@ -4,7 +4,7 @@ use serenity::model::id::GuildId;
 pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("systemChannelID", "not in a guild"),
+        Err(_) => return FnOutput::error("systemChannelID", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -25,6 +25,6 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 None => FnOutput::Text("".to_string()),
             }
         }
-        Err(_) => FnOutput::error("systemChannelID", "failed to fetch guild"),
+        Err(_) => FnOutput::error("systemChannelID", crate::error_messages::action_failed("fetch guild")),
     }
 }

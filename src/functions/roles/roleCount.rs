@@ -4,7 +4,7 @@ use serenity::model::id::GuildId;
 pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("roleCount", "not in a guild"),
+        Err(_) => return FnOutput::error("roleCount", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -20,6 +20,6 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(roles) => FnOutput::Text(roles.len().to_string()),
-        Err(_) => FnOutput::error("roleCount", "failed to fetch roles"),
+        Err(_) => FnOutput::error("roleCount", crate::error_messages::action_failed("fetch roles")),
     }
 }

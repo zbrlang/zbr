@@ -5,11 +5,11 @@ use crate::context::{DiscordContext, FnOutput, SelectOptionData};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let label = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("addSelectMenuOption", "label is required"),
+        _ => return FnOutput::error("addSelectMenuOption", crate::error_messages::required(1, "label")),
     };
     let value = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("addSelectMenuOption", "value is required"),
+        _ => return FnOutput::error("addSelectMenuOption", crate::error_messages::required(2, "value")),
     };
     let description = match args.get(2) {
         Some(s) if !s.is_empty() => Some(s.clone()),
@@ -32,7 +32,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     sm.options.push(SelectOptionData { label, value, description, emoji, default });
                     Ok(())
                 }
-                None => Err("no select menu — call ZnewSelectMenu first"),
+                None => Err(crate::error_messages::requires_first("ZnewSelectMenu")),
             }
         })
     });

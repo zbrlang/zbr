@@ -6,19 +6,19 @@ use serenity::model::id::{ChannelId, ForumTagId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("forumTagEmoji", "channelID is required"),
+        _ => return FnOutput::error("forumTagEmoji", crate::error_messages::required(1, "channelID")),
     };
     let tid_str = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("forumTagEmoji", "tagID is required"),
+        _ => return FnOutput::error("forumTagEmoji", crate::error_messages::required(2, "tagID")),
     };
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("forumTagEmoji", "invalid channel ID"),
+        Err(_) => return FnOutput::error("forumTagEmoji", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
     let tid: u64 = match tid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("forumTagEmoji", "invalid tag ID"),
+        Err(_) => return FnOutput::error("forumTagEmoji", crate::error_messages::expected_snowflake(2, "tagID", &tid_str)),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),
@@ -47,7 +47,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     };
                     FnOutput::Text(emoji)
                 }
-                None => FnOutput::error("forumTagEmoji", "tag not found"),
+                None => FnOutput::error("forumTagEmoji", crate::error_messages::not_found("tag", &tid_str)),
             }
         }
         Ok(_) => FnOutput::error("forumTagEmoji", "not a forum channel"),

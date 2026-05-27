@@ -8,7 +8,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let eid: u64 = match eid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("appEmojiDelete", "invalid emoji ID"),
+        Err(_) => return FnOutput::error("appEmojiDelete", crate::error_messages::expected_snowflake(1, "emoji ID", &eid_str)),
     };
 
     if ctx.bot_id.is_empty() {

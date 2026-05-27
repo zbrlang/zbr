@@ -10,7 +10,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("highestRole", "not in a guild"),
+        Err(_) => return FnOutput::error("highestRole", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -24,8 +24,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             
             // Default to author when no userID given
             let uid_str = uid_opt.unwrap_or(author_id);
-            let uid: u64 = uid_str.parse().map_err(|_| "invalid user ID".to_string())?;
-            let member = GuildId::new(gid).member(&http, UserId::new(uid)).await.map_err(|_| "user not found".to_string())?;
+            let uid: u64 = uid_str.parse().map_err(|_| crate::error_messages::expected_snowflake(1, "user ID", &uid_str))?;
+            let member = GuildId::new(gid).member(&http, UserId::new(uid)).await.map_err(|_| crate::error_messages::not_found("user", &uid_str))?;
             
             let highest = member.roles.iter().filter_map(|rid| roles.get(rid)).max_by_key(|r| r.position);
             Ok::<String, String>(highest.map(|r| r.id.to_string()).unwrap_or_default())

@@ -18,7 +18,7 @@ pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
         "s"  => now.as_secs().to_string(),
         "ms" => now.as_millis().to_string(),
         "ns" => now.as_nanos().to_string(),
-        other => return FnOutput::error("getTimestamp", format!("invalid unit: '{}' (expected s, ms, or ns)", other)),
+        other => return FnOutput::error("getTimestamp", crate::error_messages::expected_choice(1, "unit", "s, ms, ns", other)),
     };
 
     FnOutput::Text(result)

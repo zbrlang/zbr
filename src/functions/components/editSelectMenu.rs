@@ -6,19 +6,19 @@ use serenity::model::id::{ChannelId, MessageId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let menu_id = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("editSelectMenu", "menuID is required"),
+        _ => return FnOutput::error("editSelectMenu", crate::error_messages::required(1, "menuID")),
     };
     let min: u8 = match args.get(1) {
         Some(s) if !s.is_empty() => match s.parse() {
             Ok(n) => n,
-            Err(_) => return FnOutput::error("editSelectMenu", format!("invalid min: '{}'", s)),
+            Err(_) => return FnOutput::error("editSelectMenu", crate::error_messages::expected_integer(2, "min", s)),
         },
         _ => 1,
     };
     let max: u8 = match args.get(2) {
         Some(s) if !s.is_empty() => match s.parse() {
             Ok(n) => n,
-            Err(_) => return FnOutput::error("editSelectMenu", format!("invalid max: '{}'", s)),
+            Err(_) => return FnOutput::error("editSelectMenu", crate::error_messages::expected_integer(3, "max", s)),
         },
         _ => 1,
     };
@@ -30,7 +30,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => match &ctx.trigger_message_id {
             Some(id) => id.clone(),
-            None => return FnOutput::error("editSelectMenu", "messageID is required"),
+            None => return FnOutput::error("editSelectMenu", crate::error_messages::required(5, "messageID")),
         },
     };
 
@@ -40,7 +40,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let mid: u64 = match mid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("editSelectMenu", format!("invalid message ID: '{}'", mid_str)),
+        Err(_) => return FnOutput::error("editSelectMenu", crate::error_messages::expected_snowflake(5, "message ID", &mid_str)),
     };
 
     let http = match &ctx.http {
@@ -67,6 +67,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("editSelectMenu", "failed to edit select menu"),
+        Err(_) => FnOutput::error("editSelectMenu", crate::error_messages::action_failed("edit select menu")),
     }
 }

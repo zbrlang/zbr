@@ -6,17 +6,17 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     
     let gid_str = args.get(1).cloned().unwrap_or_else(|| ctx.guild_id.clone());
     if gid_str.is_empty() {
-        return FnOutput::error("channelNames", "invalid guild ID");
+        return FnOutput::error("channelNames", crate::error_messages::required(2, "guild ID"));
     }
 
     let gid: u64 = match gid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("channelNames", "invalid guild ID"),
+        Err(_) => return FnOutput::error("channelNames", crate::error_messages::expected_snowflake(2, "guild ID", &gid_str)),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("channelNames", "no HTTP client available"),
+        None => return FnOutput::error("channelNames", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -31,6 +31,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             names.sort();
             FnOutput::Text(names.join(&separator))
         }
-        Err(_) => FnOutput::error("channelNames", "failed to fetch channels"),
+        Err(_) => FnOutput::error("channelNames", crate::error_messages::action_failed("fetch channels")),
     }
 }

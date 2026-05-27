@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = match args.get(0) {
         Some(n) => n.clone(),
-        None => return FnOutput::error("setChannelVar", "variable name is required"),
+        None => return FnOutput::error("setChannelVar", crate::error_messages::required(1, "name")),
     };
     let value      = args.get(1).cloned().unwrap_or_default();
     let channel_id = args.get(2).cloned().unwrap_or_else(|| ctx.channel_id.clone());

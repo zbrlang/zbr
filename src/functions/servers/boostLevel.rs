@@ -9,7 +9,7 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id = match ctx.guild_id.parse::<u64>() {
         Ok(id) => GuildId::new(id),
-        Err(_) => return FnOutput::error("boostLevel", "guild not found"),
+        Err(_) => return FnOutput::error("boostLevel", crate::error_messages::not_found("guild", &ctx.guild_id)),
     };
 
     let http = match ctx.http.as_ref() {
@@ -29,7 +29,7 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     };
                     FnOutput::Text(level.to_string())
                 }
-                Err(_) => FnOutput::error("boostLevel", "guild not found"),
+                Err(_) => FnOutput::error("boostLevel", crate::error_messages::not_found("guild", &ctx.guild_id)),
             }
         })
     })

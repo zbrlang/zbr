@@ -40,6 +40,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("unpinMessage", "failed to unpin message"),
+        Err(_) => FnOutput::error("unpinMessage", crate::error_messages::action_failed("unpin message")),
     }
 }

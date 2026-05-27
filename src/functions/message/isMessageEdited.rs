@@ -56,9 +56,9 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             ),
             other => FnOutput::error(
                 "isMessageEdited",
-                format!("invalid type: '{}' (expected edited or timestamp)", other),
+                crate::error_messages::expected_choice(3, "type", "edited, timestamp", other),
             ),
         },
-        Err(_) => FnOutput::error("isMessageEdited", "message not found"),
+        Err(_) => FnOutput::error("isMessageEdited", crate::error_messages::not_found("message", &mid_str)),
     }
 }

@@ -11,19 +11,19 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         _ => ctx.author_id.clone(),
     };
     if uid_str.is_empty() {
-        return FnOutput::error("roleGrant", "userID is required");
+        return FnOutput::error("roleGrant", crate::error_messages::required(1, "user ID"));
     }
     if args.len() < 2 {
         return FnOutput::error("roleGrant", "at least one role to grant/remove is required");
     }
     let uid: u64 = match uid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("roleGrant", format!("invalid user ID: '{}'", uid_str)),
+        Err(_) => return FnOutput::error("roleGrant", crate::error_messages::expected_snowflake(1, "user ID", &uid_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("roleGrant", "not in a guild"),
+        Err(_) => return FnOutput::error("roleGrant", crate::error_messages::not_in_guild()),
     };
 
     let mut ops = Vec::new(); // (RoleId, is_add)

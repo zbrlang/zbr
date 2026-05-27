@@ -8,10 +8,10 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let image_url = args.get(1).cloned().unwrap_or_default();
 
     if name.is_empty() {
-        return FnOutput::error("appEmojiCreate", "name is required");
+        return FnOutput::error("appEmojiCreate", crate::error_messages::required(1, "name"));
     }
     if image_url.is_empty() {
-        return FnOutput::error("appEmojiCreate", "image URL is required");
+        return FnOutput::error("appEmojiCreate", crate::error_messages::required(2, "image URL"));
     }
 
     if ctx.bot_id.is_empty() {

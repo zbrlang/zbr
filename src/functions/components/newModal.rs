@@ -5,11 +5,11 @@ use crate::context::{DiscordContext, FnOutput, ModalData};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let modal_id = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("newModal", "modalID is required"),
+        _ => return FnOutput::error("newModal", crate::error_messages::required(1, "modalID")),
     };
     let title = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("newModal", "title is required"),
+        _ => return FnOutput::error("newModal", crate::error_messages::required(2, "title")),
     };
 
     tokio::task::block_in_place(|| {

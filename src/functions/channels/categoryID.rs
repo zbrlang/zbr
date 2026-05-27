@@ -5,17 +5,17 @@ use serenity::model::channel::ChannelType;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = args.get(0).cloned().unwrap_or_default();
     if name.is_empty() {
-        return FnOutput::error("categoryID", "name is required");
+        return FnOutput::error("categoryID", crate::error_messages::required(1, "name"));
     }
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("categoryID", "not in a guild"),
+        Err(_) => return FnOutput::error("categoryID", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("categoryID", "no HTTP client available"),
+        None => return FnOutput::error("categoryID", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -31,8 +31,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                     return FnOutput::Text(c.id.to_string());
                 }
             }
-            FnOutput::error("categoryID", "category not found")
+            FnOutput::error("categoryID", crate::error_messages::not_found("category", &name))
         }
-        Err(_) => FnOutput::error("categoryID", "failed to fetch channels"),
+        Err(_) => FnOutput::error("categoryID", crate::error_messages::action_failed("fetch channels")),
     }
 }

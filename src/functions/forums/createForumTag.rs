@@ -10,11 +10,11 @@ use serenity::model::id::ChannelId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("createForumTag", "channelID is required"),
+        _ => return FnOutput::error("createForumTag", crate::error_messages::required(1, "channelID")),
     };
     let name = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("createForumTag", "name is required"),
+        _ => return FnOutput::error("createForumTag", crate::error_messages::required(2, "name")),
     };
     let emoji = args
         .get(2)
@@ -23,7 +23,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let moderated: bool = args.get(3).map(|s| s == "true").unwrap_or(false);
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("createForumTag", "invalid channel ID"),
+        Err(_) => return FnOutput::error("createForumTag", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),
@@ -35,7 +35,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             let channel = http
                 .get_channel(ChannelId::new(cid))
                 .await
-                .map_err(|e| format!("failed to fetch channel: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch channel", &e.to_string()))?;
             let gc = match channel {
                 serenity::model::channel::Channel::Guild(gc) => gc,
                 _ => return Err("not a forum channel".to_string()),
@@ -54,7 +54,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 .edit(&http, builder)
                 .await
                 .map(|_| ())
-                .map_err(|e| format!("failed to update tags: {}", e))
+                .map_err(|e| crate::error_messages::action_failed_reason("update tags", &e.to_string()))
         })
     });
     match result {

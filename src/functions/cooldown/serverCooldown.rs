@@ -14,7 +14,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let db = match &ctx.db {
         Some(d) => d.clone(),
-        None => return FnOutput::error("serverCooldown", "no database available"),
+        None => return FnOutput::error("serverCooldown", crate::error_messages::not_available("database")),
     };
 
     let bot_id   = ctx.bot_id.clone();

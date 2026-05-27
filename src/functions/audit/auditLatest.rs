@@ -18,7 +18,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let entry = match logs.entries.first() {
         Some(entry) => entry,
-        None => return FnOutput::error("auditLatest", "no audit entries found"),
+        None => return FnOutput::error("auditLatest", crate::error_messages::not_found("audit entries", "")),
     };
 
     match to_string(&helpers::entry_summary(entry)) {

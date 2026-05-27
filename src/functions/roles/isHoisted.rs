@@ -21,12 +21,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let rid: u64 = match role_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("isHoisted", "invalid role ID"),
+        Err(_) => return FnOutput::error("isHoisted", crate::error_messages::expected_snowflake(1, "role ID", &role_id_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("isHoisted", "not in a guild"),
+        Err(_) => return FnOutput::error("isHoisted", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -43,7 +43,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             if let Some(role) = roles.get(&RoleId::new(rid)) {
                 Ok(role.hoist)
             } else {
-                Err("role not found".to_string())
+                Err(crate::error_messages::not_found("role", &role_id_str))
             }
         })
     });

@@ -7,7 +7,7 @@ use serenity::model::id::{GuildId, RoleId, UserId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("roleMembers", "not in a guild"),
+        Err(_) => return FnOutput::error("roleMembers", crate::error_messages::not_in_guild()),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),

@@ -8,7 +8,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     if let Err(e) = validate_url(&url, "titleURL") { return e; }
     if read_embed(ctx, index, |e| e.title.clone()).is_none() {
-        return FnOutput::error("titleURL", "ZtitleURL requires a title to be set first");
+        return FnOutput::error("titleURL", crate::error_messages::requires_set_first("title"));
     }
     with_embed(ctx, index, |e| e.title_url = Some(url));
     FnOutput::Empty

@@ -7,7 +7,7 @@ use super::helpers::eval_condition;
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let cond = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("checkCondition", "condition is required"),
+        _ => return FnOutput::error("checkCondition", crate::error_messages::required(1, "condition")),
     };
 
     match eval_condition(&cond) {

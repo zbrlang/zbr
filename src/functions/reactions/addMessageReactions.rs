@@ -6,7 +6,7 @@ use serenity::model::id::{ChannelId, MessageId};
 /// ZaddMessageReactions{channelID;messageID;emoji1;emoji2;...}
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 3 {
-        return FnOutput::error("addMessageReactions", "requires channelID, messageID, and at least one emoji");
+        return FnOutput::error("addMessageReactions", crate::error_messages::too_few_args(3, args.len()));
     }
 
     let http = match &ctx.http {

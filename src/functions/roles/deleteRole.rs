@@ -4,17 +4,17 @@ use serenity::model::id::{GuildId, RoleId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let rid_str = args.get(0).cloned().unwrap_or_default();
     if rid_str.is_empty() {
-        return FnOutput::error("deleteRole", "role ID is required");
+        return FnOutput::error("deleteRole", crate::error_messages::required(1, "role ID"));
     }
 
     let rid: u64 = match rid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("deleteRole", format!("invalid role ID: '{}'", rid_str)),
+        Err(_) => return FnOutput::error("deleteRole", crate::error_messages::expected_snowflake(1, "role ID", &rid_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("deleteRole", "not in a guild"),
+        Err(_) => return FnOutput::error("deleteRole", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -30,6 +30,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("deleteRole", "role not found"),
+        Err(_) => FnOutput::error("deleteRole", crate::error_messages::not_found("role", &rid_str)),
     }
 }

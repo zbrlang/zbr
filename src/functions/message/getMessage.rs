@@ -64,9 +64,9 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             ),
             other => FnOutput::error(
                 "getMessage",
-                format!("invalid type: '{}' (expected content, authorID, username, or avatar)", other),
+                crate::error_messages::expected_choice(3, "type", "content, authorID, username, or avatar", other),
             ),
         },
-        Err(_) => FnOutput::error("getMessage", "message not found"),
+        Err(_) => FnOutput::error("getMessage", crate::error_messages::not_found("message", &mid_str)),
     }
 }

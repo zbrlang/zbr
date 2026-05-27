@@ -9,12 +9,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let sid: u64 = match sid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("stickerEdit", "invalid sticker ID"),
+        Err(_) => return FnOutput::error("stickerEdit", crate::error_messages::expected_snowflake(1, "stickerID", &sid_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("stickerEdit", "not in a guild"),
+        Err(_) => return FnOutput::error("stickerEdit", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {

@@ -6,11 +6,11 @@ use super::helpers::parse_f64;
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let mut iter = args.iter().enumerate();
     let (_, first) = iter.next().unwrap();
-    let mut result = match parse_f64(first, "sub", "argument 1") {
+    let mut result = match parse_f64(first, "sub", 1, "value") {
         Ok(v) => v, Err(e) => return e,
     };
     for (i, arg) in iter {
-        let n = match parse_f64(arg, "sub", &format!("argument {}", i + 1)) {
+        let n = match parse_f64(arg, "sub", i + 1, "value") {
             Ok(v) => v, Err(e) => return e,
         };
         result -= n;

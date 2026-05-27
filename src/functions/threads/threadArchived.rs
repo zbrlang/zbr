@@ -34,6 +34,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 FnOutput::Text("false".to_string())
             }
         }
-        Err(_) => FnOutput::error("threadArchived", "thread not found"),
+        Err(_) => FnOutput::error("threadArchived", crate::error_messages::not_found("thread", &cid_str)),
     }
 }

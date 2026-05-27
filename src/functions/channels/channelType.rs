@@ -9,12 +9,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         .unwrap_or_else(|| ctx.channel_id.clone());
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("channelType", "invalid channel ID"),
+        Err(_) => return FnOutput::error("channelType", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("channelType", "no HTTP client available"),
+        None => return FnOutput::error("channelType", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -46,6 +46,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             };
             FnOutput::Text(type_str.to_string())
         }
-        Err(_) => FnOutput::error("channelType", "channel not found"),
+        Err(_) => FnOutput::error("channelType", crate::error_messages::not_found("channel", &cid_str)),
     }
 }

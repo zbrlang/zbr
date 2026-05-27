@@ -18,17 +18,17 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let enabled = match enabled_str.as_str() {
         "true" => true,
         "false" => false,
-        _ => return FnOutput::error("serverLockdown", "enabled must be true or false"),
+        _ => return FnOutput::error("serverLockdown", crate::error_messages::expected_boolean(1, "enabled", &enabled_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("serverLockdown", "not in a guild"),
+        Err(_) => return FnOutput::error("serverLockdown", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("serverLockdown", "no HTTP client available"),
+        None => return FnOutput::error("serverLockdown", crate::error_messages::action_failed("get HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -37,7 +37,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
             if enabled {
                 let secs = crate::functions::cooldown::helpers::parse_duration(&duration_clone)
-                    .map_err(|e| format!("invalid duration: {}", e))?;
+                    .map_err(|_| crate::error_messages::expected_duration(2, "duration", &duration_clone))?;
                 let until = Utc::now() + chrono::Duration::seconds(secs);
                 let ts = Timestamp::from_unix_timestamp(until.timestamp())
                     .map_err(|_| "failed to compute timestamp".to_string())?;

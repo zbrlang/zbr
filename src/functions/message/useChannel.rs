@@ -5,12 +5,12 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("useChannel", "channelID is required"),
+        _ => return FnOutput::error("useChannel", crate::error_messages::required(1, "channelID")),
     };
 
     // Validate it's a numeric snowflake
     if cid_str.parse::<u64>().is_err() {
-        return FnOutput::error("useChannel", format!("invalid channel ID: '{}'", cid_str));
+        return FnOutput::error("useChannel", crate::error_messages::expected_snowflake(1, "channelID", &cid_str));
     }
 
     tokio::task::block_in_place(|| {

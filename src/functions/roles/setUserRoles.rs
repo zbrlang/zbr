@@ -12,14 +12,14 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         _ => ctx.author_id.clone(),
     };
     if uid_str.is_empty() {
-        return FnOutput::error("setUserRoles", "userID is required");
+        return FnOutput::error("setUserRoles", crate::error_messages::required(1, "user ID"));
     }
     if args.len() < 2 {
         return FnOutput::error("setUserRoles", "at least one roleID is required");
     }
     let uid: u64 = match uid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("setUserRoles", format!("invalid user ID: '{}'", uid_str)),
+        Err(_) => return FnOutput::error("setUserRoles", crate::error_messages::expected_snowflake(1, "user ID", &uid_str)),
     };
 
     let mut role_ids = Vec::new();
@@ -33,7 +33,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("setUserRoles", "not in a guild"),
+        Err(_) => return FnOutput::error("setUserRoles", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -50,6 +50,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("setUserRoles", "user not found"),
+        Err(_) => FnOutput::error("setUserRoles", crate::error_messages::not_found("user", &uid_str)),
     }
 }

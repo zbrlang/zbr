@@ -10,7 +10,7 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("botOwnerID", "no HTTP client available"),
+        None => return FnOutput::error("botOwnerID", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -26,7 +26,7 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                         String::new()
                     }
                 })
-                .map_err(|e| format!("failed to fetch application info: {}", e))
+                .map_err(|e| e.to_string())
         })
     });
 
@@ -37,6 +37,6 @@ pub fn run(_args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             }
             FnOutput::Text(id)
         }
-        Err(e) => FnOutput::error("botOwnerID", e),
+        Err(e) => FnOutput::error("botOwnerID", crate::error_messages::action_failed_reason("fetch application info", &e)),
     }
 }

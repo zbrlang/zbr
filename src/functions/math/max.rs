@@ -4,7 +4,7 @@ use super::helpers::parse_f64;
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let mut best = f64::NEG_INFINITY;
     for (i, arg) in args.iter().enumerate() {
-        let n = match parse_f64(arg, "max", &format!("argument {}", i + 1)) {
+        let n = match parse_f64(arg, "max", i + 1, "value") {
             Ok(v) => v, Err(e) => return e,
         };
         if n > best { best = n; }

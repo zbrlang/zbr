@@ -8,13 +8,13 @@ use serenity::model::id::{ChannelId, MessageId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let custom_id = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("removeComponent", "customID is required"),
+        _ => return FnOutput::error("removeComponent", crate::error_messages::required(1, "customID")),
     };
     let mid_str = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
         _ => match &ctx.trigger_message_id {
             Some(id) => id.clone(),
-            None => return FnOutput::error("removeComponent", "messageID is required"),
+            None => return FnOutput::error("removeComponent", crate::error_messages::required(2, "messageID")),
         },
     };
 
@@ -24,12 +24,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     let mid: u64 = match mid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("removeComponent", format!("invalid message ID: '{}'", mid_str)),
+        Err(_) => return FnOutput::error("removeComponent", crate::error_messages::expected_snowflake(2, "messageID", &mid_str)),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("removeComponent", "no HTTP client available"),
+        None => return FnOutput::error("removeComponent", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -37,7 +37,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             let msg = ChannelId::new(cid)
                 .message(&http, MessageId::new(mid))
                 .await
-                .map_err(|_| "message not found".to_string())?;
+                .map_err(|_| crate::error_messages::action_failed("find message"))?;
 
             // Check if any component has this custom_id
             let found = msg.components.iter().any(|row| {
@@ -59,14 +59,14 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             });
 
             if !found {
-                return Err(format!("component '{}' not found", custom_id));
+                return Err(crate::error_messages::not_found("component", &custom_id));
             }
 
             // Remove all components (Discord API limitation — can't remove individual components)
             ChannelId::new(cid)
                 .edit_message(&http, MessageId::new(mid), EditMessage::new().components(vec![]))
                 .await
-                .map_err(|_| "failed to remove component".to_string())
+                .map_err(|_| crate::error_messages::action_failed("remove component"))
         })
     });
 

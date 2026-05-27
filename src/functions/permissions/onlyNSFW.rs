@@ -14,7 +14,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let channel_id: u64 = match ctx.channel_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("onlyNSFW", "invalid channel ID"),
+        Err(_) => return FnOutput::error("onlyNSFW", crate::error_messages::expected_snowflake(1, "channel ID", &ctx.channel_id)),
     };
 
     let result = tokio::task::block_in_place(|| {

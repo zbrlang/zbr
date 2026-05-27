@@ -16,11 +16,11 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let uid: u64 = match uid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("userJoined", format!("invalid user ID: '{}'", uid_str)),
+        Err(_) => return FnOutput::error("userJoined", crate::error_messages::expected_snowflake(1, "userID", &uid_str)),
     };
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("userJoined", "not in a guild"),
+        Err(_) => return FnOutput::error("userJoined", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -50,6 +50,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             }
             None => FnOutput::Text(String::new()),
         },
-        Err(e) => FnOutput::error("userJoined", e),
+        Err(_e) => FnOutput::error("userJoined", crate::error_messages::not_found("user", &uid_str)),
     }
 }

@@ -5,7 +5,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let text = args.get(0).cloned().unwrap_or_default();
     if text.is_empty() {
-        return FnOutput::error("base64Decode", "base64 text is required");
+        return FnOutput::error("base64Decode", crate::error_messages::required(1, "base64 text"));
     }
 
     match base64_decode(&text) {

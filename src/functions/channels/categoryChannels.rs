@@ -5,12 +5,12 @@ use serenity::model::channel::ChannelType;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cat_id_str = args.get(0).cloned().unwrap_or_default();
     if cat_id_str.is_empty() {
-        return FnOutput::error("categoryChannels", "categoryID is required");
+        return FnOutput::error("categoryChannels", crate::error_messages::required(1, "category ID"));
     }
 
     let cat_id: u64 = match cat_id_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("categoryChannels", "invalid category ID"),
+        Err(_) => return FnOutput::error("categoryChannels", crate::error_messages::expected_snowflake(1, "category ID", &cat_id_str)),
     };
 
     let separator = args.get(1).cloned().unwrap_or_else(|| "\n".to_string());
@@ -18,12 +18,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("categoryChannels", "not in a guild"),
+        Err(_) => return FnOutput::error("categoryChannels", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
         Some(h) => h.clone(),
-        None => return FnOutput::error("categoryChannels", "no HTTP client available"),
+        None => return FnOutput::error("categoryChannels", crate::error_messages::requires_set_first("HTTP client")),
     };
 
     let result = tokio::task::block_in_place(|| {
@@ -44,7 +44,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             }
 
             if !is_category {
-                return FnOutput::error("categoryChannels", "category not found or is not a category");
+                return FnOutput::error("categoryChannels", crate::error_messages::not_found("category", &cat_id_str));
             }
 
             let mut filtered = Vec::new();
@@ -73,6 +73,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             }
             FnOutput::Text(list.join(&separator))
         }
-        Err(e) => FnOutput::error("categoryChannels", format!("failed to fetch channels: {}", e)),
+        Err(e) => FnOutput::error("categoryChannels", crate::error_messages::action_failed_reason("fetch channels", &e)),
     }
 }

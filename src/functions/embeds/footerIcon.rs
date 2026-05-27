@@ -8,7 +8,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     };
     if let Err(e) = validate_url(&url, "footerIcon") { return e; }
     if read_embed(ctx, index, |e| e.footer.clone()).is_none() {
-        return FnOutput::error("footerIcon", "ZfooterIcon requires a footer to be set first");
+        return FnOutput::error("footerIcon", crate::error_messages::requires_set_first("footer"));
     }
     with_embed(ctx, index, |e| e.footer_icon = Some(url));
     FnOutput::Empty

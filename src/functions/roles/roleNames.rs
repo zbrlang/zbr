@@ -6,7 +6,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("roleNames", "not in a guild"),
+        Err(_) => return FnOutput::error("roleNames", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -28,6 +28,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             let names: Vec<String> = list.into_iter().map(|r| r.name.clone()).collect();
             FnOutput::Text(names.join(&separator))
         }
-        Err(_) => FnOutput::error("roleNames", "failed to fetch roles"),
+        Err(_) => FnOutput::error("roleNames", crate::error_messages::action_failed("fetch roles")),
     }
 }

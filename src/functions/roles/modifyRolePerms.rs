@@ -5,18 +5,18 @@ use crate::functions::permissions::helpers::parse_permission;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.len() < 2 {
-        return FnOutput::error("modifyRolePerms", "roleID and at least one permission are required");
+        return FnOutput::error("modifyRolePerms", crate::error_messages::too_few_args(2, args.len()));
     }
 
     let rid_str = args[0].clone();
     let rid: u64 = match rid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("modifyRolePerms", format!("invalid role ID: '{}'", rid_str)),
+        Err(_) => return FnOutput::error("modifyRolePerms", crate::error_messages::expected_snowflake(1, "role ID", &rid_str)),
     };
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("modifyRolePerms", "not in a guild"),
+        Err(_) => return FnOutput::error("modifyRolePerms", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -26,8 +26,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
-            let roles = GuildId::new(gid).roles(&http).await.map_err(|_| "failed to fetch roles".to_string())?;
-            let role = roles.get(&RoleId::new(rid)).ok_or_else(|| "role not found".to_string())?;
+            let roles = GuildId::new(gid).roles(&http).await.map_err(|_| crate::error_messages::action_failed("fetch roles"))?;
+            let role = roles.get(&RoleId::new(rid)).ok_or_else(|| crate::error_messages::not_found("role", &rid_str))?;
 
             let mut permissions = role.permissions;
 
@@ -45,7 +45,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
                 let perm = match parse_permission(perm_name) {
                     Some(p) => p,
-                    None => return Err(format!("unknown permission: '{}'", perm_name)),
+                    None => return Err(crate::error_messages::unknown_permission(perm_name)),
                 };
 
                 if prefix == "+" {
@@ -61,7 +61,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             }
 
             let builder = EditRole::new().permissions(permissions);
-            GuildId::new(gid).edit_role(&http, RoleId::new(rid), builder).await.map_err(|_| "role not found".to_string())
+            GuildId::new(gid).edit_role(&http, RoleId::new(rid), builder).await.map_err(|_| crate::error_messages::not_found("role", &rid_str))
         })
     });
 

@@ -16,7 +16,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     // Validate the timezone string before storing it
     if tz_str.parse::<chrono_tz::Tz>().is_err() {
-        return FnOutput::error("time", format!("unknown timezone: '{}'", tz_str));
+        return FnOutput::error("time", crate::error_messages::not_found("timezone", &tz_str));
     }
 
     tokio::task::block_in_place(|| {

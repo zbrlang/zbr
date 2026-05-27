@@ -6,11 +6,11 @@ use serenity::model::id::ChannelId;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let pid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("forumPostLock", "postID is required"),
+        _ => return FnOutput::error("forumPostLock", crate::error_messages::required(1, "postID")),
     };
     let pid: u64 = match pid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("forumPostLock", "invalid post ID"),
+        Err(_) => return FnOutput::error("forumPostLock", crate::error_messages::expected_snowflake(1, "postID", &pid_str)),
     };
     let http = match &ctx.http {
         Some(h) => h.clone(),

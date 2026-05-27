@@ -6,10 +6,10 @@ pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let text = args.get(0).cloned().unwrap_or_default();
     let pattern = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("regexMatch", "pattern is required"),
+        _ => return FnOutput::error("regexMatch", crate::error_messages::required(2, "pattern")),
     };
     match Regex::new(&pattern) {
         Ok(re) => FnOutput::Text(re.is_match(&text).to_string()),
-        Err(e) => FnOutput::error("regexMatch", format!("invalid pattern: {}", e)),
+        Err(e) => FnOutput::error("regexMatch", crate::error_messages::action_failed_reason("compile regex", &e.to_string())),
     }
 }

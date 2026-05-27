@@ -6,7 +6,7 @@ use serenity::builder::EditRole;
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = args.get(0).cloned().unwrap_or_default();
     if name.is_empty() {
-        return FnOutput::error("createRole", "name is required");
+        return FnOutput::error("createRole", crate::error_messages::required(1, "name"));
     }
 
     let color_str = args.get(1).cloned().unwrap_or_default();
@@ -19,7 +19,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         let hex = color_str.trim_start_matches('#');
         let c = match u32::from_str_radix(hex, 16) {
             Ok(v) => v,
-            Err(_) => return FnOutput::error("createRole", format!("invalid hex color: '{}'", color_str)),
+            Err(_) => return FnOutput::error("createRole", crate::error_messages::expected_hex_color(2, "color", &color_str)),
         };
         builder = builder.colour(c as u32);
     }
@@ -28,7 +28,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         if hoisted_str == "true" {
             builder = builder.hoist(true);
         } else {
-            return FnOutput::error("createRole", format!("invalid boolean for hoisted: '{}'", hoisted_str));
+            return FnOutput::error("createRole", crate::error_messages::expected_boolean(3, "hoisted", &hoisted_str));
         }
     }
 
@@ -36,13 +36,13 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         if mentionable_str == "true" {
             builder = builder.mentionable(true);
         } else {
-            return FnOutput::error("createRole", format!("invalid boolean for mentionable: '{}'", mentionable_str));
+            return FnOutput::error("createRole", crate::error_messages::expected_boolean(4, "mentionable", &mentionable_str));
         }
     }
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("createRole", "not in a guild"),
+        Err(_) => return FnOutput::error("createRole", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {
@@ -58,6 +58,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("createRole", "failed to create role"),
+        Err(_) => FnOutput::error("createRole", crate::error_messages::action_failed("create role")),
     }
 }

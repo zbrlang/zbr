@@ -9,7 +9,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let indent: usize = match args.get(0) {
         Some(s) if !s.is_empty() => match s.parse::<usize>() {
             Ok(n) => n,
-            Err(_) => return FnOutput::error("jsonPretty", format!("invalid indent: '{}'", s)),
+            Err(_) => return FnOutput::error("jsonPretty", crate::error_messages::expected_number(1, "indent", s)),
         },
         _ => 2,
     };
@@ -24,7 +24,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             if v.serialize(&mut ser).is_ok() {
                 FnOutput::Text(String::from_utf8_lossy(&buf).to_string())
             } else {
-                FnOutput::error("jsonPretty", "failed to serialize JSON")
+                FnOutput::error("jsonPretty", crate::error_messages::action_failed("serialize JSON"))
             }
         }
     })

@@ -8,7 +8,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("syncPerms", "invalid channel ID"),
+        Err(_) => return FnOutput::error("syncPerms", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),
     };
 
     let http = match &ctx.http {

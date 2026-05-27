@@ -5,19 +5,19 @@ use crate::context::{DiscordContext, FnOutput, SelectMenuData};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let menu_id = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("newSelectMenu", "menuID is required"),
+        _ => return FnOutput::error("newSelectMenu", crate::error_messages::required(1, "menuID")),
     };
     let min_values: u8 = match args.get(1) {
         Some(s) if !s.is_empty() => match s.parse() {
             Ok(n) => n,
-            Err(_) => return FnOutput::error("newSelectMenu", format!("invalid min: '{}'", s)),
+            Err(_) => return FnOutput::error("newSelectMenu", crate::error_messages::expected_integer(2, "min", s)),
         },
         _ => 1,
     };
     let max_values: u8 = match args.get(2) {
         Some(s) if !s.is_empty() => match s.parse() {
             Ok(n) => n,
-            Err(_) => return FnOutput::error("newSelectMenu", format!("invalid max: '{}'", s)),
+            Err(_) => return FnOutput::error("newSelectMenu", crate::error_messages::expected_integer(3, "max", s)),
         },
         _ => 1,
     };

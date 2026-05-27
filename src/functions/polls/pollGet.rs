@@ -4,16 +4,16 @@ use serenity::model::id::{ChannelId, MessageId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let mid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("pollGet", "messageID is required"),
+        _ => return FnOutput::error("pollGet", crate::error_messages::required(1, "messageID")),
     };
     let mid: u64 = match mid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("pollGet", format!("invalid message ID: '{}'", mid_str)),
+        Err(_) => return FnOutput::error("pollGet", crate::error_messages::expected_snowflake(1, "messageID", &mid_str)),
     };
     let cid_str = args.get(1).cloned().unwrap_or_else(|| ctx.channel_id.clone());
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("pollGet", format!("invalid channel ID: '{}'", cid_str)),
+        Err(_) => return FnOutput::error("pollGet", crate::error_messages::expected_snowflake(2, "channelID", &cid_str)),
     };
 
     let http = match &ctx.http {

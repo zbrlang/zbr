@@ -3,7 +3,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let text = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("pollAddAnswer", "text is required"),
+        _ => return FnOutput::error("pollAddAnswer", crate::error_messages::required(1, "text")),
     };
     let emoji = args.get(1).cloned().unwrap_or_default();
 

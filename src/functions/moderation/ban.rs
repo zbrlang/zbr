@@ -6,7 +6,7 @@ use serenity::model::id::{GuildId, UserId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let uids_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("ban", "userIDs is required"),
+        _ => return FnOutput::error("ban", crate::error_messages::required(1, "userIDs")),
     };
 
     let user_ids: Vec<u64> = match uids_str
@@ -15,11 +15,11 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         .collect::<Result<Vec<_>, _>>()
     {
         Ok(ids) => ids,
-        Err(_) => return FnOutput::error("ban", format!("invalid user ID: '{}'", uids_str)),
+        Err(_) => return FnOutput::error("ban", crate::error_messages::expected_snowflake(1, "userIDs", &uids_str)),
     };
 
     if user_ids.is_empty() {
-        return FnOutput::error("ban", "userIDs is required");
+        return FnOutput::error("ban", crate::error_messages::required(1, "userIDs"));
     }
 
     let reason = match args.get(1) {
@@ -30,18 +30,18 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let delete_days: u8 = match args.get(2) {
         Some(s) if !s.is_empty() => match s.parse::<u8>() {
             Ok(n) => n,
-            Err(_) => return FnOutput::error("ban", "deleteMessageDays must be between 0 and 7"),
+            Err(_) => return FnOutput::error("ban", crate::error_messages::expected_integer(3, "deleteMessageDays", s)),
         },
         _ => 0,
     };
 
     if delete_days > 7 {
-        return FnOutput::error("ban", "deleteMessageDays must be between 0 and 7");
+        return FnOutput::error("ban", crate::error_messages::out_of_range(3, "deleteMessageDays", 0, 7, delete_days as i64));
     }
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("ban", "not in a guild"),
+        Err(_) => return FnOutput::error("ban", crate::error_messages::not_in_guild()),
     };
 
     let http = match &ctx.http {

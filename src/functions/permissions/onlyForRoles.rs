@@ -5,7 +5,7 @@ use serenity::model::id::{GuildId, UserId};
 /// Halts unless the author has any of the provided roles (matched by name).
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if args.is_empty() {
-        return FnOutput::error("onlyForRoles", "at least one role name is required");
+        return FnOutput::error("onlyForRoles", crate::error_messages::too_few_args(1, args.len()));
     }
 
     let http = match &ctx.http {
@@ -15,7 +15,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("onlyForRoles", "not in a guild"),
+        Err(_) => return FnOutput::error("onlyForRoles", crate::error_messages::not_in_guild()),
     };
 
     let user_id: u64 = match ctx.author_id.parse() {
@@ -32,9 +32,9 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             let member = GuildId::new(guild_id).member(&http, UserId::new(user_id)).await
-                .map_err(|e| format!("failed to fetch member: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch member", &format!("{}", e)))?;
             let roles = GuildId::new(guild_id).roles(&http).await
-                .map_err(|e| format!("failed to fetch roles: {}", e))?;
+                .map_err(|e| crate::error_messages::action_failed_reason("fetch roles", &format!("{}", e)))?;
 
             let has_role = member.roles.iter().any(|role_id| {
                 roles.get(role_id)

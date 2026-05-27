@@ -22,7 +22,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let value = infer_value(&value_str);
 
     with_json(ctx, |obj| match obj {
-        None => FnOutput::error("jsonArrayAppend", "no JSON object — call ZjsonParse or ZjsonArray first"),
+        None => FnOutput::error("jsonArrayAppend", crate::error_messages::requires_first("ZjsonParse or ZjsonArray")),
         Some(root) => match get_mut_at_path(root, &keys) {
             Some(serde_json::Value::Array(arr)) => {
                 arr.push(value);

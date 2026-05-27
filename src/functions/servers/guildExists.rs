@@ -11,7 +11,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let http = match ctx.http.as_ref() {
         Some(h) => h.clone(),
-        None => return FnOutput::error("guildExists", "no HTTP client available"),
+        None => return FnOutput::error("guildExists", crate::error_messages::action_failed("get HTTP client")),
     };
     tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {

@@ -9,7 +9,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         _ => ctx.author_id.clone(),
     };
     if id_str.is_empty() {
-        return FnOutput::error("creationDate", "ID is required");
+        return FnOutput::error("creationDate", crate::error_messages::required(1, "ID"));
     }
     let format_str = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
@@ -18,7 +18,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let id: u64 = match id_str.parse() {
         Ok(v) => v,
-        Err(_) => return FnOutput::error("creationDate", "invalid ID format"),
+        Err(_) => return FnOutput::error("creationDate", crate::error_messages::expected_snowflake(1, "ID", &id_str)),
     };
 
     let timestamp_ms = (id >> 22) + 1420070400000;

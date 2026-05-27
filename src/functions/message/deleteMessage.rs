@@ -5,20 +5,20 @@ use serenity::model::id::{ChannelId, MessageId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let cid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("deleteMessage", "channelID is required"),
+        _ => return FnOutput::error("deleteMessage", crate::error_messages::required(1, "channelID")),
     };
     let mid_str = match args.get(1) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("deleteMessage", "messageID is required"),
+        _ => return FnOutput::error("deleteMessage", crate::error_messages::required(2, "messageID")),
     };
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("deleteMessage", format!("invalid channel ID: '{}'", cid_str)),
+        Err(_) => return FnOutput::error("deleteMessage", crate::error_messages::expected_snowflake(1, "channelID", &cid_str)),
     };
     let mid: u64 = match mid_str.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("deleteMessage", format!("invalid message ID: '{}'", mid_str)),
+        Err(_) => return FnOutput::error("deleteMessage", crate::error_messages::expected_snowflake(2, "messageID", &mid_str)),
     };
 
     let http = match &ctx.http {
@@ -34,6 +34,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(_) => FnOutput::Empty,
-        Err(_) => FnOutput::error("deleteMessage", "failed to delete message"),
+        Err(_) => FnOutput::error("deleteMessage", crate::error_messages::action_failed("delete message")),
     }
 }

@@ -16,7 +16,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     let guild_id: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,
-        Err(_) => return FnOutput::error("userID", "not in a guild"),
+        Err(_) => return FnOutput::error("userID", crate::error_messages::not_in_guild()),
     };
 
     let result = tokio::task::block_in_place(|| {

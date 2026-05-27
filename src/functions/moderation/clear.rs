@@ -6,31 +6,31 @@ use serenity::model::id::{ChannelId, MessageId};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let amount_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
-        _ => return FnOutput::error("clear", "amount is required"),
+        _ => return FnOutput::error("clear", crate::error_messages::required(1, "amount")),
     };
 
     let amount: u8 = match amount_str.parse::<u8>() {
         Ok(n) if n >= 1 => n,
         Ok(n) => {
-            return FnOutput::error("clear", format!("amount must be between 1 and 100, got {}", n))
+            return FnOutput::error("clear", crate::error_messages::out_of_range(1, "amount", 1, 100, n as i64))
         }
         Err(_) => {
             return FnOutput::error(
                 "clear",
-                format!("amount must be between 1 and 100, got {}", amount_str),
+                crate::error_messages::expected_integer(1, "amount", &amount_str),
             )
         }
     };
 
     // u8 max is 255, but Discord caps at 100
     if amount > 100 {
-        return FnOutput::error("clear", format!("amount must be between 1 and 100, got {}", amount));
+        return FnOutput::error("clear", crate::error_messages::out_of_range(1, "amount", 1, 100, amount as i64));
     }
 
     let filter_uid: Option<u64> = match args.get(1) {
         Some(s) if !s.is_empty() => match s.parse::<u64>() {
             Ok(id) => Some(id),
-            Err(_) => return FnOutput::error("clear", format!("invalid user ID: '{}'", s)),
+            Err(_) => return FnOutput::error("clear", crate::error_messages::expected_snowflake(2, "userID", s)),
         },
         _ => None,
     };
@@ -42,7 +42,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             other => {
                 return FnOutput::error(
                     "clear",
-                    format!("invalid boolean for removePinned: '{}'", other),
+                    crate::error_messages::expected_boolean(3, "removePinned", other),
                 )
             }
         },
@@ -68,7 +68,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             let messages = channel
                 .messages(&http, GetMessages::new().limit(fetch_limit))
                 .await
-                .map_err(|_| "failed to fetch messages".to_string())?;
+                .map_err(|_| crate::error_messages::action_failed("fetch messages"))?;
 
             // Fetch pinned message IDs if we need to exclude them
             let pinned_ids: std::collections::HashSet<u64> = if !remove_pinned {
@@ -118,12 +118,12 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 channel
                     .delete_message(&http, to_delete[0])
                     .await
-                    .map_err(|_| "failed to delete messages".to_string())?;
+                    .map_err(|_| crate::error_messages::action_failed("delete messages"))?;
             } else {
                 channel
                     .delete_messages(&http, to_delete)
                     .await
-                    .map_err(|_| "failed to delete messages".to_string())?;
+                    .map_err(|_| crate::error_messages::action_failed("delete messages"))?;
             }
 
             Ok(())

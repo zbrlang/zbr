@@ -8,7 +8,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             Ok(n) if n >= 1 => n,
             _ => return FnOutput::error("mentioned", format!("invalid index: '{}' (must be 1 or greater)", s)),
         },
-        _ => return FnOutput::error("mentioned", "index is required"),
+        _ => return FnOutput::error("mentioned", crate::error_messages::required(1, "index")),
     };
 
     let fallback = match args.get(1) {

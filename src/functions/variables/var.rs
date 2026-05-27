@@ -5,7 +5,7 @@ use crate::context::{DiscordContext, FnOutput};
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = match args.get(0) {
         Some(n) => n.clone(),
-        None => return FnOutput::error("var", "variable name is required"),
+        None => return FnOutput::error("var", crate::error_messages::required(1, "name")),
     };
 
     match args.get(1) {
