@@ -7637,6 +7637,14 @@
     "example": "Zuppercase{Hello World}"
   },
   {
+    "name": "Zupdate",
+    "description": "Signals that the interaction response should update the original message instead of sending a new reply. Only valid inside interaction handlers (buttons, select menus).",
+    "syntax": "Zupdate{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "Zupdate{}"
+  },
+  {
     "name": "Zuptime",
     "description": "Returns the bot's uptime since startup, formatted as a human-readable string of days, hours, minutes, and seconds.",
     "syntax": "Zuptime{}",

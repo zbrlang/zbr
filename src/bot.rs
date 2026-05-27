@@ -1125,21 +1125,35 @@ impl EventHandler for Bot {
                         return;
                     }
 
-                    let mut msg = CreateInteractionResponseMessage::new();
-                    if let Some(text) = text_content {
-                        msg = msg.content(text);
-                    }
-                    for e in built_embeds {
-                        msg = msg.add_embed(e);
-                    }
-                    if data.ephemeral {
-                        msg = msg.ephemeral(true);
-                    }
-                    for row in build_components(&data.components) {
-                        msg = msg.components(vec![row]);
-                    }
+                    let response = if data.components.update_message {
+                        let mut msg = CreateInteractionResponseMessage::new();
+                        if let Some(text) = text_content {
+                            msg = msg.content(text);
+                        }
+                        for e in built_embeds {
+                            msg = msg.add_embed(e);
+                        }
+                        for row in build_components(&data.components) {
+                            msg = msg.components(vec![row]);
+                        }
+                        CreateInteractionResponse::UpdateMessage(msg)
+                    } else {
+                        let mut msg = CreateInteractionResponseMessage::new();
+                        if let Some(text) = text_content {
+                            msg = msg.content(text);
+                        }
+                        for e in built_embeds {
+                            msg = msg.add_embed(e);
+                        }
+                        if data.ephemeral {
+                            msg = msg.ephemeral(true);
+                        }
+                        for row in build_components(&data.components) {
+                            msg = msg.components(vec![row]);
+                        }
+                        CreateInteractionResponse::Message(msg)
+                    };
 
-                    let response = CreateInteractionResponse::Message(msg);
                     if let Err(e) = component.create_response(&ctx.http, response).await {
                         eprintln!("Failed to respond to component interaction: {}", e);
                     }

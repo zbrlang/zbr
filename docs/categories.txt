@@ -434,6 +434,7 @@ Zunmute - moderation
 ZunpinMessage - message
 ZuntimeOut - moderation
 Zuppercase - string
+Zupdate - components
 Zuptime - bot
 Zurl - string
 ZuseChannel - message

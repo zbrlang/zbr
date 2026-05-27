@@ -2965,6 +2965,14 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         },
     );
     registry.insert(
+        "update".to_string(),
+        FnMeta {
+            func: components::update::run,
+            min_args: 0,
+            max_args: 0,
+        },
+    );
+    registry.insert(
         "inputValue".to_string(),
         FnMeta {
             func: components::inputValue::run,

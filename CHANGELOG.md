@@ -2,6 +2,16 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbr-website.vercel.app/docs/changelog) website.
 
+## v1.4.1 - Parser fix and Zupdate interaction
+
+This release addresses a critical parser bug and introduces a new interaction feature for better message management in Discord.
+
+### Core
+- **Fixed Parser Data Loss** — Resolved a bug in `parse_arg` where arguments containing multiple function calls (e.g., inside `Zif`) were being truncated.
+
+### New Functions
+- `Zupdate{}` — Signals that an interaction (button/select menu) should update the original message instead of sending a new reply.
+
 ---
 
 ## v1.4.0 - Centralized error handling across all functions

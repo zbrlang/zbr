@@ -65,6 +65,8 @@ pub struct ComponentState {
     pub modal: Option<ModalData>,
     /// Whether Zdefer{} was called.
     pub deferred: bool,
+    /// Whether Zupdate{} was called (to edit the original message in an interaction).
+    pub update_message: bool,
 }
 
 #[derive(Clone, Default, Debug)]

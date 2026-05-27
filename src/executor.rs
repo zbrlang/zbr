@@ -76,6 +76,7 @@ pub struct ComponentData {
     pub select_menu: Option<SelectMenuData>,
     pub modal: Option<ModalData>,
     pub deferred: bool,
+    pub update_message: bool,
 }
 
 pub struct RunResponse {
@@ -206,6 +207,7 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
                     select_menu: None,
                     modal: None,
                     deferred: false,
+                    update_message: false,
                 },
             };
         }
@@ -285,6 +287,7 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
                 .collect(),
         }),
         deferred: result.components.deferred,
+        update_message: result.components.update_message,
     };
 
     RunResponse {

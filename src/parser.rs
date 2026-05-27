@@ -163,23 +163,14 @@ pub fn parse_call(s: &str) -> Option<Node> {
 }
 
 fn parse_arg(s: &str) -> Node {
-    if is_zbr_call(s) {
-        parse_call(s).unwrap_or(Node::StringLiteral(s.to_string()))
+    let segments = parse_template(s);
+    if segments.len() == 1 {
+        segments.into_iter().next().unwrap()
+    } else if segments.is_empty() {
+        Node::StringLiteral(s.to_string())
     } else {
-        // also support templates inside args
-        let segments = parse_template(s);
-        if segments.len() == 1 {
-            segments.into_iter().next().unwrap()
-        } else if segments.is_empty() {
-            Node::StringLiteral(s.to_string())
-        } else {
-            Node::Concat(segments)
-        }
+        Node::Concat(segments)
     }
-}
-
-fn is_zbr_call(s: &str) -> bool {
-    s.starts_with('Z') && s.contains('{') && s.ends_with('}')
 }
 
 fn extract_args(s: &str) -> Option<String> {
@@ -268,6 +259,17 @@ fn split_args(s: &str) -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn parses_multiple_calls_in_arg() {
+        let node = parse_arg("Zf1{}Zf2{}");
+        match node {
+            Node::Concat(segments) => {
+                assert_eq!(segments.len(), 2);
+            }
+            other => panic!("expected Concat, got {other:?}"),
+        }
+    }
 
     #[test]
     fn strips_inline_comment_outside_braces() {

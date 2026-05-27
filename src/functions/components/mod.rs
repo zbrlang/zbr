@@ -15,6 +15,7 @@ pub mod removeAllComponents;
 pub mod removeButtons;
 pub mod removeComponent;
 pub mod defer;
+pub mod update;
 pub mod inputValue;
 pub mod customID;
 pub mod getUserSelectUserID;
