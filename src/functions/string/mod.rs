@@ -15,6 +15,7 @@ pub mod regexMatch;
 pub mod regexReplace;
 pub mod removeLinks;
 pub mod replaceText;
+pub mod spliceText;
 pub mod startsWith;
 pub mod substring;
 pub mod titlecase;

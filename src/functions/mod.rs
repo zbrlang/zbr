@@ -411,6 +411,14 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         },
     );
     registry.insert(
+        "spliceText".to_string(),
+        FnMeta {
+            func: string::spliceText::run,
+            min_args: 4,
+            max_args: 4,
+        },
+    );
+    registry.insert(
         "titlecase".to_string(),
         FnMeta {
             func: string::titlecase::run,

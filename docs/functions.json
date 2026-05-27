@@ -6743,6 +6743,35 @@
     "example": "ZsoundboardSounds{}"
   },
   {
+    "name": "ZspliceText",
+    "description": "Modifies a string by removing a specified number of characters starting at a 1-based position and inserting a replacement string in their place.",
+    "syntax": "ZspliceText{text;start;length;replacement}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "start",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "length",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "replacement",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZspliceText{Hello World;7;5;Universe}"
+  },
+  {
     "name": "ZsplitText",
     "description": "Returns a single element from the stored split text by 1-based index, or use < for the first or > for the last element.",
     "syntax": "ZsplitText{index}",

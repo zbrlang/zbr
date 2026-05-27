@@ -11,6 +11,7 @@ This release addresses a critical parser bug and introduces a new interaction fe
 
 ### New Functions
 - `Zupdate{}` — Signals that an interaction (button/select menu) should update the original message instead of sending a new reply.
+- `ZspliceText{text;start;length;replacement}` — Modifies a string by removing a specified number of characters and inserting new text.
 
 ---
 

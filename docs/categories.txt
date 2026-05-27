@@ -381,6 +381,7 @@ ZsoundboardEdit - soundboard
 ZsoundboardPlay - soundboard
 ZsoundboardSound - soundboard
 ZsoundboardSounds - soundboard
+ZspliceText - string
 ZsplitText - textsplit
 Zsqrt - math
 ZstageCreate - stage
