@@ -32,12 +32,19 @@ function readPackageVersion() {
 }
 
 function version() {
-  const version = readPackageVersion();
-  if (!version) {
-    console.error('Unable to read version from package.json');
+  const binaryPath = getBinaryPath();
+  if (!fs.existsSync(binaryPath)) {
+    console.error('Runtime engine not found. Run "zbr update" to download it.');
     process.exit(1);
   }
-  console.log(`zbr v${version}`);
+  const { execFileSync } = require('child_process');
+  try {
+    const output = execFileSync(binaryPath, ['--version'], { encoding: 'utf8' }).trim();
+    console.log(`zbr ${output}`);
+  } catch (err) {
+    console.error('Failed to get version from runtime engine.');
+    process.exit(1);
+  }
 }
 
 function commandFileName(trigger) {
@@ -357,6 +364,17 @@ function update() {
         if (process.platform !== 'win32') {
           fs.chmodSync(binaryPath, 0o755);
         }
+
+        // Update package.json version to match the downloaded binary
+        try {
+          const pkgPath = path.join(__dirname, '..', 'package.json');
+          const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+          const { execFileSync } = require('child_process');
+          const newVersion = execFileSync(binaryPath, ['--version'], { encoding: 'utf8' }).trim().replace(/^v/, '');
+          pkg.version = newVersion;
+          fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+        } catch (err) { }
+
         console.log('Update successful! ZBR runtime engine is now up to date.');
       });
 

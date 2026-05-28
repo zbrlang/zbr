@@ -21,6 +21,11 @@ use types::CommandMap;
 
 #[tokio::main]
 async fn main() {
+    let args: Vec<String> = std::env::args().collect();
+    if args.contains(&"--version".to_string()) {
+        println!("v{}", env!("CARGO_PKG_VERSION"));
+        return;
+    }
     dotenv().ok();
     crate::context::START_TIME
         .set(std::time::Instant::now())

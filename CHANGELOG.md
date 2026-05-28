@@ -2,6 +2,18 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbr-website.vercel.app/docs/changelog) website.
 
+## v1.4.2 - Mobile support and version fix
+
+### Distribution
+- **Android support** — Added `aarch64-linux-android` binary target; ZBR now runs on Android via Termux.
+- **iOS support** — Added `aarch64-apple-ios` binary target; ZBR now runs on iOS via iSH.
+
+### CLI
+- **Fixed `zbr version`** — Now reports the actual binary version instead of the stale npm package version.
+- **Fixed `zbr update`** — Version is now always accurate after updating.
+
+---
+
 ## v1.4.1 - Parser fix and Zupdate interaction
 
 This release addresses a critical parser bug and introduces a new interaction feature for better message management in Discord.
