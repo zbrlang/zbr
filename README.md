@@ -9,6 +9,13 @@ Previously a complex setup, **ZBR is now a streamlined CLI tool** distributed vi
 
 Get your bot up and running in seconds:
 
+### Option 1: Webapp Editor (Beta)
+Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a visual development experience.
+1. Build your commands, manage variables, and tweak settings visually.
+2. Export your project as a ZIP.
+3. Install the CLI, extract your ZIP, and run your bot with `zbr run`.
+
+### Option 2: CLI (Recommended)
 1. **Install the CLI globally:**
    ```bash
    npm i @zbrlang/zbr
@@ -33,6 +40,13 @@ Get your bot up and running in seconds:
    zbr run
    ```
    Your bot is now live and loading scripts from the `commands/` directory!
+
+## Webapp Editor (Beta)
+
+For those who prefer a visual development environment, the [ZBR Webapp](https://zbr-webapp.vercel.app) allows you to build commands, configure bot variables, and manage settings in your browser.
+
+- **Visual Prototyping:** Easily design your bot logic without a local setup.
+- **Workflow:** Simply build your bot in the Webapp, export it as a project ZIP, and then use the ZBR CLI (`zbr run`) to host it locally or on your preferred server.
 
 ## What it looks like
 
