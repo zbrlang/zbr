@@ -1,10 +1,8 @@
-use crate::context::{CooldownLabels, ComponentState, DiscordContext};
+use crate::context::{ CooldownLabels, ComponentState, DiscordContext };
 use crate::runtime;
-use std::collections::{HashMap, HashSet};
+use std::collections::{ HashMap, HashSet };
 use std::sync::Arc;
 use tokio::sync::Mutex;
-
-// ── Output types (consumed by bot.rs response processing) ───────────────
 
 pub struct EmbedFieldData {
     pub name: String,
@@ -136,6 +134,7 @@ fn build_discord_context(ctx: RunContext, state: &ExecState) -> DiscordContext {
         trigger: ctx.trigger,
         timezone: Arc::new(Mutex::new("Asia/Tokyo".to_string())),
         temp_vars: Arc::new(Mutex::new(HashMap::new())),
+        var_cache: Arc::new(Mutex::new(HashMap::new())),
         command_name: ctx.command_name,
         cooldown_labels: Arc::new(Mutex::new(CooldownLabels::default())),
         pending_reactions: Arc::new(Mutex::new(vec![])),
@@ -165,17 +164,20 @@ fn build_discord_context(ctx: RunContext, state: &ExecState) -> DiscordContext {
 
 fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime) -> RunResponse {
     let pending_reactions = tokio::task::block_in_place(|| {
-        tokio::runtime::Handle::current()
+        tokio::runtime::Handle
+            ::current()
             .block_on(async { rt.context.pending_reactions.lock().await.clone() })
     });
 
     let allowed_user_mentions = tokio::task::block_in_place(|| {
-        tokio::runtime::Handle::current()
+        tokio::runtime::Handle
+            ::current()
             .block_on(async { rt.context.allowed_user_mentions.lock().await.clone() })
     });
 
     let allowed_role_mentions = tokio::task::block_in_place(|| {
-        tokio::runtime::Handle::current()
+        tokio::runtime::Handle
+            ::current()
             .block_on(async { rt.context.allowed_role_mentions.lock().await.clone() })
     });
 
@@ -184,17 +186,20 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
         if !e.has_content() || result.consumed_embeds.contains(&i) {
             continue;
         }
-        let has_required = e.title.is_some()
-            || e.description.is_some()
-            || e.author.is_some()
-            || !e.fields.is_empty();
+        let has_required =
+            e.title.is_some() ||
+            e.description.is_some() ||
+            e.author.is_some() ||
+            !e.fields.is_empty();
         if !has_required {
             return RunResponse {
                 output: vec![],
-                errors: vec![format!(
-                    "embed {} must have at least a title, description, author, or field before it can be sent",
-                    i + 1
-                )],
+                errors: vec![
+                    format!(
+                        "embed {} must have at least a title, description, author, or field before it can be sent",
+                        i + 1
+                    )
+                ],
                 should_reply: false,
                 embeds: vec![],
                 pending_reactions: vec![],
@@ -224,8 +229,7 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
             author_icon: e.author_icon,
             author_url: e.author_url,
             timestamp: e.timestamp,
-            fields: e
-                .fields
+            fields: e.fields
                 .into_iter()
                 .map(|f| EmbedFieldData {
                     name: f.name,
@@ -237,9 +241,7 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
     }
 
     let components = ComponentData {
-        buttons: result
-            .components
-            .buttons
+        buttons: result.components.buttons
             .into_iter()
             .map(|b| ButtonData {
                 custom_id: b.custom_id,
@@ -256,8 +258,7 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
             min_values: s.min_values,
             max_values: s.max_values,
             placeholder: s.placeholder,
-            options: s
-                .options
+            options: s.options
                 .into_iter()
                 .map(|o| SelectOptionData {
                     label: o.label,
@@ -271,8 +272,7 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
         modal: result.components.modal.map(|m| ModalData {
             modal_id: m.modal_id,
             title: m.title,
-            fields: m
-                .fields
+            fields: m.fields
                 .into_iter()
                 .map(|f| ModalFieldData {
                     field_id: f.field_id,
@@ -306,9 +306,13 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
 
 // ── Public entry point ──────────────────────────────────────────────────
 
-pub fn execute_code(code: &str, ctx: RunContext, state: &ExecState) -> RunResponse {
+pub fn execute_code(
+    ast: std::sync::Arc<crate::ast::Node>,
+    ctx: RunContext,
+    state: &ExecState
+) -> RunResponse {
     let discord_ctx = build_discord_context(ctx, state);
     let mut rt = runtime::Runtime::new(discord_ctx);
-    let result = rt.run(code);
+    let result = rt.run((*ast).clone());
     build_response(result, &mut rt)
 }

@@ -2,14 +2,42 @@
 /// Format: `Line N: Z{function} - {message}`
 
 // ── Argument count ─────────────────────────────────────────────────────────
+
 pub fn too_few_args(expected: usize, got: usize) -> String {
-    format!("expected at least {} argument{}, got {}", expected, if expected == 1 { "" } else { "s" }, got)
+    format!(
+        "expected at least {} argument{}, got {}",
+        expected,
+        if expected == 1 {
+            ""
+        } else {
+            "s"
+        },
+        got
+    )
 }
 pub fn too_many_args(expected: usize, got: usize) -> String {
-    format!("expected at most {} argument{}, got {}", expected, if expected == 1 { "" } else { "s" }, got)
+    format!(
+        "expected at most {} argument{}, got {}",
+        expected,
+        if expected == 1 {
+            ""
+        } else {
+            "s"
+        },
+        got
+    )
 }
 pub fn exact_args(expected: usize, got: usize) -> String {
-    format!("expected exactly {} argument{}, got {}", expected, if expected == 1 { "" } else { "s" }, got)
+    format!(
+        "expected exactly {} argument{}, got {}",
+        expected,
+        if expected == 1 {
+            ""
+        } else {
+            "s"
+        },
+        got
+    )
 }
 
 // ── Required but empty ─────────────────────────────────────────────────────
@@ -37,7 +65,12 @@ pub fn expected_hex_color(arg_num: usize, arg_name: &str, got: &str) -> String {
     format!("expected hex color in argument {} ({}), got \"{}\"", arg_num, arg_name, got)
 }
 pub fn expected_duration(arg_num: usize, arg_name: &str, got: &str) -> String {
-    format!("expected duration (e.g. 30s, 1m, 2h) in argument {} ({}), got \"{}\"", arg_num, arg_name, got)
+    format!(
+        "expected duration (e.g. 30s, 1m, 2h) in argument {} ({}), got \"{}\"",
+        arg_num,
+        arg_name,
+        got
+    )
 }
 
 // ── Enum / choice errors ───────────────────────────────────────────────────

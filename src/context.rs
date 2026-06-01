@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{ HashMap, HashSet };
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -88,19 +88,19 @@ pub struct Embed {
 
 impl Embed {
     pub fn has_content(&self) -> bool {
-        self.title.is_some()
-            || self.title_url.is_some()
-            || self.description.is_some()
-            || self.color.is_some()
-            || self.thumbnail.is_some()
-            || self.image.is_some()
-            || self.footer.is_some()
-            || self.footer_icon.is_some()
-            || self.author.is_some()
-            || self.author_icon.is_some()
-            || self.author_url.is_some()
-            || self.timestamp
-            || !self.fields.is_empty()
+        self.title.is_some() ||
+            self.title_url.is_some() ||
+            self.description.is_some() ||
+            self.color.is_some() ||
+            self.thumbnail.is_some() ||
+            self.image.is_some() ||
+            self.footer.is_some() ||
+            self.footer_icon.is_some() ||
+            self.author.is_some() ||
+            self.author_icon.is_some() ||
+            self.author_url.is_some() ||
+            self.timestamp ||
+            !self.fields.is_empty()
     }
 }
 
@@ -139,6 +139,8 @@ pub struct DiscordContext {
     pub timezone: Arc<Mutex<String>>,
     /// Temporary variables scoped to this single execution (Zvar).
     pub temp_vars: Arc<Mutex<HashMap<String, String>>>,
+    /// Cache for database variables fetched during this execution (ZgetVar, etc.)
+    pub var_cache: Arc<Mutex<HashMap<String, String>>>,
     /// The command name used as the cooldown key (set by the loader/bot).
     pub command_name: String,
     /// Label overrides for cooldown time display (set by ZchangeCooldownTime).
@@ -227,6 +229,7 @@ impl Default for DiscordContext {
             options_list: Vec::new(),
             timezone: Arc::new(Mutex::new("Asia/Tokyo".to_string())),
             temp_vars: Arc::new(Mutex::new(HashMap::new())),
+            var_cache: Arc::new(Mutex::new(HashMap::new())),
             command_name: String::new(),
             cooldown_labels: Arc::new(Mutex::new(CooldownLabels::default())),
             pending_reactions: Arc::new(Mutex::new(vec![])),

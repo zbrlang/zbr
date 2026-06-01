@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::{ Deserialize, Serialize };
 use sqlx::SqlitePool;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -15,7 +15,7 @@ pub struct Command {
     pub command_type: CommandType,
     pub scope: CommandScope,
     pub options: Vec<CommandOption>,
-    pub code: String,
+    pub ast: std::sync::Arc<crate::ast::Node>,
 }
 
 #[derive(Clone, Debug)]

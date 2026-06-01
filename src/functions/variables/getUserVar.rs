@@ -13,9 +13,25 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(d) => d.clone(),
         None => return FnOutput::error("getUserVar", "no database available"),
     };
+    let cache_key = format!("user:{}:{}:{}:{}", guild_id, user_id, name, bot_id);
+    if let Ok(cache) = tokio::task::block_in_place(|| {
+        tokio::runtime::Handle::current().block_on(async { Ok::<_, ()>(ctx.var_cache.lock().await.get(&cache_key).cloned()) })
+    }) {
+        if let Some(val) = cache {
+            return FnOutput::Text(val);
+        }
+    }
+
     let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async move {
             crate::db::get_user_var(&db, &bot_id, &guild_id, &user_id, &name).await
+        })
+    });
+
+    let _ = tokio::task::block_in_place(|| {
+        tokio::runtime::Handle::current().block_on(async {
+            ctx.var_cache.lock().await.insert(cache_key, result.clone());
+            Ok::<_, ()>(())
         })
     });
     FnOutput::Text(result)

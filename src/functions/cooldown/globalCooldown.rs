@@ -41,11 +41,14 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         return FnOutput::user_error(msg);
     }
 
-    tokio::task::block_in_place(|| {
+    let res = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async {
             crate::db::set_global_cooldown(&db, &bot_id, &user_id, &command, duration_secs).await
         })
     });
+    if let Err(e) = res {
+        return FnOutput::error("globalCooldown", crate::error_messages::action_failed_reason("set global cooldown", &e.to_string()));
+    }
 
     FnOutput::Empty
 }

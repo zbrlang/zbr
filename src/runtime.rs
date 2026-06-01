@@ -1,5 +1,5 @@
 use crate::ast::Node;
-use crate::context::{DiscordContext, EvalResult, FnMeta, FnOutput};
+use crate::context::{ DiscordContext, EvalResult, FnMeta, FnOutput };
 use crate::functions;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -28,8 +28,12 @@ fn group_statements(code: &str) -> Vec<String> {
 
         for ch in trimmed.chars() {
             match ch {
-                '{' => depth += 1,
-                '}' => depth -= 1,
+                '{' => {
+                    depth += 1;
+                }
+                '}' => {
+                    depth -= 1;
+                }
                 _ => {}
             }
         }
@@ -64,76 +68,68 @@ impl Runtime {
         Runtime { registry, context }
     }
 
-    pub fn run(&mut self, code: &str) -> EvalResult {
+    pub fn run(&mut self, node: Node) -> EvalResult {
         let mut output = Vec::new();
         let mut should_reply = false;
         let mut fatal_error: Option<String> = None;
-        let mut line_num = 0usize;
 
-        let statements = group_statements(code);
-
-        'lines: for stmt in statements {
-            line_num += 1;
-
-            match crate::parser::parse_line(&stmt) {
-                Some(node) => {
-                    match self.evaluate(node) {
-                        Ok(fn_output) => match fn_output {
-                            FnOutput::Text(t) => output.push(t),
-                            FnOutput::Reply => should_reply = true,
-                            FnOutput::Empty => {}
-                            FnOutput::Error(e) => {
-                                fatal_error = Some(format!("Line {}: {}", line_num, e));
-                                break 'lines;
-                            }
-                            FnOutput::UserError(e) => {
-                                if e.is_empty() {
-                                    // Zstop — silent halt, no error
-                                    break 'lines;
-                                }
-                                fatal_error = Some(e);
-                                break 'lines;
-                            }
-                        },
-                        Err(e) => {
-                            fatal_error = Some(format!("Line {}: {}", line_num, e));
-                            break 'lines;
+        match self.evaluate(node) {
+            Ok(fn_output) =>
+                match fn_output {
+                    FnOutput::Text(t) => output.push(t),
+                    FnOutput::Reply => {
+                        should_reply = true;
+                    }
+                    FnOutput::Empty => {}
+                    FnOutput::Error(e) => {
+                        fatal_error = Some(e);
+                    }
+                    FnOutput::UserError(e) => {
+                        if !e.is_empty() {
+                            fatal_error = Some(e);
                         }
                     }
                 }
-                None => {}
+            Err(e) => {
+                fatal_error = Some(e);
             }
         }
 
         // On error: check for suppression first, then wipe state.
         if let Some(err) = fatal_error {
             let suppress_text = tokio::task::block_in_place(|| {
-                tokio::runtime::Handle::current()
+                tokio::runtime::Handle
+                    ::current()
                     .block_on(async { self.context.suppress_error_text.lock().await.clone() })
             });
             let suppress_embed = tokio::task::block_in_place(|| {
-                tokio::runtime::Handle::current()
+                tokio::runtime::Handle
+                    ::current()
                     .block_on(async { *self.context.suppress_error_embed.lock().await })
             });
 
             // If suppression is active, return the suppressed response instead of the error
             if suppress_text.is_some() || suppress_embed.is_some() {
                 let embeds = tokio::task::block_in_place(|| {
-                    tokio::runtime::Handle::current()
+                    tokio::runtime::Handle
+                        ::current()
                         .block_on(async { self.context.embed.lock().await.clone() })
                 });
                 let ephemeral = tokio::task::block_in_place(|| {
-                    tokio::runtime::Handle::current()
+                    tokio::runtime::Handle
+                        ::current()
                         .block_on(async { *self.context.ephemeral.lock().await })
                 });
                 let use_channel = tokio::task::block_in_place(|| {
-                    tokio::runtime::Handle::current()
+                    tokio::runtime::Handle
+                        ::current()
                         .block_on(async { self.context.use_channel.lock().await.clone() })
                 });
 
                 // Build consumed_embeds: everything EXCEPT the suppress embed
                 let mut consumed = tokio::task::block_in_place(|| {
-                    tokio::runtime::Handle::current()
+                    tokio::runtime::Handle
+                        ::current()
                         .block_on(async { self.context.consumed_embeds.lock().await.clone() })
                 });
                 // Mark all embeds as consumed except the one we want to show
@@ -180,27 +176,32 @@ impl Runtime {
         }
 
         let embeds = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current()
+            tokio::runtime::Handle
+                ::current()
                 .block_on(async { self.context.embed.lock().await.clone() })
         });
 
         let consumed_embeds = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current()
+            tokio::runtime::Handle
+                ::current()
                 .block_on(async { self.context.consumed_embeds.lock().await.clone() })
         });
 
         let ephemeral = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current()
+            tokio::runtime::Handle
+                ::current()
                 .block_on(async { *self.context.ephemeral.lock().await })
         });
 
         let use_channel = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current()
+            tokio::runtime::Handle
+                ::current()
                 .block_on(async { self.context.use_channel.lock().await.clone() })
         });
 
         let components = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current()
+            tokio::runtime::Handle
+                ::current()
                 .block_on(async { self.context.components.lock().await.clone() })
         });
 
@@ -224,10 +225,16 @@ impl Runtime {
                 for segment in segments {
                     match self.evaluate(segment)? {
                         FnOutput::Text(t) => result.push_str(&t),
-                        FnOutput::Reply => return Ok(FnOutput::Reply),
+                        FnOutput::Reply => {
+                            return Ok(FnOutput::Reply);
+                        }
                         FnOutput::Empty => {}
-                        FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-                        FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+                        FnOutput::Error(e) => {
+                            return Ok(FnOutput::Error(e));
+                        }
+                        FnOutput::UserError(e) => {
+                            return Ok(FnOutput::UserError(e));
+                        }
                     }
                 }
                 Ok(FnOutput::Text(result))
@@ -271,10 +278,16 @@ impl Runtime {
                     for arg in args {
                         match self.evaluate(arg)? {
                             FnOutput::Text(t) => resolved.push(t),
-                            FnOutput::Reply => return Ok(FnOutput::Reply),
+                            FnOutput::Reply => {
+                                return Ok(FnOutput::Reply);
+                            }
                             FnOutput::Empty => resolved.push(String::new()),
-                            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-                            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+                            FnOutput::Error(e) => {
+                                return Ok(FnOutput::Error(e));
+                            }
+                            FnOutput::UserError(e) => {
+                                return Ok(FnOutput::UserError(e));
+                            }
                         }
                     }
                     let code = resolved.into_iter().next().unwrap_or_default();
@@ -285,21 +298,30 @@ impl Runtime {
                     let stmts = group_statements(&code);
                     for stmt in stmts {
                         match crate::parser::parse_line(&stmt) {
-                            Some(node) => match self.evaluate(node)? {
-                                FnOutput::Text(t) => eval_output.push(t),
-                                FnOutput::Reply => return Ok(FnOutput::Reply),
-                                FnOutput::Empty => {}
-                                FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-                                FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
-                            },
+                            Some(node) =>
+                                match self.evaluate(node)? {
+                                    FnOutput::Text(t) => eval_output.push(t),
+                                    FnOutput::Reply => {
+                                        return Ok(FnOutput::Reply);
+                                    }
+                                    FnOutput::Empty => {}
+                                    FnOutput::Error(e) => {
+                                        return Ok(FnOutput::Error(e));
+                                    }
+                                    FnOutput::UserError(e) => {
+                                        return Ok(FnOutput::UserError(e));
+                                    }
+                                }
                             None => {}
                         }
                     }
-                    return Ok(if eval_output.is_empty() {
-                        FnOutput::Empty
-                    } else {
-                        FnOutput::Text(eval_output.join("\n"))
-                    });
+                    return Ok(
+                        if eval_output.is_empty() {
+                            FnOutput::Empty
+                        } else {
+                            FnOutput::Text(eval_output.join("\n"))
+                        }
+                    );
                 }
 
                 // ── Normal eager evaluation ───────────────────────────────────
@@ -307,10 +329,16 @@ impl Runtime {
                 for arg in args {
                     match self.evaluate(arg)? {
                         FnOutput::Text(t) => resolved.push(t),
-                        FnOutput::Reply => return Ok(FnOutput::Reply),
+                        FnOutput::Reply => {
+                            return Ok(FnOutput::Reply);
+                        }
                         FnOutput::Empty => resolved.push(String::new()),
-                        FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-                        FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
+                        FnOutput::Error(e) => {
+                            return Ok(FnOutput::Error(e));
+                        }
+                        FnOutput::UserError(e) => {
+                            return Ok(FnOutput::UserError(e));
+                        }
                     }
                 }
 
@@ -318,16 +346,24 @@ impl Runtime {
                     Some(meta) => {
                         let got = resolved.len();
                         if got < meta.min_args {
-                            return Err(format!(
-                                "Z{} - Too few arguments, expected at least {}, got {}",
-                                name, meta.min_args, got
-                            ));
+                            return Err(
+                                format!(
+                                    "Z{} - Too few arguments, expected at least {}, got {}",
+                                    name,
+                                    meta.min_args,
+                                    got
+                                )
+                            );
                         }
                         if got > meta.max_args {
-                            return Err(format!(
-                                "Z{} - Too many arguments, expected up to {}, got {}",
-                                name, meta.max_args, got
-                            ));
+                            return Err(
+                                format!(
+                                    "Z{} - Too many arguments, expected up to {}, got {}",
+                                    name,
+                                    meta.max_args,
+                                    got
+                                )
+                            );
                         }
                         Ok((meta.func)(resolved, &self.context))
                     }
@@ -342,8 +378,7 @@ impl Runtime {
     fn evaluate_if(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
         if args.len() < 2 {
             return Err(
-                "Zif - Too few arguments, expected at least 2 (condition and then branch)"
-                    .to_string(),
+                "Zif - Too few arguments, expected at least 2 (condition and then branch)".to_string()
             );
         }
 
@@ -351,21 +386,24 @@ impl Runtime {
         let condition_str = match self.evaluate(args[0].clone())? {
             FnOutput::Text(t) => t,
             FnOutput::Empty => String::new(),
-            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
-            FnOutput::Reply => return Ok(FnOutput::Reply),
+            FnOutput::Error(e) => {
+                return Ok(FnOutput::Error(e));
+            }
+            FnOutput::UserError(e) => {
+                return Ok(FnOutput::UserError(e));
+            }
+            FnOutput::Reply => {
+                return Ok(FnOutput::Reply);
+            }
         };
 
         // Evaluate the condition
-        let result = crate::functions::control::helpers::eval_condition(&condition_str)
+        let result = crate::functions::control::helpers
+            ::eval_condition(&condition_str)
             .map_err(|e| format!("Zif - {}", e))?;
 
         // Pick the branch to evaluate
-        let branch_node = if result {
-            args.into_iter().nth(1)
-        } else {
-            args.into_iter().nth(2)
-        };
+        let branch_node = if result { args.into_iter().nth(1) } else { args.into_iter().nth(2) };
 
         match branch_node {
             None => Ok(FnOutput::Empty),
@@ -385,10 +423,11 @@ impl Runtime {
 
         match result {
             // Error in the code branch — run the fallback if provided
-            FnOutput::Error(_) | FnOutput::UserError(_) => match args.into_iter().nth(1) {
-                Some(fallback) => self.evaluate(fallback),
-                None => Ok(FnOutput::Empty),
-            },
+            FnOutput::Error(_) | FnOutput::UserError(_) =>
+                match args.into_iter().nth(1) {
+                    Some(fallback) => self.evaluate(fallback),
+                    None => Ok(FnOutput::Empty),
+                }
             // Success — return the result as-is
             other => Ok(other),
         }
@@ -408,39 +447,35 @@ impl Runtime {
         let duration_str = match self.evaluate(args[0].clone())? {
             FnOutput::Text(t) => t,
             FnOutput::Empty => String::new(),
-            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
-            FnOutput::Reply => return Ok(FnOutput::Reply),
+            FnOutput::Error(e) => {
+                return Ok(FnOutput::Error(e));
+            }
+            FnOutput::UserError(e) => {
+                return Ok(FnOutput::UserError(e));
+            }
+            FnOutput::Reply => {
+                return Ok(FnOutput::Reply);
+            }
         };
         if duration_str.is_empty() {
             return Ok(FnOutput::error("delay", "duration is required"));
         }
 
         let secs: u64 = if duration_str.trim_start().starts_with('-') {
-            return Ok(FnOutput::error(
-                "delay",
-                "duration must be at least 1 second",
-            ));
+            return Ok(FnOutput::error("delay", "duration must be at least 1 second"));
         } else {
             match crate::functions::cooldown::helpers::parse_duration(duration_str.trim()) {
                 Ok(s) if s >= 1 => s as u64,
                 Ok(_) => {
-                    return Ok(FnOutput::error(
-                        "delay",
-                        "duration must be at least 1 second",
-                    ))
+                    return Ok(FnOutput::error("delay", "duration must be at least 1 second"));
                 }
                 Err(e) => {
                     if e.contains("must be greater than zero") {
-                        return Ok(FnOutput::error(
-                            "delay",
-                            "duration must be at least 1 second",
-                        ));
+                        return Ok(FnOutput::error("delay", "duration must be at least 1 second"));
                     }
-                    return Ok(FnOutput::error(
-                        "delay",
-                        format!("invalid duration: '{}'", duration_str),
-                    ));
+                    return Ok(
+                        FnOutput::error("delay", format!("invalid duration: '{}'", duration_str))
+                    );
                 }
             }
         };
@@ -469,21 +504,26 @@ impl Runtime {
         let n_str = match self.evaluate(args[0].clone())? {
             FnOutput::Text(t) => t,
             FnOutput::Empty => String::new(),
-            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
-            FnOutput::Reply => return Ok(FnOutput::Reply),
+            FnOutput::Error(e) => {
+                return Ok(FnOutput::Error(e));
+            }
+            FnOutput::UserError(e) => {
+                return Ok(FnOutput::UserError(e));
+            }
+            FnOutput::Reply => {
+                return Ok(FnOutput::Reply);
+            }
         };
 
         let n: usize = match n_str.trim().parse::<usize>() {
-            Ok(0) | Err(_) => return Ok(FnOutput::error("repeat", "N must be a positive integer")),
+            Ok(0) | Err(_) => {
+                return Ok(FnOutput::error("repeat", "N must be a positive integer"));
+            }
             Ok(n) => n,
         };
 
         if n > 1000 {
-            return Ok(FnOutput::error(
-                "repeat",
-                "maximum loop iterations (1000) exceeded",
-            ));
+            return Ok(FnOutput::error("repeat", "maximum loop iterations (1000) exceeded"));
         }
 
         let body = args.into_iter().nth(1).unwrap();
@@ -505,17 +545,19 @@ impl Runtime {
                     }
                 }
                 FnOutput::Empty => {}
-                FnOutput::Reply => return Ok(FnOutput::Reply),
-                e @ FnOutput::Error(_) => return Ok(e),
-                e @ FnOutput::UserError(_) => return Ok(e),
+                FnOutput::Reply => {
+                    return Ok(FnOutput::Reply);
+                }
+                e @ FnOutput::Error(_) => {
+                    return Ok(e);
+                }
+                e @ FnOutput::UserError(_) => {
+                    return Ok(e);
+                }
             }
         }
 
-        Ok(if output.is_empty() {
-            FnOutput::Empty
-        } else {
-            FnOutput::Text(output.join("\n"))
-        })
+        Ok(if output.is_empty() { FnOutput::Empty } else { FnOutput::Text(output.join("\n")) })
     }
 
     /// Lazy evaluation for ZforSplit{code}
@@ -528,15 +570,15 @@ impl Runtime {
 
         // Snapshot split_text before the loop
         let elements: Vec<String> = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current()
+            tokio::runtime::Handle
+                ::current()
                 .block_on(async { self.context.split_text.lock().await.clone() })
         });
 
         if elements.is_empty() {
-            return Ok(FnOutput::error(
-                "forSplit",
-                "no split text available — call ZtextSplit first",
-            ));
+            return Ok(
+                FnOutput::error("forSplit", "no split text available — call ZtextSplit first")
+            );
         }
 
         let body = args.into_iter().next().unwrap();
@@ -558,17 +600,19 @@ impl Runtime {
                     }
                 }
                 FnOutput::Empty => {}
-                FnOutput::Reply => return Ok(FnOutput::Reply),
-                e @ FnOutput::Error(_) => return Ok(e),
-                e @ FnOutput::UserError(_) => return Ok(e),
+                FnOutput::Reply => {
+                    return Ok(FnOutput::Reply);
+                }
+                e @ FnOutput::Error(_) => {
+                    return Ok(e);
+                }
+                e @ FnOutput::UserError(_) => {
+                    return Ok(e);
+                }
             }
         }
 
-        Ok(if output.is_empty() {
-            FnOutput::Empty
-        } else {
-            FnOutput::Text(output.join("\n"))
-        })
+        Ok(if output.is_empty() { FnOutput::Empty } else { FnOutput::Text(output.join("\n")) })
     }
 
     /// Lazy evaluation for ZforJson{key;...;code}
@@ -577,10 +621,7 @@ impl Runtime {
     /// NOTE: nested loops clobber __loop_index/__loop_value of the outer loop.
     fn evaluate_for_json(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
         if args.len() < 2 {
-            return Ok(FnOutput::error(
-                "forJson",
-                "at least one key and a code block are required",
-            ));
+            return Ok(FnOutput::error("forJson", "at least one key and a code block are required"));
         }
 
         // All args except the last are key path — evaluate them eagerly
@@ -590,9 +631,15 @@ impl Runtime {
             match self.evaluate(arg.clone())? {
                 FnOutput::Text(t) => keys.push(t),
                 FnOutput::Empty => keys.push(String::new()),
-                FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-                FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
-                FnOutput::Reply => return Ok(FnOutput::Reply),
+                FnOutput::Error(e) => {
+                    return Ok(FnOutput::Error(e));
+                }
+                FnOutput::UserError(e) => {
+                    return Ok(FnOutput::UserError(e));
+                }
+                FnOutput::Reply => {
+                    return Ok(FnOutput::Reply);
+                }
             }
         }
 
@@ -609,30 +656,39 @@ impl Runtime {
                         let mut cur: serde_json::Value = root.clone();
                         for key in &keys {
                             cur = match cur {
-                                serde_json::Value::Object(map) => map
-                                    .get(key.as_str())
-                                    .cloned()
-                                    .ok_or_else(|| "key path not found".to_string())?,
+                                serde_json::Value::Object(map) =>
+                                    map
+                                        .get(key.as_str())
+                                        .cloned()
+                                        .ok_or_else(|| "key path not found".to_string())?,
                                 serde_json::Value::Array(arr) => {
                                     let i = key
                                         .parse::<usize>()
                                         .map_err(|_| "key path not found".to_string())?;
-                                    arr.get(i)
+                                    arr
+                                        .get(i)
                                         .cloned()
                                         .ok_or_else(|| "key path not found".to_string())?
                                 }
-                                _ => return Err("key path not found".to_string()),
+                                _ => {
+                                    return Err("key path not found".to_string());
+                                }
                             };
                         }
                         match cur {
-                            serde_json::Value::Array(arr) => Ok(arr
-                                .iter()
-                                .map(|v| match v {
-                                    serde_json::Value::String(s) => s.clone(),
-                                    serde_json::Value::Null => String::new(),
-                                    other => other.to_string(),
-                                })
-                                .collect()),
+                            serde_json::Value::Array(arr) =>
+                                Ok(
+                                    arr
+                                        .iter()
+                                        .map(|v| {
+                                            match v {
+                                                serde_json::Value::String(s) => s.clone(),
+                                                serde_json::Value::Null => String::new(),
+                                                other => other.to_string(),
+                                            }
+                                        })
+                                        .collect()
+                                ),
                             _ => Err("target is not an array".to_string()),
                         }
                     }
@@ -642,7 +698,9 @@ impl Runtime {
 
         let elements = match elements {
             Ok(e) => e,
-            Err(e) => return Ok(FnOutput::error("forJson", e)),
+            Err(e) => {
+                return Ok(FnOutput::error("forJson", e));
+            }
         };
 
         let mut output: Vec<String> = Vec::new();
@@ -663,17 +721,19 @@ impl Runtime {
                     }
                 }
                 FnOutput::Empty => {}
-                FnOutput::Reply => return Ok(FnOutput::Reply),
-                e @ FnOutput::Error(_) => return Ok(e),
-                e @ FnOutput::UserError(_) => return Ok(e),
+                FnOutput::Reply => {
+                    return Ok(FnOutput::Reply);
+                }
+                e @ FnOutput::Error(_) => {
+                    return Ok(e);
+                }
+                e @ FnOutput::UserError(_) => {
+                    return Ok(e);
+                }
             }
         }
 
-        Ok(if output.is_empty() {
-            FnOutput::Empty
-        } else {
-            FnOutput::Text(output.join("\n"))
-        })
+        Ok(if output.is_empty() { FnOutput::Empty } else { FnOutput::Text(output.join("\n")) })
     }
 
     fn evaluate_async(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
@@ -682,10 +742,18 @@ impl Runtime {
         }
         let name_str = match self.evaluate(args[0].clone())? {
             FnOutput::Text(t) => t.trim().to_string(),
-            FnOutput::Empty => return Err("Zasync - name cannot be empty".to_string()),
-            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
-            FnOutput::Reply => return Ok(FnOutput::Reply),
+            FnOutput::Empty => {
+                return Err("Zasync - name cannot be empty".to_string());
+            }
+            FnOutput::Error(e) => {
+                return Ok(FnOutput::Error(e));
+            }
+            FnOutput::UserError(e) => {
+                return Ok(FnOutput::UserError(e));
+            }
+            FnOutput::Reply => {
+                return Ok(FnOutput::Reply);
+            }
         };
         if name_str.is_empty() {
             return Err("Zasync - name cannot be empty".to_string());
@@ -701,11 +769,7 @@ impl Runtime {
         });
         tokio::task::block_in_place(|| {
             tokio::runtime::Handle::current().block_on(async {
-                self.context
-                    .async_tasks
-                    .lock()
-                    .await
-                    .insert(name_str, handle);
+                self.context.async_tasks.lock().await.insert(name_str, handle);
             })
         });
         Ok(FnOutput::Empty)
@@ -717,32 +781,34 @@ impl Runtime {
         }
         let name_str = match self.evaluate(args[0].clone())? {
             FnOutput::Text(t) => t.trim().to_string(),
-            FnOutput::Empty => return Err("Zawait - name cannot be empty".to_string()),
-            FnOutput::Error(e) => return Ok(FnOutput::Error(e)),
-            FnOutput::UserError(e) => return Ok(FnOutput::UserError(e)),
-            FnOutput::Reply => return Ok(FnOutput::Reply),
+            FnOutput::Empty => {
+                return Err("Zawait - name cannot be empty".to_string());
+            }
+            FnOutput::Error(e) => {
+                return Ok(FnOutput::Error(e));
+            }
+            FnOutput::UserError(e) => {
+                return Ok(FnOutput::UserError(e));
+            }
+            FnOutput::Reply => {
+                return Ok(FnOutput::Reply);
+            }
         };
         if name_str.is_empty() {
             return Err("Zawait - name cannot be empty".to_string());
         }
         let handle = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current()
+            tokio::runtime::Handle
+                ::current()
                 .block_on(async { self.context.async_tasks.lock().await.remove(&name_str) })
         });
         match handle {
-            None => Ok(FnOutput::error(
-                "await",
-                format!("no async block named '{}'", name_str),
-            )),
+            None => Ok(FnOutput::error("await", format!("no async block named '{}'", name_str))),
             Some(h) => {
-                let result =
-                    tokio::task::block_in_place(|| tokio::runtime::Handle::current().block_on(h))
-                        .unwrap_or_default();
-                Ok(if result.is_empty() {
-                    FnOutput::Empty
-                } else {
-                    FnOutput::Text(result)
-                })
+                let result = tokio::task
+                    ::block_in_place(|| tokio::runtime::Handle::current().block_on(h))
+                    .unwrap_or_default();
+                Ok(if result.is_empty() { FnOutput::Empty } else { FnOutput::Text(result) })
             }
         }
     }

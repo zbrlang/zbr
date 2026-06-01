@@ -1,6 +1,22 @@
 # Changelog
 
-All notable changes to the ZBR project are documented here and in the [changelog](https://zbr-website.vercel.app/docs/changelog) website.
+All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
+
+## v1.4.3 - Performance and Error Handling Improvements
+
+This release focuses on improving bot performance and robustness by caching execution data and surfacing critical database errors.
+
+### Core
+- **AST Caching** — Pre-parses ZBR scripts into an AST on load, eliminating redundant parsing on every execution.
+- **Variable Caching** — Implemented a per-execution variable cache in `DiscordContext` to eliminate redundant database reads for the same variable within a single command execution.
+- **Regex Optimization** — Moved trigger regex compilation to a `static` initializer, eliminating repeated compilation on every incoming message.
+
+### Error Handling
+- **Structured Error Reporting** — Refactored command loading to produce detailed, context-aware error messages (file, line number) when command files fail to parse.
+- **Database Error Propagation** — Database write failures are no longer silently ignored and now surface as error messages in Discord.
+- **Standardized Error Messages** — Aligned database failure messages with the centralized `error_messages.rs` formatting system (`action_failed_reason`).
+
+---
 
 ## v1.4.2 - Mobile support and version fix
 

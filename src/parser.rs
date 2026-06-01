@@ -17,8 +17,12 @@ fn strip_inline_comments(line: &str) -> &str {
         }
 
         match ch {
-            '{' => depth += 1,
-            '}' => depth -= 1,
+            '{' => {
+                depth += 1;
+            }
+            '}' => {
+                depth -= 1;
+            }
             '/' if depth == 0 => {
                 if let Some(&(_, next)) = chars.peek() {
                     if next == '/' {
@@ -78,8 +82,9 @@ fn parse_template(line: &str) -> Vec<Node> {
             continue;
         }
 
-        if ch == 'Z'
-            && chars
+        if
+            ch == 'Z' &&
+            chars
                 .peek()
                 .map(|(_, c)| c.is_alphabetic())
                 .unwrap_or(false)
@@ -125,7 +130,9 @@ fn find_call_end(s: &str) -> Option<usize> {
     let mut depth = 0;
     for (i, ch) in s[brace_pos..].char_indices() {
         match ch {
-            '{' => depth += 1,
+            '{' => {
+                depth += 1;
+            }
             '}' => {
                 depth -= 1;
                 if depth == 0 {
@@ -178,7 +185,9 @@ fn extract_args(s: &str) -> Option<String> {
     let mut end = 0;
     for (i, ch) in s.char_indices() {
         match ch {
-            '{' => depth += 1,
+            '{' => {
+                depth += 1;
+            }
             '}' => {
                 depth -= 1;
                 if depth == 0 {
@@ -245,11 +254,7 @@ fn split_args(s: &str) -> Vec<String> {
     }
 
     let trimmed = current.trim().to_string();
-    let value = if trimmed.is_empty() && !current.is_empty() {
-        current
-    } else {
-        trimmed
-    };
+    let value = if trimmed.is_empty() && !current.is_empty() { current } else { trimmed };
     if !value.is_empty() {
         args.push(value);
     }
@@ -300,9 +305,11 @@ mod tests {
     #[test]
     fn strips_comment_after_braced_section() {
         let node = parse_line("Hello {keep // this} world // remove");
-        assert!(matches!(
+        assert!(
+            matches!(
             node,
             Some(Node::StringLiteral(s)) if s == "Hello {keep // this} world"
-        ));
+        )
+        );
     }
 }

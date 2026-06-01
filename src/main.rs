@@ -12,7 +12,7 @@ mod types;
 
 use bot::Bot;
 use dotenv::dotenv;
-use notify::{recommended_watcher, Event, RecursiveMode, Watcher};
+use notify::{ recommended_watcher, Event, RecursiveMode, Watcher };
 use serenity::prelude::*;
 use std::env;
 use std::sync::Arc;
@@ -27,13 +27,12 @@ async fn main() {
         return;
     }
     dotenv().ok();
-    crate::context::START_TIME
-        .set(std::time::Instant::now())
-        .unwrap();
+    crate::context::START_TIME.set(std::time::Instant::now()).unwrap();
     let database = Arc::new(db::connect().await);
     let bot_id = env::var("BOT_ID").unwrap_or_else(|_| "default".to_string());
     let token = env::var("DISCORD_TOKEN").expect("Missing DISCORD_TOKEN in .env");
-    let guild_id = env::var("GUILD_ID")
+    let guild_id = env
+        ::var("GUILD_ID")
         .ok()
         .and_then(|id| id.parse::<u64>().ok());
 
@@ -45,11 +44,8 @@ async fn main() {
         if res.is_ok() {
             let _ = tx.blocking_send(());
         }
-    })
-    .unwrap();
-    watcher
-        .watch(std::path::Path::new("commands"), RecursiveMode::Recursive)
-        .unwrap();
+    }).unwrap();
+    watcher.watch(std::path::Path::new("commands"), RecursiveMode::Recursive).unwrap();
 
     tokio::spawn(async move {
         while rx.recv().await.is_some() {
@@ -68,18 +64,18 @@ async fn main() {
         bot_id: bot_id.clone(),
     };
 
-    let intents = GatewayIntents::GUILD_MESSAGES
-        | GatewayIntents::MESSAGE_CONTENT
-        | GatewayIntents::GUILD_PRESENCES
-        | GatewayIntents::GUILD_MESSAGE_REACTIONS
-        | GatewayIntents::GUILD_MEMBERS
-        | GatewayIntents::GUILD_MODERATION
-        | GatewayIntents::GUILDS
-        | GatewayIntents::GUILD_VOICE_STATES;
+    let intents =
+        GatewayIntents::GUILD_MESSAGES |
+        GatewayIntents::MESSAGE_CONTENT |
+        GatewayIntents::GUILD_PRESENCES |
+        GatewayIntents::GUILD_MESSAGE_REACTIONS |
+        GatewayIntents::GUILD_MEMBERS |
+        GatewayIntents::GUILD_MODERATION |
+        GatewayIntents::GUILDS |
+        GatewayIntents::GUILD_VOICE_STATES;
 
     let mut client = Client::builder(&token, intents)
-        .event_handler(bot)
-        .await
+        .event_handler(bot).await
         .expect("Failed to create Discord client");
 
     if let Err(why) = client.start().await {

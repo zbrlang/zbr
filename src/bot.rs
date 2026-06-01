@@ -1,6 +1,7 @@
 use crate::executor::{self, ComponentData, EmbedData, ExecState, RunContext, RunResponse};
 use crate::types::{Command, CommandMap, CommandScope, CommandType, Db};
 use regex::Regex;
+use once_cell::sync::Lazy;
 use serenity::async_trait;
 use serenity::builder::{
     CreateActionRow, CreateAllowedMentions, CreateButton, CreateCommand, CreateCommandOption,
@@ -21,6 +22,10 @@ use serenity::model::user::OnlineStatus;
 use serenity::prelude::*;
 use std::collections::HashMap;
 
+static VAR_REGEX: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"Z(getVar|getServerVar|getUserVar|getChannelVar)\{([^}]+)\}").unwrap()
+});
+
 async fn resolve_trigger_vars(
     trigger: &str,
     db: &crate::types::Db,
@@ -28,12 +33,11 @@ async fn resolve_trigger_vars(
     msg: &Message,
     cache: &mut HashMap<String, String>,
 ) -> String {
-    let re = Regex::new(r"Z(getVar|getServerVar|getUserVar|getChannelVar)\{([^}]+)\}").unwrap();
     let mut result = trigger.to_string();
 
     // Limit to 5 iterations to prevent infinite loops if values contain variable syntax
     let mut iterations = 0;
-    while let Some(caps) = re.captures(&result.clone()) {
+    while let Some(caps) = VAR_REGEX.captures(&result.clone()) {
         if iterations >= 5 {
             break;
         }
@@ -87,7 +91,7 @@ impl Bot {
             .get(trigger)
             .filter(|c| matches!(c.command_type, CommandType::Event))
         {
-            let code = cmd.code.clone();
+            let ast = cmd.ast.clone();
             let channel_id = context.channel_id.clone();
             drop(commands);
             let state = ExecState {
@@ -96,7 +100,7 @@ impl Bot {
                 http: Some(ctx.http.clone()),
                 cache: ctx.cache.clone(),
             };
-            let data = executor::execute_code(&code, context, &state);
+            let data = executor::execute_code(ast, context, &state);
             send_event_response(ctx, &channel_id, &data).await;
         }
     }
@@ -359,7 +363,7 @@ impl EventHandler for Bot {
                         selected_values: vec![],
                     };
 
-                    let code = cmd.code.clone();
+                    let ast = cmd.ast.clone();
                     drop(commands);
 
                     let state = ExecState {
@@ -368,7 +372,7 @@ impl EventHandler for Bot {
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
                     };
-                    let data = executor::execute_code(&code, context, &state);
+                    let data = executor::execute_code(ast, context, &state);
 
                     send_response(&ctx, &msg, &data).await;
                     return;
@@ -936,7 +940,7 @@ impl EventHandler for Bot {
                         selected_values: vec![],
                     };
 
-                    let code = cmd.code.clone();
+                    let ast = cmd.ast.clone();
                     drop(commands);
 
                     let state = ExecState {
@@ -945,7 +949,7 @@ impl EventHandler for Bot {
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
                     };
-                    let data = executor::execute_code(&code, context, &state);
+                    let data = executor::execute_code(ast, context, &state);
 
                     let built_embeds = build_embeds(&data.embeds);
                     let text_content = resolve_text_content(&data);
@@ -1059,7 +1063,7 @@ impl EventHandler for Bot {
                         selected_values: selected_values.clone(),
                     };
 
-                    let code = cmd.code.clone();
+                    let ast = cmd.ast.clone();
                     drop(commands);
 
                     let state = ExecState {
@@ -1068,7 +1072,7 @@ impl EventHandler for Bot {
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
                     };
-                    let data = executor::execute_code(&code, context, &state);
+                    let data = executor::execute_code(ast, context, &state);
 
                     // If Zdefer was called, send a deferred acknowledgment
                     if data.components.deferred {
@@ -1209,7 +1213,7 @@ impl EventHandler for Bot {
                         selected_values: vec![],
                     };
 
-                    let code = cmd.code.clone();
+                    let ast = cmd.ast.clone();
                     drop(commands);
 
                     let state = ExecState {
@@ -1218,7 +1222,7 @@ impl EventHandler for Bot {
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
                     };
-                    let data = executor::execute_code(&code, context, &state);
+                    let data = executor::execute_code(ast, context, &state);
 
                     let built_embeds = build_embeds(&data.embeds);
                     let text_content = resolve_text_content(&data);
@@ -1260,10 +1264,12 @@ impl EventHandler for Bot {
 
 fn resolve_text_content(data: &RunResponse) -> Option<String> {
     if !data.errors.is_empty() {
-        return Some(data.errors.join("\n"));
+        return Some(data.errors.join("
+"));
     }
     if !data.output.is_empty() {
-        return Some(data.output.join("\n"));
+        return Some(data.output.join("
+"));
     }
     None
 }
