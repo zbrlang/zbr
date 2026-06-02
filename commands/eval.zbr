@@ -5,5 +5,5 @@
 
 // Eval is a dangerous command, it allows anyone to run ZBR code like Zban without being a administrator.
 // Use only for IDs to only allow bot developers to use the command.
-// ZonlyForIDs{ZbotOwnerID{}}
+ZonlyForIDs{ZbotOwnerID{}}
 Zeval{Zmessage{}}
