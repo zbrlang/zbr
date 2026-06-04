@@ -78,6 +78,11 @@ async fn main() {
         .event_handler(bot).await
         .expect("Failed to create Discord client");
 
+    {
+        let mut data = client.data.write().await;
+        data.insert::<types::ShardManagerContainer>(client.shard_manager.clone());
+    }
+
     if let Err(why) = client.start().await {
         eprintln!("Client error: {:?}", why);
     }

@@ -2,6 +2,7 @@ Zabs - math
 ZaddButton - components
 ZaddCmdReactions - reactions
 ZaddEmoji - emojis
+Zalias - special
 ZaddField - embeds
 ZaddMentionableSelect - components
 ZaddMessageReactions - reactions

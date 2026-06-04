@@ -1179,6 +1179,15 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         },
     );
 
+    registry.insert(
+        "alias".to_string(),
+        FnMeta {
+            func: |_, _| FnOutput::Empty,
+            min_args: 2,
+            max_args: 2,
+        },
+    );
+
     // variables
     registry.insert(
         "getUserVar".to_string(),

@@ -153,6 +153,8 @@ pub struct DiscordContext {
     pub split_text: Arc<Mutex<Vec<String>>>,
     /// The timestamp when this context/execution began
     pub execution_start: std::time::Instant,
+    /// The current shard latency
+    pub shard_latency: Option<std::time::Duration>,
     /// Allowed user mention IDs for the bot's response.
     /// None = Discord default (all mentions allowed).
     /// Some(vec![]) = no user pings allowed.
@@ -236,6 +238,7 @@ impl Default for DiscordContext {
             trigger_message_id: None,
             split_text: Arc::new(Mutex::new(vec![])),
             execution_start: std::time::Instant::now(),
+            shard_latency: None,
             cache: Arc::new(serenity::cache::Cache::default()),
             allowed_user_mentions: Arc::new(Mutex::new(None)),
             allowed_role_mentions: Arc::new(Mutex::new(None)),

@@ -84,6 +84,13 @@ async fn resolve_trigger_vars(
     result
 }
 
+async fn get_latency(ctx: &Context) -> Option<std::time::Duration> {
+    let data = ctx.data.read().await;
+    let shard_manager = data.get::<crate::types::ShardManagerContainer>()?;
+    let runners = shard_manager.runners.lock().await;
+    runners.get(&ctx.shard_id)?.latency
+}
+
 impl Bot {
     async fn run_event_command(&self, ctx: &Context, trigger: &str, context: RunContext) {
         let commands = self.commands.read().await;
@@ -99,6 +106,7 @@ impl Bot {
                 bot_id: self.bot_id.clone(),
                 http: Some(ctx.http.clone()),
                 cache: ctx.cache.clone(),
+                shard_latency: get_latency(ctx).await,
             };
             let data = executor::execute_code(ast, context, &state);
             send_event_response(ctx, &channel_id, &data).await;
@@ -371,6 +379,7 @@ impl EventHandler for Bot {
                         bot_id: self.bot_id.clone(),
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
+                        shard_latency: get_latency(&ctx).await,
                     };
                     let data = executor::execute_code(ast, context, &state);
 
@@ -948,6 +957,7 @@ impl EventHandler for Bot {
                         bot_id: self.bot_id.clone(),
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
+                        shard_latency: get_latency(&ctx).await,
                     };
                     let data = executor::execute_code(ast, context, &state);
 
@@ -1002,7 +1012,9 @@ impl EventHandler for Bot {
                         if let Ok(sent_msg) = command.get_response(&ctx.http).await {
                             for emoji_str in &data.pending_reactions {
                                 let reaction = parse_reaction_type(emoji_str);
-                                sent_msg.react(&ctx.http, reaction).await.ok();
+                                if let Err(e) = sent_msg.react(&ctx.http, reaction).await {
+                                    // Error ignored intentionally
+                                }
                             }
                         }
                     }
@@ -1071,6 +1083,7 @@ impl EventHandler for Bot {
                         bot_id: self.bot_id.clone(),
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
+                        shard_latency: get_latency(&ctx).await,
                     };
                     let data = executor::execute_code(ast, context, &state);
 
@@ -1221,6 +1234,7 @@ impl EventHandler for Bot {
                         bot_id: self.bot_id.clone(),
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
+                        shard_latency: get_latency(&ctx).await,
                     };
                     let data = executor::execute_code(ast, context, &state);
 
@@ -1386,7 +1400,8 @@ async fn send_response(ctx: &Context, msg: &Message, data: &RunResponse) {
         message = message.components(vec![row]);
     }
 
-    let sent = target_channel.send_message(&ctx.http, message).await.ok();
+    let sent_result = target_channel.send_message(&ctx.http, message).await;
+    let sent = sent_result.ok();
 
     // Apply pending reactions to the bot's response
     if let Some(sent_msg) = sent {
@@ -1444,7 +1459,8 @@ async fn send_event_response(ctx: &Context, default_channel_id: &str, data: &Run
         message = message.components(vec![row]);
     }
 
-    if let Ok(sent_msg) = target_channel.send_message(&ctx.http, message).await {
+    let sent_result = target_channel.send_message(&ctx.http, message).await;
+    if let Ok(sent_msg) = sent_result {
         for emoji_str in &data.pending_reactions {
             let reaction = parse_reaction_type(emoji_str);
             sent_msg.react(&ctx.http, reaction).await.ok();

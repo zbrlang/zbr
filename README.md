@@ -9,13 +9,15 @@ Previously a complex setup, **ZBR is now a streamlined CLI tool** distributed vi
 
 Get your bot up and running in seconds:
 
-### Option 1: Webapp Editor (Beta)
-Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a visual development experience.
+### Option 1: Webapp Editor (Recommended for testing)
+Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a zero-setup development experience.
 1. Build your commands, manage variables, and tweak settings visually.
-2. Export your project as a ZIP.
-3. Install the CLI, extract your ZIP, and run your bot with `zbr run`.
+2. Press **Run** to launch your bot instantly in the cloud for testing.
+3. Your bot is now live for testing!
 
-### Option 2: CLI (Recommended)
+> **Note:** The Webapp "Run" button is strictly for rapid prototyping and interactive testing. For 24/7 production hosting, you must export your project as a ZIP and use the CLI.
+
+### Option 2: CLI (For Technical Users)
 1. **Install the CLI globally:**
    ```bash
    npm i @zbrlang/zbr
@@ -41,12 +43,13 @@ Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a visual develo
    ```
    Your bot is now live and loading scripts from the `commands/` directory!
 
-## Webapp Editor (Beta)
+## Webapp Editor
 
-For those who prefer a visual development environment, the [ZBR Webapp](https://zbr-webapp.vercel.app) allows you to build commands, configure bot variables, and manage settings in your browser.
+For those who prefer a visual development environment, the [ZBR Webapp](https://zbr-webapp.vercel.app) allows you to build and test your bot entirely in your browser.
 
-- **Visual Prototyping:** Easily design your bot logic without a local setup.
-- **Workflow:** Simply build your bot in the Webapp, export it as a project ZIP, and then use the ZBR CLI (`zbr run`) to host it locally or on your preferred server.
+- **Instant Prototyping:** Write code and launch your bot with a single click using the built-in cloud runner, no local setup required.
+- **Visual Interface:** Easily design your bot logic, manage variables, and configure settings without touching a terminal.
+- **Hybrid Workflow:** Use the Webapp for rapid development and testing, then export your project as a ZIP to host it permanently on your own server using the ZBR CLI.
 
 ## What it looks like
 

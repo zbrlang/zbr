@@ -96,6 +96,25 @@
     "example": "ZaddEmoji{wave;https://example.com/wave.png;true}"
   },
   {
+    "name": "Zalias",
+    "description": "Registers an alias that substitutes and evaluates the stored AST node when called. Aliases are local to the command execution.",
+    "syntax": "Zalias{expression;alias_name}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "expression",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "alias_name",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zalias{ZguildID{};ZGI}"
+  },
+  {
     "name": "ZaddField",
     "description": "Adds a named field with a value to the specified embed slot, with an optional inline layout flag.",
     "syntax": "ZaddField{name;value;inline?;index?}",

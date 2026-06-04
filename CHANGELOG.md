@@ -2,6 +2,18 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.4.4 - Runtime Aliases and Reply Fix
+
+This release introduces the `Zalias` system for improved code reusability and fixes a bug in message evaluation.
+
+### Core
+- **Runtime Aliases** — Added `Zalias{<expression>;<alias_name>}` which allows users to create runtime aliases for any ZBR expression. Aliases are local to the command execution, support chaining, and include a recursion depth guard to prevent infinite loops.
+- **Fixed `Zreply` Evaluation** — Resolved a bug where `Zreply{}` inside a concatenated string (e.g. `Hello Zreply{} World`) would short-circuit evaluation, causing subsequent content to be ignored.
+- **Ping Precision** — Updated `Zping{}` to return the actual bot gateway latency with 5 decimal places (in milliseconds) for high-precision monitoring.
+- **Execution Time Precision** — Updated `ZexecutionTime{}` to return command execution time in milliseconds with 5 decimal places.
+
+---
+
 ## v1.4.3 - Performance and Error Handling Improvements
 
 This release focuses on improving bot performance and robustness by caching execution data and surfacing critical database errors.

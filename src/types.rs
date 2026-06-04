@@ -7,6 +7,11 @@ use tokio::sync::RwLock;
 pub type CommandMap = Arc<RwLock<HashMap<String, Command>>>;
 pub type Db = Arc<SqlitePool>;
 
+pub struct ShardManagerContainer;
+impl serenity::prelude::TypeMapKey for ShardManagerContainer {
+    type Value = Arc<serenity::gateway::ShardManager>;
+}
+
 #[derive(Clone, Debug)]
 pub struct Command {
     pub name: String,

@@ -113,6 +113,7 @@ pub struct ExecState {
     pub bot_id: String,
     pub http: Option<Arc<serenity::http::Http>>,
     pub cache: Arc<serenity::cache::Cache>,
+    pub shard_latency: Option<std::time::Duration>,
 }
 
 // ── DiscordContext builder ──────────────────────────────────────────────
@@ -141,6 +142,7 @@ fn build_discord_context(ctx: RunContext, state: &ExecState) -> DiscordContext {
         trigger_message_id: ctx.trigger_message_id,
         split_text: Arc::new(Mutex::new(vec![])),
         execution_start: std::time::Instant::now(),
+        shard_latency: state.shard_latency,
         cache: state.cache.clone(),
         allowed_user_mentions: Arc::new(Mutex::new(None)),
         allowed_role_mentions: Arc::new(Mutex::new(None)),

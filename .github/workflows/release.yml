@@ -124,3 +124,20 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  rebuild_hf_space:
+    name: Rebuild HF Space
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Rebuild
+        run: |
+          git clone https://Zubariel:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/zbrlang/zbr-server hf-space
+          cd hf-space
+          echo ${{ github.ref_name }} > .build-version
+          git config user.email "ci@zbrlang.com"
+          git config user.name "ZBR CI"
+          git add .build-version
+          git commit -m "rebuild for ${{ github.ref_name }}"
+          git push

@@ -58,19 +58,28 @@ fn group_statements(code: &str) -> Vec<String> {
 
 pub struct Runtime {
     registry: HashMap<String, FnMeta>,
+    aliases: HashMap<String, Node>,
+    alias_depth: u32,
     pub context: DiscordContext,
+    pub should_reply: bool,
 }
 
 impl Runtime {
     pub fn new(context: DiscordContext) -> Self {
         let mut registry = HashMap::new();
         functions::register(&mut registry);
-        Runtime { registry, context }
+        Runtime { 
+            registry, 
+            aliases: HashMap::new(),
+            alias_depth: 0,
+            context, 
+            should_reply: false 
+        }
     }
 
     pub fn run(&mut self, node: Node) -> EvalResult {
+        self.should_reply = false;
         let mut output = Vec::new();
-        let mut should_reply = false;
         let mut fatal_error: Option<String> = None;
 
         match self.evaluate(node) {
@@ -78,7 +87,7 @@ impl Runtime {
                 match fn_output {
                     FnOutput::Text(t) => output.push(t),
                     FnOutput::Reply => {
-                        should_reply = true;
+                        self.should_reply = true;
                     }
                     FnOutput::Empty => {}
                     FnOutput::Error(e) => {
@@ -207,7 +216,7 @@ impl Runtime {
 
         EvalResult {
             output,
-            should_reply,
+            should_reply: self.should_reply,
             errors: vec![],
             embeds,
             consumed_embeds,
@@ -219,14 +228,26 @@ impl Runtime {
 
     pub fn evaluate(&mut self, node: Node) -> Result<FnOutput, String> {
         match node {
-            Node::StringLiteral(s) => Ok(FnOutput::Text(s)),
+            Node::StringLiteral(s) => {
+                if let Some(aliased_node) = self.aliases.get(&s).cloned() {
+                    self.alias_depth += 1;
+                    if self.alias_depth > 50 {
+                        return Err(format!("Zalias - maximum recursion depth (50) exceeded at {}", s));
+                    }
+                    let res = self.evaluate(aliased_node);
+                    self.alias_depth -= 1;
+                    res
+                } else {
+                    Ok(FnOutput::Text(s))
+                }
+            }
             Node::Concat(segments) => {
                 let mut result = String::new();
                 for segment in segments {
                     match self.evaluate(segment)? {
                         FnOutput::Text(t) => result.push_str(&t),
                         FnOutput::Reply => {
-                            return Ok(FnOutput::Reply);
+                            self.should_reply = true;
                         }
                         FnOutput::Empty => {}
                         FnOutput::Error(e) => {
@@ -271,6 +292,10 @@ impl Runtime {
 
                 if name == "await" {
                     return self.evaluate_await(args);
+                }
+
+                if name == "alias" {
+                    return self.evaluate_alias(args);
                 }
 
                 if name == "eval" {
@@ -811,5 +836,39 @@ impl Runtime {
                 Ok(if result.is_empty() { FnOutput::Empty } else { FnOutput::Text(result) })
             }
         }
+    }
+
+    /// Lazy evaluation for Zalias{expression;alias_name}
+    /// Registers an alias that substitutes and evaluates the stored AST node.
+    fn evaluate_alias(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
+        if args.len() < 2 {
+            return Err("Zalias - expression and alias_name are required".to_string());
+        }
+
+        // Evaluate the alias name eagerly
+        let alias_name = match self.evaluate(args[1].clone())? {
+            FnOutput::Text(t) => t.trim().to_string(),
+            FnOutput::Empty => {
+                return Err("Zalias - alias_name cannot be empty".to_string());
+            }
+            FnOutput::Error(e) => {
+                return Ok(FnOutput::Error(e));
+            }
+            FnOutput::UserError(e) => {
+                return Ok(FnOutput::UserError(e));
+            }
+            FnOutput::Reply => {
+                return Ok(FnOutput::Reply);
+            }
+        };
+
+        if alias_name.is_empty() {
+            return Err("Zalias - alias_name cannot be empty".to_string());
+        }
+
+        // Store the raw expression node
+        self.aliases.insert(alias_name, args[0].clone());
+
+        Ok(FnOutput::Empty)
     }
 }
