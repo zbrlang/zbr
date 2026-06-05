@@ -3,5 +3,5 @@
 #type prefix
 #description Replies with a greeting and some information about the user and the channel.
 
-Hello, Zusername{}! 👋
-You are in <#ZchannelID{}> on Zif{ZguildID{}==;a DM;ZserverName{}}.
+Hello, Zusername! 👋
+You are in <#ZchannelID> on Zif{ZguildID==;a DM;ZserverName}.

@@ -10,10 +10,10 @@ Zvar{xp;ZgetUserVar{xp}}
 Zvar{level;ZgetUserVar{level}}
 
 // Build and send an embed
-Ztitle{Zusername{}'s Rank}
+Ztitle{Zusername's Rank}
 Zdescription{Here's your current progress.}
 Zcolor{#5865F2}
 ZaddField{Level;Zvar{level};true}
 ZaddField{XP;Zvar{xp};true}
-Zfooter{ZserverName{}}
-Ztimestamp{}
+Zfooter{ZserverName}
+Ztimestamp

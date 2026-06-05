@@ -5,5 +5,5 @@
 #description Replies with pong and your input
 #option input|Something to say|string|required
 
-Zephemeral{}
-Pong! Zusername{} said: Zmessage{1}
+Zephemeral
+Pong! Zusername said: Zmessage{1}
