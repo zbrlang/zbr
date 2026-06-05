@@ -1,4 +1,5 @@
 use crate::ast::Node;
+use crate::context::FnMeta;
 use crate::parser::parse_line;
 use crate::types::{ Command, CommandOption, CommandScope, CommandType, Config, OptionType };
 use std::collections::HashMap;
@@ -31,7 +32,40 @@ fn report_error(err: &ParseError) {
     eprintln!("{}", err);
 }
 
-fn parse_file(path: &Path, content: &str) -> Result<(CommandMetadata, Vec<Node>), ParseError> {
+// Calculate the net change in brace depth for a line, respecting escapes and comments
+fn get_brace_change(s: &str) -> i32 {
+    let mut depth = 0;
+    let mut chars = s.char_indices().peekable();
+    while let Some((i, ch)) = chars.next() {
+        if ch == '/' && depth == 0 {
+            if let Some(&(_, next)) = chars.peek() {
+                if next == '/' {
+                    break;
+                } // Rest is comment
+            }
+        }
+        if ch == '\\' {
+            if let Some(&(_, next)) = chars.peek() {
+                if next == '{' || next == '}' || next == '\\' {
+                    chars.next();
+                    continue;
+                }
+            }
+        }
+        if ch == '{' {
+            depth += 1;
+        } else if ch == '}' {
+            depth -= 1;
+        }
+    }
+    depth
+}
+
+fn parse_file(
+    path: &Path,
+    content: &str,
+    registry: &HashMap<String, FnMeta>
+) -> Result<(CommandMetadata, Vec<Node>), ParseError> {
     let mut trigger = None;
     let mut name = None;
     let mut description = String::from("No description provided");
@@ -40,60 +74,78 @@ fn parse_file(path: &Path, content: &str) -> Result<(CommandMetadata, Vec<Node>)
     let mut options = Vec::new();
     let mut nodes = Vec::new();
 
+    let mut buffer = String::new();
+    let mut depth = 0;
+
     for (i, line) in content.lines().enumerate() {
         let line_num = i + 1;
-        let line = line.trim();
-        if line.is_empty() || line.starts_with("//") {
+        let trimmed = line.trim();
+
+        if trimmed.is_empty() || trimmed.starts_with("//") {
             continue;
         }
 
-        if line.starts_with("#trigger ") {
-            trigger = Some(line["#trigger ".len()..].trim().to_string());
-        } else if line.starts_with("#name ") {
-            name = Some(line["#name ".len()..].trim().to_string());
-        } else if line.starts_with("#description ") {
-            description = line["#description ".len()..].trim().to_string();
-        } else if line.starts_with("#type ") {
-            command_type = match line["#type ".len()..].trim() {
-                "slash" => CommandType::Slash,
-                "sub-slash" => CommandType::SubSlash,
-                "interaction" => CommandType::Interaction,
-                "event" => CommandType::Event,
-                _ => CommandType::Prefix,
-            };
-        } else if line.starts_with("#scope ") {
-            scope = match line["#scope ".len()..].trim() {
-                "global" => CommandScope::Global,
-                "both" => CommandScope::Both,
-                _ => CommandScope::Guild,
-            };
-        } else if line.starts_with("#option ") {
-            let option_str = line["#option ".len()..].trim();
-            let parts: Vec<&str> = option_str.split('|').collect();
-            if parts.len() == 4 {
-                if let Some(option_type) = OptionType::from_str(parts[2]) {
-                    options.push(CommandOption {
-                        name: parts[0].trim().to_string(),
-                        description: parts[1].trim().to_string(),
-                        option_type,
-                        required: parts[3].trim() == "required",
-                    });
+        if depth == 0 && trimmed.starts_with('#') {
+            if trimmed.starts_with("#trigger ") {
+                trigger = Some(trimmed["#trigger ".len()..].trim().to_string());
+            } else if trimmed.starts_with("#name ") {
+                name = Some(trimmed["#name ".len()..].trim().to_string());
+            } else if trimmed.starts_with("#description ") {
+                description = trimmed["#description ".len()..].trim().to_string();
+            } else if trimmed.starts_with("#type ") {
+                command_type = match trimmed["#type ".len()..].trim() {
+                    "slash" => CommandType::Slash,
+                    "sub-slash" => CommandType::SubSlash,
+                    "interaction" => CommandType::Interaction,
+                    "event" => CommandType::Event,
+                    _ => CommandType::Prefix,
+                };
+            } else if trimmed.starts_with("#scope ") {
+                scope = match trimmed["#scope ".len()..].trim() {
+                    "global" => CommandScope::Global,
+                    "both" => CommandScope::Both,
+                    _ => CommandScope::Guild,
+                };
+            } else if trimmed.starts_with("#option ") {
+                let option_str = trimmed["#option ".len()..].trim();
+                let parts: Vec<&str> = option_str.split('|').collect();
+                if parts.len() == 4 {
+                    if let Some(option_type) = OptionType::from_str(parts[2]) {
+                        options.push(CommandOption {
+                            name: parts[0].trim().to_string(),
+                            description: parts[1].trim().to_string(),
+                            option_type,
+                            required: parts[3].trim() == "required",
+                        });
+                    } else {
+                        return Err(ParseError {
+                            path: path.to_path_buf(),
+                            line: line_num,
+                            message: format!("Unknown option type: {}", parts[2]),
+                        });
+                    }
                 } else {
                     return Err(ParseError {
                         path: path.to_path_buf(),
                         line: line_num,
-                        message: format!("Unknown option type: {}", parts[2]),
+                        message: "Invalid #option format — use name|description|type|required".into(),
                     });
                 }
-            } else {
-                return Err(ParseError {
-                    path: path.to_path_buf(),
-                    line: line_num,
-                    message: "Invalid #option format — use name|description|type|required".into(),
-                });
             }
-        } else if let Some(node) = parse_line(line, None) {
-            nodes.push(node);
+        } else {
+            // Buffer the code line
+            if !buffer.is_empty() {
+                buffer.push('\n');
+            }
+            buffer.push_str(trimmed);
+            depth += get_brace_change(trimmed);
+
+            if depth == 0 {
+                if let Some(node) = parse_line(buffer.trim(), Some(registry)) {
+                    nodes.push(node);
+                }
+                buffer.clear();
+            }
         }
     }
 
@@ -118,7 +170,7 @@ fn parse_file(path: &Path, content: &str) -> Result<(CommandMetadata, Vec<Node>)
     }
 }
 
-pub fn load_commands(dir: &str) -> HashMap<String, Command> {
+pub fn load_commands(dir: &str, registry: &HashMap<String, FnMeta>) -> HashMap<String, Command> {
     let mut commands = HashMap::new();
 
     let config_str = fs::read_to_string("zbr.json").unwrap_or_default();
@@ -156,7 +208,7 @@ pub fn load_commands(dir: &str) -> HashMap<String, Command> {
             }
         };
 
-        match parse_file(&path, &content) {
+        match parse_file(&path, &content, registry) {
             Ok((meta, nodes)) => {
                 let ast = Arc::new(Node::Concat(nodes));
                 let cmd_name = meta.name.unwrap_or_else(||

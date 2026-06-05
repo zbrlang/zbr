@@ -259,6 +259,7 @@ impl Default for DiscordContext {
     }
 }
 
+#[derive(Clone)]
 pub struct FnMeta {
     pub func: fn(Vec<String>, &DiscordContext) -> FnOutput,
     pub min_args: usize,

@@ -36,7 +36,9 @@ async fn main() {
         .ok()
         .and_then(|id| id.parse::<u64>().ok());
 
-    let commands: CommandMap = Arc::new(RwLock::new(loader::load_commands("commands")));
+    let mut registry = std::collections::HashMap::new();
+    functions::register(&mut registry);
+    let commands: CommandMap = Arc::new(RwLock::new(loader::load_commands("commands", &registry)));
 
     let commands_for_watcher = commands.clone();
     let (tx, mut rx) = tokio::sync::mpsc::channel::<()>(10);
@@ -47,10 +49,11 @@ async fn main() {
     }).unwrap();
     watcher.watch(std::path::Path::new("commands"), RecursiveMode::Recursive).unwrap();
 
+    let watcher_registry = registry.clone();
     tokio::spawn(async move {
         while rx.recv().await.is_some() {
             println!("Commands folder changed, reloading...");
-            let new_commands = loader::load_commands("commands");
+            let new_commands = loader::load_commands("commands", &watcher_registry);
             let mut map = commands_for_watcher.write().await;
             *map = new_commands;
             println!("Commands reloaded");

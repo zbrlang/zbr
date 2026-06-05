@@ -136,8 +136,9 @@ jobs:
           git clone https://Zubariel:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/zbrlang/zbr-server hf-space
           cd hf-space
           echo ${{ github.ref_name }} > .build-version
+          sed -i "s/ARG CACHEBUST=.*/ARG CACHEBUST=$(date +%s)/" Dockerfile
           git config user.email "ci@zbrlang.com"
           git config user.name "ZBR CI"
-          git add .build-version
+          git add .build-version Dockerfile
           git commit -m "rebuild for ${{ github.ref_name }}"
           git push

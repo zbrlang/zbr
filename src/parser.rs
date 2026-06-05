@@ -7,11 +7,11 @@ fn strip_inline_comments(line: &str) -> &str {
     let mut chars = line.char_indices().peekable();
 
     while let Some((i, ch)) = chars.next() {
-        // Match the parser's existing escape handling: \{, \;, and \\ are treated
-        // as literals, and the escaped '{' must not affect brace depth.
+        // Match the parser's existing escape handling: \{, \}, \;, \\, and \Z are treated
+        // as literals, and the escaped characters must not affect depth or parsing.
         if ch == '\\' {
             if let Some(&(_, next)) = chars.peek() {
-                if next == '{' || next == ';' || next == '\\' {
+                if next == '{' || next == '}' || next == ';' || next == '\\' || next == 'Z' {
                     chars.next(); // consume the escaped character
                     continue;
                 }
@@ -70,10 +70,23 @@ fn parse_template(line: &str, registry: Option<&HashMap<String, FnMeta>>) -> Vec
     let mut current = String::new();
 
     while let Some((i, ch)) = chars.next() {
-        // Escape sequences: \{ → {, \; → ;, \\ → \
+        // Escape sequences: \{ → {, \} → }, \; → ;, \\ → \, \Z... → Z...
         if ch == '\\' {
-            if let Some((_, next)) = chars.peek().copied() {
-                if next == '{' || next == ';' || next == '\\' {
+            if let Some(&(_, next)) = chars.peek() {
+                if next == 'Z' {
+                    chars.next(); // Consume 'Z'
+                    current.push('Z');
+                    // Consume the rest of the identifier
+                    while let Some(&(_, next_c)) = chars.peek() {
+                        if next_c.is_alphanumeric() {
+                            chars.next();
+                            current.push(next_c);
+                        } else {
+                            break;
+                        }
+                    }
+                    continue;
+                } else if next == '{' || next == '}' || next == ';' || next == '\\' {
                     chars.next();
                     current.push(next);
                     continue;
@@ -252,7 +265,7 @@ fn split_args(s: &str) -> Vec<String> {
         // Escape sequences inside arguments
         if ch == '\\' {
             if let Some(&next) = chars.peek() {
-                if next == '{' || next == ';' || next == '\\' {
+                if next == '{' || next == '}' || next == ';' || next == '\\' || next == 'Z' {
                     chars.next();
                     current.push(next);
                     continue;

@@ -1,5 +1,6 @@
 use crate::context::{DiscordContext, FnOutput};
 use crate::types::CommandType;
+use std::collections::HashMap;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let name = args.get(0).cloned();
@@ -7,7 +8,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let query_name = match name {
         Some(n) => n,
         None => {
-            let cmds = crate::loader::load_commands("commands");
+            let registry = HashMap::new();
+            let cmds = crate::loader::load_commands("commands", &registry);
             let mut is_slash = false;
             if let Some(trigger) = &ctx.trigger {
                 if let Some(cmd) = cmds.get(trigger) {

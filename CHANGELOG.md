@@ -2,6 +2,17 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.5.1 - Loader Improvements and Escape Fixes
+
+This release improves the command loader's ability to process complex ZBR scripts and adds new escape sequences.
+
+### Core
+- **Multi-line Function Support** — Added brace-depth tracking to the command loader, allowing function calls (e.g., `Zdescription{...}`) to span multiple lines.
+- **Newline Preservation** — Fixed an issue where consecutive plain-text lines were incorrectly concatenated without newlines.
+- **`\Z` and `\}` Escape Support** — Added `\Z` escape sequence to output literal Z-prefixed text and `\}` to escape curly brackets, correctly handling nested braces in multi-line commands.
+- **Brace-Aware Commenting** — Updated brace counting logic so that `//` is only treated as a comment marker when at brace depth 0, preventing URL protocol slashes from breaking multi-line command parsing.
+- **Registry Injection** — Updated `loader.rs` to correctly pass the function registry during file loading, enabling bracketless function calls in `.zbr` files.
+
 ## v1.5.0 - Parser Flexibility and Alias Robustness
 
 This release introduces major improvements to the parser's flexibility, simplifies function invocation, and resolves critical bugs in the alias system and positional argument handling.
@@ -16,8 +27,6 @@ This release introduces major improvements to the parser's flexibility, simplifi
 - **Empty Argument Preservation** — `split_args` now correctly preserves empty arguments between semicolons (e.g., `Zfunc{;arg2}` correctly maps `arg2` to index 1).
 - **Positional Argument Robustness** — Refactored 161 functions across the codebase to explicitly handle empty string arguments as "use default" values, preventing positional misalignment bugs.
 
----
-
 ## v1.4.4 - Runtime Aliases and Reply Fix
 
 This release introduces the `Zalias` system for improved code reusability and fixes a bug in message evaluation.
@@ -27,8 +36,6 @@ This release introduces the `Zalias` system for improved code reusability and fi
 - **Fixed `Zreply` Evaluation** — Resolved a bug where `Zreply{}` inside a concatenated string (e.g. `Hello Zreply{} World`) would short-circuit evaluation, causing subsequent content to be ignored.
 - **Ping Precision** — Updated `Zping{}` to return the actual bot gateway latency with 5 decimal places (in milliseconds) for high-precision monitoring.
 - **Execution Time Precision** — Updated `ZexecutionTime{}` to return command execution time in milliseconds with 5 decimal places.
-
----
 
 ## v1.4.3 - Performance and Error Handling Improvements
 
@@ -44,8 +51,6 @@ This release focuses on improving bot performance and robustness by caching exec
 - **Database Error Propagation** — Database write failures are no longer silently ignored and now surface as error messages in Discord.
 - **Standardized Error Messages** — Aligned database failure messages with the centralized `error_messages.rs` formatting system (`action_failed_reason`).
 
----
-
 ## v1.4.2 - Mobile support and version fix
 
 ### Distribution
@@ -55,8 +60,6 @@ This release focuses on improving bot performance and robustness by caching exec
 ### CLI
 - **Fixed `zbr version`** — Now reports the actual binary version instead of the stale npm package version.
 - **Fixed `zbr update`** — Version is now always accurate after updating.
-
----
 
 ## v1.4.1 - Parser fix and Zupdate interaction
 
@@ -69,8 +72,6 @@ This release addresses a critical parser bug and introduces a new interaction fe
 - `Zupdate{}` — Signals that an interaction (button/select menu) should update the original message instead of sending a new reply.
 - `ZspliceText{text;start;length;replacement}` — Modifies a string by removing a specified number of characters and inserting new text.
 
----
-
 ## v1.4.0 - Centralized error handling across all functions
 
 All 390+ ZBR functions now share a single centralized error system in `src/error_messages.rs`. Every `FnOutput::error()` call uses the same formatting helpers, producing consistent `Line N: Zfunction - message` output everywhere.
@@ -80,8 +81,6 @@ All 390+ ZBR functions now share a single centralized error system in `src/error
 - **Every function updated** — All 394+ `FnOutput::error` calls across the codebase now route through `crate::error_messages::*`.
 - **Helper modules aligned** — `math/helpers.rs` (`parse_f64`/`parse_i64`), `permissions/helpers.rs`, `audit/helpers.rs`, and `json/helpers.rs` all use the centralized system.
 - `src/error_messages.rs` added — single source of truth for error messaging.
-
----
 
 ## v1.3.0 - In-process engine, automod, polls, soundboard, and utility functions
 
@@ -124,8 +123,6 @@ Alias: `ZautomodRuleUpdate` → `ZautomodRuleEdit`
 **Thread** — `ZthreadArchive`, `ZthreadList`, `ZthreadMetadata`, `ZthreadPin`, `ZthreadUnarchive`
 **Voice** — `ZvoiceRequestToSpeak`, `ZvoiceStatus`, `ZvoiceSuppress`
 
----
-
 ## v1.2.0 - Bot owner fix, server/thread/voice functions, and CLI improvements
 
 This release fixes bot owner resolution for team/group bots, adds new server/thread/voice functions, improves CLI command support, and expands project initialization.
@@ -147,8 +144,6 @@ This release fixes bot owner resolution for team/group bots, adds new server/thr
 **Voice functions**
 - `voiceEmpty`, `voiceFull`, `voiceNew`, `voiceOld`
 
----
-
 ## v1.1.0 - Audit & Event Additions
 
 This release adds a new audit-log function category and several gateway-based event triggers.
@@ -163,8 +158,6 @@ This release adds a new audit-log function category and several gateway-based ev
 - `onBotJoin` and `onBotLeave` map to runtime guild join/leave events and fire only for guilds the bot joins or leaves while online.
 - Boost event detection implemented via guild update comparisons of `premium_subscription_count`.
 
----
-
 ## v1.0.0 - Production Release
 
 End of Alpha and the first stable production release. This version introduces the official ZBR CLI, automated installation, and multi-OS support.
@@ -178,8 +171,6 @@ End of Alpha and the first stable production release. This version introduces th
 
 ### Features
 - Includes all features and functions from **Alpha v5** and earlier. Scroll down to see the full history from Alpha v1 to v5.
-
----
 
 ## Alpha v5
 
@@ -237,8 +228,6 @@ Loop system, async execution, full voice channel coverage, scheduled events, for
 **Forum functions**
 `ZforumTags`, `ZforumTagID`, `ZforumTagEmoji`, `ZforumTagModerated`, `ZcreateForumTag`, `ZeditForumTag`, `ZdeleteForumTag`, `ZforumPosts`, `ZforumPostCount`, `ZcreatePost`, `ZpostTags`, `ZsetPostTags`
 
----
-
 ## Alpha v4
 
 Moderation, message operations, HTTP requests, JSON manipulation, full control flow, error handling, and the component/interaction system.
@@ -291,8 +280,6 @@ Moderation, message operations, HTTP requests, JSON manipulation, full control f
 **Component functions**
 `ZaddButton`, `ZnewSelectMenu`, `ZaddSelectMenuOption`, `ZaddUserSelect`, `ZaddRoleSelect`, `ZaddMentionableSelect`, `ZnewModal`, `ZaddTextInput`, `ZeditButton`, `ZeditSelectMenu`, `ZeditSelectMenuOption`, `ZremoveAllComponents`, `ZremoveButtons`, `ZremoveComponent`, `Zdefer`, `ZinputValue`, `ZcustomID`, `ZgetUserSelectUserID`, `ZgetUserSelectUserIDs`, `ZgetUserSelectUserCount`, `ZgetRoleSelectRoleID`, `ZgetRoleSelectRoleIDs`, `ZgetRoleSelectRoleCount`, `ZgetMentionableSelectUserID`, `ZgetMentionableSelectUserIDs`, `ZgetMentionableSelectUserCount`
 
----
-
 ## Alpha v3
 
 User, role, channel, server, and bot functions. Full Discord entity coverage.
@@ -321,8 +308,6 @@ User, role, channel, server, and bot functions. Full Discord entity coverage.
 **Bot functions**
 `ZbotID`, `ZbotOwnerID`, `ZbotTyping`, `Zping`, `Zuptime`, `ZexecutionTime`, `ZserverCount`, `ZallMembersCount`, `ZserverNames`, `ZcommandName`, `ZcommandTrigger`, `ZcommandsCount`, `ZbotCommands`, `ZslashCommandsCount`, `ZslashID`, `Zenabled`
 
----
-
 ## Alpha v2
 
 Reactions, emojis, text splitting, permissions, threads, and blacklists. Introduced the `Zif` condition system.
@@ -350,8 +335,6 @@ Reactions, emojis, text splitting, permissions, threads, and blacklists. Introdu
 
 **Blacklist functions**
 `ZblackListIDs`, `ZblackListUsers`, `ZblackListRoles`, `ZblackListRolesIDs`, `ZblackListServers`
-
----
 
 ## Alpha v1
 
