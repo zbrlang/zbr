@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Returns remaining seconds on the cooldown.
 /// type: "normal" | "server" | "global"
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let kind = args.get(0).cloned().unwrap_or_else(|| "normal".to_string());
+    let kind = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "normal".to_string());
 
     let db = match &ctx.db {
         Some(d) => d.clone(),

@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Returns one element from the split text by 1-based index.
 /// Use "<" for the first element, ">" for the last.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let index_str = args.get(0).cloned().unwrap_or_default();
+    let index_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if index_str.is_empty() {
         return FnOutput::error("splitText", crate::error_messages::required(1, "index"));
     }

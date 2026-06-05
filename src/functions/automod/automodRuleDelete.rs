@@ -4,8 +4,8 @@ use serenity::model::id::{GuildId, RuleId};
 /// ZautomodRuleDelete{guildID;ruleID}
 /// Deletes an auto-moderation rule.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let guild_id_str = args.get(0).cloned().unwrap_or_default();
-    let rule_id_str = args.get(1).cloned().unwrap_or_default();
+    let guild_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let rule_id_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,

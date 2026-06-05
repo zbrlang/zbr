@@ -144,11 +144,12 @@ pub async fn set_user_var(
     name: &str,
     value: &str
 ) -> Result<(), sqlx::Error> {
-    sqlx::query(
-        "INSERT INTO user_vars (bot_id, guild_id, user_id, name, value)
+    sqlx
+        ::query(
+            "INSERT INTO user_vars (bot_id, guild_id, user_id, name, value)
          VALUES (?, ?, ?, ?, ?)
          ON CONFLICT(bot_id, guild_id, user_id, name) DO UPDATE SET value=excluded.value"
-    )
+        )
         .bind(bot_id)
         .bind(guild_id)
         .bind(user_id)
@@ -187,11 +188,12 @@ pub async fn set_server_var(
     name: &str,
     value: &str
 ) -> Result<(), sqlx::Error> {
-    sqlx::query(
-        "INSERT INTO server_vars (bot_id, guild_id, name, value)
+    sqlx
+        ::query(
+            "INSERT INTO server_vars (bot_id, guild_id, name, value)
          VALUES (?, ?, ?, ?)
          ON CONFLICT(bot_id, guild_id, name) DO UPDATE SET value=excluded.value"
-    )
+        )
         .bind(bot_id)
         .bind(guild_id)
         .bind(name)
@@ -233,11 +235,12 @@ pub async fn set_channel_var(
     name: &str,
     value: &str
 ) -> Result<(), sqlx::Error> {
-    sqlx::query(
-        "INSERT INTO channel_vars (bot_id, channel_id, name, value)
+    sqlx
+        ::query(
+            "INSERT INTO channel_vars (bot_id, channel_id, name, value)
          VALUES (?, ?, ?, ?)
          ON CONFLICT(bot_id, channel_id, name) DO UPDATE SET value=excluded.value"
-    )
+        )
         .bind(bot_id)
         .bind(channel_id)
         .bind(name)
@@ -264,12 +267,18 @@ pub async fn get_global_var(pool: &SqlitePool, bot_id: &str, name: &str) -> Stri
         .unwrap_or_default()
 }
 
-pub async fn set_global_var(pool: &SqlitePool, bot_id: &str, name: &str, value: &str) -> Result<(), sqlx::Error> {
-    sqlx::query(
-        "INSERT INTO global_vars (bot_id, name, value)
+pub async fn set_global_var(
+    pool: &SqlitePool,
+    bot_id: &str,
+    name: &str,
+    value: &str
+) -> Result<(), sqlx::Error> {
+    sqlx
+        ::query(
+            "INSERT INTO global_vars (bot_id, name, value)
          VALUES (?, ?, ?)
          ON CONFLICT(bot_id, name) DO UPDATE SET value=excluded.value"
-    )
+        )
         .bind(bot_id)
         .bind(name)
         .bind(value)
@@ -331,11 +340,12 @@ pub async fn set_user_cooldown(
     duration_secs: i64
 ) -> Result<(), sqlx::Error> {
     let expires_at = chrono::Utc::now().timestamp() + duration_secs;
-    sqlx::query(
-        "INSERT INTO user_cooldowns (bot_id, guild_id, user_id, command, expires_at)
+    sqlx
+        ::query(
+            "INSERT INTO user_cooldowns (bot_id, guild_id, user_id, command, expires_at)
          VALUES (?, ?, ?, ?, ?)
          ON CONFLICT(bot_id, guild_id, user_id, command) DO UPDATE SET expires_at=excluded.expires_at"
-    )
+        )
         .bind(bot_id)
         .bind(guild_id)
         .bind(user_id)
@@ -376,11 +386,12 @@ pub async fn set_server_cooldown(
     duration_secs: i64
 ) -> Result<(), sqlx::Error> {
     let expires_at = chrono::Utc::now().timestamp() + duration_secs;
-    sqlx::query(
-        "INSERT INTO server_cooldowns (bot_id, guild_id, command, expires_at)
+    sqlx
+        ::query(
+            "INSERT INTO server_cooldowns (bot_id, guild_id, command, expires_at)
          VALUES (?, ?, ?, ?)
          ON CONFLICT(bot_id, guild_id, command) DO UPDATE SET expires_at=excluded.expires_at"
-    )
+        )
         .bind(bot_id)
         .bind(guild_id)
         .bind(command)
@@ -420,11 +431,12 @@ pub async fn set_global_cooldown(
     duration_secs: i64
 ) -> Result<(), sqlx::Error> {
     let expires_at = chrono::Utc::now().timestamp() + duration_secs;
-    sqlx::query(
-        "INSERT INTO global_cooldowns (bot_id, user_id, command, expires_at)
+    sqlx
+        ::query(
+            "INSERT INTO global_cooldowns (bot_id, user_id, command, expires_at)
          VALUES (?, ?, ?, ?)
          ON CONFLICT(bot_id, user_id, command) DO UPDATE SET expires_at=excluded.expires_at"
-    )
+        )
         .bind(bot_id)
         .bind(user_id)
         .bind(command)

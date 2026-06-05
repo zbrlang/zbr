@@ -10,7 +10,7 @@ use crate::context::{DiscordContext, FnOutput};
 ///   5. atoms: numbers, parenthesised expressions
 
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
-    let expr = args.get(0).cloned().unwrap_or_default();
+    let expr = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if expr.is_empty() {
         return FnOutput::error("calculate", crate::error_messages::required(1, "expression"));
     }

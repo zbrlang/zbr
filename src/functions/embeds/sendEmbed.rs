@@ -13,7 +13,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         None => return FnOutput::error("sendEmbed", crate::error_messages::action_failed_reason("send message", "no HTTP client available")),
     };
 
-    let channel_id_str = args.get(0).cloned().unwrap_or_default();
+    let channel_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let channel_id = match validate_snowflake(&channel_id_str, "sendEmbed", "channel ID") {
         Ok(id) => id,
         Err(e) => return e,

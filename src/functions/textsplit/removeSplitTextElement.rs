@@ -3,7 +3,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// ZremoveSplitTextElement{index}
 /// Removes the element at the given 1-based index from the split.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let index_str = args.get(0).cloned().unwrap_or_default();
+    let index_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let index: usize = match index_str.parse::<usize>() {
         Ok(i) if i > 0 => i - 1, // convert to 0-based

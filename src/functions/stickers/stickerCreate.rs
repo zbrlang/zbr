@@ -6,10 +6,10 @@ use serenity::model::id::GuildId;
 /// Creates a new sticker from a file URL. tags are comma-separated keywords (required by Discord).
 /// Returns the sticker ID.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let name = args.get(0).cloned().unwrap_or_default();
-    let file_url = args.get(1).cloned().unwrap_or_default();
-    let tags = args.get(2).cloned().unwrap_or_default();
-    let description = args.get(3).cloned().unwrap_or_default();
+    let name = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let file_url = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let tags = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let description = args.get(3).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     if name.is_empty() {
         return FnOutput::error("stickerCreate", crate::error_messages::required(1, "name"));

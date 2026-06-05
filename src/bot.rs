@@ -1,22 +1,44 @@
-use crate::executor::{self, ComponentData, EmbedData, ExecState, RunContext, RunResponse};
-use crate::types::{Command, CommandMap, CommandScope, CommandType, Db};
+use crate::executor::{ self, ComponentData, EmbedData, ExecState, RunContext, RunResponse };
+use crate::types::{ Command, CommandMap, CommandScope, CommandType, Db };
 use regex::Regex;
 use once_cell::sync::Lazy;
 use serenity::async_trait;
 use serenity::builder::{
-    CreateActionRow, CreateAllowedMentions, CreateButton, CreateCommand, CreateCommandOption,
-    CreateEmbed, CreateEmbedAuthor, CreateEmbedFooter, CreateInputText, CreateInteractionResponse,
-    CreateInteractionResponseMessage, CreateMessage, CreateModal, CreateSelectMenu,
-    CreateSelectMenuKind, CreateSelectMenuOption,
+    CreateActionRow,
+    CreateAllowedMentions,
+    CreateButton,
+    CreateCommand,
+    CreateCommandOption,
+    CreateEmbed,
+    CreateEmbedAuthor,
+    CreateEmbedFooter,
+    CreateInputText,
+    CreateInteractionResponse,
+    CreateInteractionResponseMessage,
+    CreateMessage,
+    CreateModal,
+    CreateSelectMenu,
+    CreateSelectMenuKind,
+    CreateSelectMenuOption,
 };
-use serenity::model::application::{CommandOptionType, Interaction};
+use serenity::model::application::{ CommandOptionType, Interaction };
 use serenity::gateway::ActivityData;
 use serenity::model::gateway::Ready;
 use serenity::model::guild::Member;
-use serenity::model::id::{EmojiId, GuildId};
+use serenity::model::id::{ EmojiId, GuildId };
 use serenity::model::prelude::{
-    Guild, GuildChannel, GuildMemberUpdateEvent, Message, MessageUpdateEvent, PartialGuild,
-    Reaction, ReactionType, Role, UnavailableGuild, User, VoiceState,
+    Guild,
+    GuildChannel,
+    GuildMemberUpdateEvent,
+    Message,
+    MessageUpdateEvent,
+    PartialGuild,
+    Reaction,
+    ReactionType,
+    Role,
+    UnavailableGuild,
+    User,
+    VoiceState,
 };
 use serenity::model::user::OnlineStatus;
 use serenity::prelude::*;
@@ -31,7 +53,7 @@ async fn resolve_trigger_vars(
     db: &crate::types::Db,
     bot_id: &str,
     msg: &Message,
-    cache: &mut HashMap<String, String>,
+    cache: &mut HashMap<String, String>
 ) -> String {
     let mut result = trigger.to_string();
 
@@ -64,13 +86,16 @@ async fn resolve_trigger_vars(
                         bot_id,
                         &guild_id,
                         &msg.author.id.to_string(),
-                        var_name,
-                    )
-                    .await
+                        var_name
+                    ).await
                 }
                 "getChannelVar" => {
-                    crate::db::get_channel_var(db, bot_id, &msg.channel_id.to_string(), var_name)
-                        .await
+                    crate::db::get_channel_var(
+                        db,
+                        bot_id,
+                        &msg.channel_id.to_string(),
+                        var_name
+                    ).await
                 }
                 _ => String::new(),
             };
@@ -94,9 +119,10 @@ async fn get_latency(ctx: &Context) -> Option<std::time::Duration> {
 impl Bot {
     async fn run_event_command(&self, ctx: &Context, trigger: &str, context: RunContext) {
         let commands = self.commands.read().await;
-        if let Some(cmd) = commands
-            .get(trigger)
-            .filter(|c| matches!(c.command_type, CommandType::Event))
+        if
+            let Some(cmd) = commands
+                .get(trigger)
+                .filter(|c| matches!(c.command_type, CommandType::Event))
         {
             let ast = cmd.ast.clone();
             let channel_id = context.channel_id.clone();
@@ -114,7 +140,6 @@ impl Bot {
     }
 }
 
-
 pub struct Bot {
     pub commands: CommandMap,
     pub guild_id: Option<u64>,
@@ -129,11 +154,13 @@ impl EventHandler for Bot {
 
         // Load presence from zbr.json
         let config_str = std::fs::read_to_string("zbr.json").unwrap_or_default();
-        let config = serde_json::from_str::<crate::types::Config>(&config_str).unwrap_or_else(|_| crate::types::Config {
-            status: None,
-            activity: None,
-            logging: true,
-        });
+        let config = serde_json
+            ::from_str::<crate::types::Config>(&config_str)
+            .unwrap_or_else(|_| crate::types::Config {
+                status: None,
+                activity: None,
+                logging: true,
+            });
 
         let status = match config.status.as_deref() {
             Some("dnd") => OnlineStatus::DoNotDisturb,
@@ -142,11 +169,13 @@ impl EventHandler for Bot {
             _ => OnlineStatus::Online,
         };
 
-        let activity = config.activity.as_ref().map(|a| match a.activity_type.as_str() {
-            "listening" => ActivityData::listening(a.name.clone()),
-            "watching" => ActivityData::watching(a.name.clone()),
-            "competing" => ActivityData::competing(a.name.clone()),
-            _ => ActivityData::playing(a.name.clone()),
+        let activity = config.activity.as_ref().map(|a| {
+            match a.activity_type.as_str() {
+                "listening" => ActivityData::listening(a.name.clone()),
+                "watching" => ActivityData::watching(a.name.clone()),
+                "competing" => ActivityData::competing(a.name.clone()),
+                _ => ActivityData::playing(a.name.clone()),
+            }
         });
 
         // Small delay to ensure the session is ready for presence updates
@@ -158,16 +187,16 @@ impl EventHandler for Bot {
         for cmd in commands.values() {
             match cmd.command_type {
                 CommandType::Slash => {
-                    let mut builder = CreateCommand::new(cmd.trigger.trim_start_matches('/'))
-                        .description(&cmd.description);
+                    let mut builder = CreateCommand::new(
+                        cmd.trigger.trim_start_matches('/')
+                    ).description(&cmd.description);
 
                     for opt in &cmd.options {
                         let option = CreateCommandOption::new(
                             opt.option_type.to_serenity_type(),
                             &opt.name,
-                            &opt.description,
-                        )
-                        .required(opt.required);
+                            &opt.description
+                        ).required(opt.required);
                         builder = builder.add_option(option);
                     }
 
@@ -178,7 +207,8 @@ impl EventHandler for Bot {
                                 if let Err(e) = gid.create_command(&ctx.http, builder).await {
                                     eprintln!(
                                         "Failed to register guild slash command {}: {}",
-                                        cmd.name, e
+                                        cmd.name,
+                                        e
                                     );
                                 } else if config.logging {
                                     println!("Registered guild slash command: /{}", cmd.name);
@@ -188,15 +218,17 @@ impl EventHandler for Bot {
                             }
                         }
                         CommandScope::Global => {
-                            if let Err(e) =
-                                serenity::model::application::Command::create_global_command(
-                                    &ctx.http, builder,
-                                )
-                                .await
+                            if
+                                let Err(e) =
+                                    serenity::model::application::Command::create_global_command(
+                                        &ctx.http,
+                                        builder
+                                    ).await
                             {
                                 eprintln!(
                                     "Failed to register global slash command {}: {}",
-                                    cmd.name, e
+                                    cmd.name,
+                                    e
                                 );
                             } else if config.logging {
                                 println!("Registered global slash command: /{}", cmd.name);
@@ -205,23 +237,30 @@ impl EventHandler for Bot {
                         CommandScope::Both => {
                             if let Some(guild_id) = self.guild_id {
                                 let gid = GuildId::new(guild_id);
-                                if let Err(e) = gid.create_command(&ctx.http, builder.clone()).await
+                                if
+                                    let Err(e) = gid.create_command(
+                                        &ctx.http,
+                                        builder.clone()
+                                    ).await
                                 {
                                     eprintln!(
                                         "Failed to register guild slash command {}: {}",
-                                        cmd.name, e
+                                        cmd.name,
+                                        e
                                     );
                                 }
                             }
-                            if let Err(e) =
-                                serenity::model::application::Command::create_global_command(
-                                    &ctx.http, builder,
-                                )
-                                .await
+                            if
+                                let Err(e) =
+                                    serenity::model::application::Command::create_global_command(
+                                        &ctx.http,
+                                        builder
+                                    ).await
                             {
                                 eprintln!(
                                     "Failed to register global slash command {}: {}",
-                                    cmd.name, e
+                                    cmd.name,
+                                    e
                                 );
                             } else if config.logging {
                                 println!(
@@ -240,16 +279,15 @@ impl EventHandler for Bot {
         }
 
         // Register parent commands for subcommands
-        let mut parent_commands: std::collections::HashMap<String, Vec<&Command>> =
-            std::collections::HashMap::new();
+        let mut parent_commands: std::collections::HashMap<
+            String,
+            Vec<&Command>
+        > = std::collections::HashMap::new();
         for cmd in commands.values() {
             if let CommandType::SubSlash = cmd.command_type {
                 if let Some(space_pos) = cmd.trigger.find(' ') {
                     let parent = cmd.trigger[1..space_pos].to_string();
-                    parent_commands
-                        .entry(parent)
-                        .or_insert(Vec::new())
-                        .push(cmd);
+                    parent_commands.entry(parent).or_insert(Vec::new()).push(cmd);
                 }
             }
         }
@@ -258,19 +296,22 @@ impl EventHandler for Bot {
             let mut builder = CreateCommand::new(&parent_name).description("Subcommands");
 
             // If there's a slash command with the same name, use its details
-            if let Some(slash_cmd) = commands.values().find(|c| {
-                matches!(c.command_type, CommandType::Slash)
-                    && c.trigger == format!("/{}", parent_name)
-            }) {
+            if
+                let Some(slash_cmd) = commands
+                    .values()
+                    .find(|c| {
+                        matches!(c.command_type, CommandType::Slash) &&
+                            c.trigger == format!("/{}", parent_name)
+                    })
+            {
                 builder = builder.description(&slash_cmd.description);
                 for opt in &slash_cmd.options {
                     builder = builder.add_option(
                         CreateCommandOption::new(
                             opt.option_type.to_serenity_type(),
                             &opt.name,
-                            &opt.description,
-                        )
-                        .required(opt.required),
+                            &opt.description
+                        ).required(opt.required)
                     );
                 }
             }
@@ -282,16 +323,15 @@ impl EventHandler for Bot {
                     let mut sub_option = CreateCommandOption::new(
                         CommandOptionType::SubCommand,
                         sub_name,
-                        &sub.description,
+                        &sub.description
                     );
                     for opt in &sub.options {
                         sub_option = sub_option.add_sub_option(
                             CreateCommandOption::new(
                                 opt.option_type.to_serenity_type(),
                                 &opt.name,
-                                &opt.description,
-                            )
-                            .required(opt.required),
+                                &opt.description
+                            ).required(opt.required)
                         );
                     }
                     builder = builder.add_option(sub_option);
@@ -302,10 +342,7 @@ impl EventHandler for Bot {
             if let Some(guild_id) = self.guild_id {
                 let gid = GuildId::new(guild_id);
                 if let Err(e) = gid.create_command(&ctx.http, builder).await {
-                    eprintln!(
-                        "Failed to register subcommand parent /{}: {}",
-                        parent_name, e
-                    );
+                    eprintln!("Failed to register subcommand parent /{}: {}", parent_name, e);
                 } else {
                     println!("Registered subcommand parent: /{}", parent_name);
                 }
@@ -336,8 +373,7 @@ impl EventHandler for Bot {
             selected_values: vec![],
         };
 
-        self.run_event_command(&ctx, "onMessage", on_message_context)
-            .await;
+        self.run_event_command(&ctx, "onMessage", on_message_context).await;
 
         let mut trigger_cache = HashMap::new();
         let commands = self.commands.read().await;
@@ -345,16 +381,24 @@ impl EventHandler for Bot {
         for (trigger, cmd) in commands.iter() {
             if let CommandType::Prefix = cmd.command_type {
                 let resolved_trigger = if trigger.contains('Z') && trigger.contains('{') {
-                    resolve_trigger_vars(trigger, &self.db, &self.bot_id, &msg, &mut trigger_cache)
-                        .await
+                    resolve_trigger_vars(
+                        trigger,
+                        &self.db,
+                        &self.bot_id,
+                        &msg,
+                        &mut trigger_cache
+                    ).await
                 } else {
                     trigger.clone()
                 };
 
-                if content.starts_with(&resolved_trigger) && {
-                    let rest = &content[resolved_trigger.len()..];
-                    rest.is_empty() || rest.starts_with(char::is_whitespace)
-                } {
+                if
+                    content.starts_with(&resolved_trigger) &&
+                    ({
+                        let rest = &content[resolved_trigger.len()..];
+                        rest.is_empty() || rest.starts_with(char::is_whitespace)
+                    })
+                {
                     let context = RunContext {
                         author_id: msg.author.id.to_string(),
                         username: msg.author.name.clone(),
@@ -395,7 +439,7 @@ impl EventHandler for Bot {
         ctx: Context,
         old_if_available: Option<Message>,
         new: Option<Message>,
-        event: MessageUpdateEvent,
+        event: MessageUpdateEvent
     ) {
         let message_content = if let Some(m) = &new {
             m.content.clone()
@@ -447,7 +491,7 @@ impl EventHandler for Bot {
         ctx: Context,
         channel_id: serenity::model::id::ChannelId,
         deleted_message_id: serenity::model::id::MessageId,
-        guild_id: Option<GuildId>,
+        guild_id: Option<GuildId>
     ) {
         let context = RunContext {
             author_id: String::new(),
@@ -465,22 +509,15 @@ impl EventHandler for Bot {
             selected_values: vec![],
         };
 
-        self.run_event_command(&ctx, "onMessageDelete", context)
-            .await;
+        self.run_event_command(&ctx, "onMessageDelete", context).await;
     }
 
     async fn reaction_add(&self, ctx: Context, add_reaction: Reaction) {
         let context = RunContext {
-            author_id: add_reaction
-                .user_id
-                .map(|u| u.to_string())
-                .unwrap_or_default(),
+            author_id: add_reaction.user_id.map(|u| u.to_string()).unwrap_or_default(),
             username: String::new(),
             channel_id: add_reaction.channel_id.to_string(),
-            guild_id: add_reaction
-                .guild_id
-                .map(|g| g.to_string())
-                .unwrap_or_default(),
+            guild_id: add_reaction.guild_id.map(|g| g.to_string()).unwrap_or_default(),
             message: String::new(),
             options: HashMap::new(),
             options_list: Vec::new(),
@@ -497,16 +534,10 @@ impl EventHandler for Bot {
 
     async fn reaction_remove(&self, ctx: Context, removed_reaction: Reaction) {
         let context = RunContext {
-            author_id: removed_reaction
-                .user_id
-                .map(|u| u.to_string())
-                .unwrap_or_default(),
+            author_id: removed_reaction.user_id.map(|u| u.to_string()).unwrap_or_default(),
             username: String::new(),
             channel_id: removed_reaction.channel_id.to_string(),
-            guild_id: removed_reaction
-                .guild_id
-                .map(|g| g.to_string())
-                .unwrap_or_default(),
+            guild_id: removed_reaction.guild_id.map(|g| g.to_string()).unwrap_or_default(),
             message: String::new(),
             options: HashMap::new(),
             options_list: Vec::new(),
@@ -518,8 +549,7 @@ impl EventHandler for Bot {
             selected_values: vec![],
         };
 
-        self.run_event_command(&ctx, "onReactionRemove", context)
-            .await;
+        self.run_event_command(&ctx, "onReactionRemove", context).await;
     }
 
     async fn guild_member_addition(&self, ctx: Context, new_member: Member) {
@@ -547,7 +577,7 @@ impl EventHandler for Bot {
         ctx: Context,
         guild_id: GuildId,
         user: User,
-        _member_data_if_available: Option<Member>,
+        _member_data_if_available: Option<Member>
     ) {
         let context = RunContext {
             author_id: user.id.to_string(),
@@ -573,14 +603,10 @@ impl EventHandler for Bot {
         ctx: Context,
         _old_if_available: Option<Member>,
         new: Option<Member>,
-        _event: GuildMemberUpdateEvent,
+        _event: GuildMemberUpdateEvent
     ) {
         let (author_id, username, guild_id) = if let Some(member) = new {
-            (
-                member.user.id.to_string(),
-                member.user.name.clone(),
-                member.guild_id.to_string(),
-            )
+            (member.user.id.to_string(), member.user.name.clone(), member.guild_id.to_string())
         } else {
             (String::new(), String::new(), String::new())
         };
@@ -601,8 +627,7 @@ impl EventHandler for Bot {
             selected_values: vec![],
         };
 
-        self.run_event_command(&ctx, "onMemberUpdate", context)
-            .await;
+        self.run_event_command(&ctx, "onMemberUpdate", context).await;
     }
 
     async fn guild_ban_addition(&self, ctx: Context, guild_id: GuildId, banned_user: User) {
@@ -670,7 +695,7 @@ impl EventHandler for Bot {
         ctx: Context,
         guild_id: GuildId,
         removed_role_id: serenity::model::id::RoleId,
-        _removed_role_data_if_available: Option<Role>,
+        _removed_role_data_if_available: Option<Role>
     ) {
         let context = RunContext {
             author_id: String::new(),
@@ -695,7 +720,7 @@ impl EventHandler for Bot {
         &self,
         ctx: Context,
         _old_data_if_available: Option<Role>,
-        new: Role,
+        new: Role
     ) {
         let context = RunContext {
             author_id: String::new(),
@@ -733,15 +758,14 @@ impl EventHandler for Bot {
             selected_values: vec![],
         };
 
-        self.run_event_command(&ctx, "onChannelCreate", context)
-            .await;
+        self.run_event_command(&ctx, "onChannelCreate", context).await;
     }
 
     async fn channel_delete(
         &self,
         ctx: Context,
         channel: GuildChannel,
-        _messages: Option<Vec<Message>>,
+        _messages: Option<Vec<Message>>
     ) {
         let context = RunContext {
             author_id: String::new(),
@@ -759,8 +783,7 @@ impl EventHandler for Bot {
             selected_values: vec![],
         };
 
-        self.run_event_command(&ctx, "onChannelDelete", context)
-            .await;
+        self.run_event_command(&ctx, "onChannelDelete", context).await;
     }
 
     async fn channel_update(&self, ctx: Context, _old: Option<GuildChannel>, new: GuildChannel) {
@@ -780,8 +803,7 @@ impl EventHandler for Bot {
             selected_values: vec![],
         };
 
-        self.run_event_command(&ctx, "onChannelUpdate", context)
-            .await;
+        self.run_event_command(&ctx, "onChannelUpdate", context).await;
     }
 
     async fn guild_create(&self, ctx: Context, guild: Guild, is_new: Option<bool>) {
@@ -806,12 +828,7 @@ impl EventHandler for Bot {
         }
     }
 
-    async fn guild_delete(
-        &self,
-        ctx: Context,
-        incomplete: UnavailableGuild,
-        _full: Option<Guild>,
-    ) {
+    async fn guild_delete(&self, ctx: Context, incomplete: UnavailableGuild, _full: Option<Guild>) {
         let context = RunContext {
             author_id: String::new(),
             username: String::new(),
@@ -835,7 +852,7 @@ impl EventHandler for Bot {
         &self,
         ctx: Context,
         _old_data_if_available: Option<Guild>,
-        new_data: PartialGuild,
+        new_data: PartialGuild
     ) {
         if let Some(old_guild) = &_old_data_if_available {
             if let Some(new_boost_count) = new_data.premium_subscription_count {
@@ -921,15 +938,16 @@ impl EventHandler for Bot {
             selected_values: vec![],
         };
 
-        self.run_event_command(&ctx, "onVoiceStateUpdate", context)
-            .await;
+        self.run_event_command(&ctx, "onVoiceStateUpdate", context).await;
     }
 
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
         match interaction {
             Interaction::Command(command) => {
-                let (trigger, options_map, options_list) =
-                    build_command_trigger_and_options(&command.data.name, &command.data.options);
+                let (trigger, options_map, options_list) = build_command_trigger_and_options(
+                    &command.data.name,
+                    &command.data.options
+                );
                 let commands = self.commands.read().await;
 
                 if let Some(cmd) = commands.get(&trigger) {
@@ -977,17 +995,20 @@ impl EventHandler for Bot {
                     }
 
                     // Apply allowed mentions if set by ZallowUserMentions / ZallowRoleMentions
-                    if data.allowed_user_mentions.is_some() || data.allowed_role_mentions.is_some()
-                    {
+                    if data.allowed_user_mentions.is_some() || data.allowed_role_mentions.is_some() {
                         let mut allowed = CreateAllowedMentions::new();
                         if let Some(user_ids) = &data.allowed_user_mentions {
-                            let ids: Vec<u64> =
-                                user_ids.iter().filter_map(|id| id.parse().ok()).collect();
+                            let ids: Vec<u64> = user_ids
+                                .iter()
+                                .filter_map(|id| id.parse().ok())
+                                .collect();
                             allowed = allowed.users(ids);
                         }
                         if let Some(role_ids) = &data.allowed_role_mentions {
-                            let ids: Vec<u64> =
-                                role_ids.iter().filter_map(|id| id.parse().ok()).collect();
+                            let ids: Vec<u64> = role_ids
+                                .iter()
+                                .filter_map(|id| id.parse().ok())
+                                .collect();
                             allowed = allowed.roles(ids);
                         }
                         msg = msg.allowed_mentions(allowed);
@@ -1041,16 +1062,28 @@ impl EventHandler for Bot {
                         match &component.data.kind {
                             ComponentInteractionDataKind::StringSelect { values } => values.clone(),
                             ComponentInteractionDataKind::UserSelect { values } => {
-                                values.iter().map(|id| id.to_string()).collect()
+                                values
+                                    .iter()
+                                    .map(|id| id.to_string())
+                                    .collect()
                             }
                             ComponentInteractionDataKind::RoleSelect { values } => {
-                                values.iter().map(|id| id.to_string()).collect()
+                                values
+                                    .iter()
+                                    .map(|id| id.to_string())
+                                    .collect()
                             }
                             ComponentInteractionDataKind::MentionableSelect { values } => {
-                                values.iter().map(|id| id.to_string()).collect()
+                                values
+                                    .iter()
+                                    .map(|id| id.to_string())
+                                    .collect()
                             }
                             ComponentInteractionDataKind::ChannelSelect { values } => {
-                                values.iter().map(|id| id.to_string()).collect()
+                                values
+                                    .iter()
+                                    .map(|id| id.to_string())
+                                    .collect()
                             }
                             _ => vec![],
                         }
@@ -1060,10 +1093,7 @@ impl EventHandler for Bot {
                         author_id: component.user.id.to_string(),
                         username: component.user.name.clone(),
                         channel_id: component.channel_id.to_string(),
-                        guild_id: component
-                            .guild_id
-                            .map(|g| g.to_string())
-                            .unwrap_or_default(),
+                        guild_id: component.guild_id.map(|g| g.to_string()).unwrap_or_default(),
                         message: String::new(),
                         options: HashMap::new(),
                         options_list: selected_values.clone(),
@@ -1089,9 +1119,10 @@ impl EventHandler for Bot {
 
                     // If Zdefer was called, send a deferred acknowledgment
                     if data.components.deferred {
-                        let _ = component
-                            .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                            .await;
+                        let _ = component.create_response(
+                            &ctx.http,
+                            CreateInteractionResponse::Acknowledge
+                        ).await;
                         return;
                     }
 
@@ -1105,9 +1136,11 @@ impl EventHandler for Bot {
                             } else {
                                 InputTextStyle::Short
                             };
-                            let mut input =
-                                CreateInputText::new(style, &field.label, &field.field_id)
-                                    .required(field.required);
+                            let mut input = CreateInputText::new(
+                                style,
+                                &field.label,
+                                &field.field_id
+                            ).required(field.required);
                             if let Some(min) = field.min_length {
                                 input = input.min_length(min as u16);
                             }
@@ -1122,8 +1155,10 @@ impl EventHandler for Bot {
                             }
                             rows.push(CreateActionRow::InputText(input));
                         }
-                        let modal_builder =
-                            CreateModal::new(&modal.modal_id, &modal.title).components(rows);
+                        let modal_builder = CreateModal::new(
+                            &modal.modal_id,
+                            &modal.title
+                        ).components(rows);
                         let response = CreateInteractionResponse::Modal(modal_builder);
                         if let Err(e) = component.create_response(&ctx.http, response).await {
                             eprintln!("Failed to show modal: {}", e);
@@ -1136,9 +1171,10 @@ impl EventHandler for Bot {
 
                     // If nothing to send, just acknowledge
                     if built_embeds.is_empty() && text_content.is_none() {
-                        let _ = component
-                            .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                            .await;
+                        let _ = component.create_response(
+                            &ctx.http,
+                            CreateInteractionResponse::Acknowledge
+                        ).await;
                         return;
                     }
 
@@ -1177,9 +1213,10 @@ impl EventHandler for Bot {
                 } else {
                     drop(commands);
                     // No handler — acknowledge silently so Discord doesn't show "interaction failed"
-                    let _ = component
-                        .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                        .await;
+                    let _ = component.create_response(
+                        &ctx.http,
+                        CreateInteractionResponse::Acknowledge
+                    ).await;
                 }
             }
 
@@ -1204,7 +1241,7 @@ impl EventHandler for Bot {
                             if let ActionRowComponent::InputText(input) = comp {
                                 modal_values.insert(
                                     input.custom_id.clone(),
-                                    input.value.clone().unwrap_or_default(),
+                                    input.value.clone().unwrap_or_default()
                                 );
                             }
                         }
@@ -1242,9 +1279,10 @@ impl EventHandler for Bot {
                     let text_content = resolve_text_content(&data);
 
                     if built_embeds.is_empty() && text_content.is_none() {
-                        let _ = modal
-                            .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                            .await;
+                        let _ = modal.create_response(
+                            &ctx.http,
+                            CreateInteractionResponse::Acknowledge
+                        ).await;
                         return;
                     }
 
@@ -1265,9 +1303,10 @@ impl EventHandler for Bot {
                     }
                 } else {
                     drop(commands);
-                    let _ = modal
-                        .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                        .await;
+                    let _ = modal.create_response(
+                        &ctx.http,
+                        CreateInteractionResponse::Acknowledge
+                    ).await;
                 }
             }
 
@@ -1290,7 +1329,7 @@ fn resolve_text_content(data: &RunResponse) -> Option<String> {
 
 fn build_command_trigger_and_options(
     command_name: &str,
-    options: &[serenity::model::application::CommandDataOption],
+    options: &[serenity::model::application::CommandDataOption]
 ) -> (String, HashMap<String, String>, Vec<String>) {
     use serenity::model::application::CommandDataOptionValue;
 
@@ -1330,7 +1369,7 @@ fn build_command_trigger_and_options(
 fn flatten_option_values(
     option: &serenity::model::application::CommandDataOption,
     values: &mut HashMap<String, String>,
-    list: &mut Vec<String>,
+    list: &mut Vec<String>
 ) {
     use serenity::model::application::CommandDataOptionValue;
 
@@ -1344,7 +1383,9 @@ fn flatten_option_values(
         CommandDataOptionValue::Role(r) => r.to_string(),
         CommandDataOptionValue::Attachment(a) => a.to_string(),
         // SubCommand / SubCommandGroup / Autocomplete / Unknown — not a scalar value
-        _ => return,
+        _ => {
+            return;
+        }
     };
     values.insert(option.name.clone(), val.clone());
     list.push(val);
@@ -1385,11 +1426,17 @@ async fn send_response(ctx: &Context, msg: &Message, data: &RunResponse) {
     if data.allowed_user_mentions.is_some() || data.allowed_role_mentions.is_some() {
         let mut allowed = CreateAllowedMentions::new();
         if let Some(user_ids) = &data.allowed_user_mentions {
-            let ids: Vec<u64> = user_ids.iter().filter_map(|id| id.parse().ok()).collect();
+            let ids: Vec<u64> = user_ids
+                .iter()
+                .filter_map(|id| id.parse().ok())
+                .collect();
             allowed = allowed.users(ids);
         }
         if let Some(role_ids) = &data.allowed_role_mentions {
-            let ids: Vec<u64> = role_ids.iter().filter_map(|id| id.parse().ok()).collect();
+            let ids: Vec<u64> = role_ids
+                .iter()
+                .filter_map(|id| id.parse().ok())
+                .collect();
             allowed = allowed.roles(ids);
         }
         message = message.allowed_mentions(allowed);
@@ -1445,11 +1492,17 @@ async fn send_event_response(ctx: &Context, default_channel_id: &str, data: &Run
     if data.allowed_user_mentions.is_some() || data.allowed_role_mentions.is_some() {
         let mut allowed = CreateAllowedMentions::new();
         if let Some(user_ids) = &data.allowed_user_mentions {
-            let ids: Vec<u64> = user_ids.iter().filter_map(|id| id.parse().ok()).collect();
+            let ids: Vec<u64> = user_ids
+                .iter()
+                .filter_map(|id| id.parse().ok())
+                .collect();
             allowed = allowed.users(ids);
         }
         if let Some(role_ids) = &data.allowed_role_mentions {
-            let ids: Vec<u64> = role_ids.iter().filter_map(|id| id.parse().ok()).collect();
+            let ids: Vec<u64> = role_ids
+                .iter()
+                .filter_map(|id| id.parse().ok())
+                .collect();
             allowed = allowed.roles(ids);
         }
         message = message.allowed_mentions(allowed);
@@ -1523,19 +1576,21 @@ fn build_components(data: &ComponentData) -> Vec<CreateActionRow> {
     // ── String/User/Role/Mentionable select menu ──────────────────────────────
     if let Some(sm) = &data.select_menu {
         let kind = match sm.kind.as_str() {
-            "user" => CreateSelectMenuKind::User {
-                default_users: None,
-            },
-            "role" => CreateSelectMenuKind::Role {
-                default_roles: None,
-            },
-            "mentionable" => CreateSelectMenuKind::Mentionable {
-                default_users: None,
-                default_roles: None,
-            },
+            "user" =>
+                CreateSelectMenuKind::User {
+                    default_users: None,
+                },
+            "role" =>
+                CreateSelectMenuKind::Role {
+                    default_roles: None,
+                },
+            "mentionable" =>
+                CreateSelectMenuKind::Mentionable {
+                    default_users: None,
+                    default_roles: None,
+                },
             _ => {
-                let options: Vec<CreateSelectMenuOption> = sm
-                    .options
+                let options: Vec<CreateSelectMenuOption> = sm.options
                     .iter()
                     .map(|o| {
                         let mut opt = CreateSelectMenuOption::new(&o.label, &o.value);

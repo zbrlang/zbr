@@ -3,7 +3,7 @@ use serenity::model::id::{GuildId, RoleId};
 use serenity::builder::EditRole;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let rid_str = args.get(0).cloned().unwrap_or_default();
+    let rid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if rid_str.is_empty() {
         return FnOutput::error("modifyRole", crate::error_messages::required(1, "role ID"));
     }
@@ -13,10 +13,10 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Err(_) => return FnOutput::error("modifyRole", crate::error_messages::expected_snowflake(1, "role ID", &rid_str)),
     };
 
-    let name = args.get(1).cloned().unwrap_or_else(|| "!unchanged".to_string());
-    let color_str = args.get(2).cloned().unwrap_or_else(|| "!unchanged".to_string());
-    let hoisted_str = args.get(3).cloned().unwrap_or_else(|| "!unchanged".to_string());
-    let mentionable_str = args.get(4).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let name = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let color_str = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let hoisted_str = args.get(3).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let mentionable_str = args.get(4).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string());
 
     let mut builder = EditRole::new();
 

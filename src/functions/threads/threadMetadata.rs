@@ -4,7 +4,7 @@ use serenity::model::id::ChannelId;
 /// ZthreadMetadata{threadID}
 /// Returns JSON with thread metadata: slowmode, creation date, owner ID, member count, archived, locked, flags.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = args.get(0).cloned().unwrap_or_default();
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,

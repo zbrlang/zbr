@@ -7,7 +7,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     } else {
         ctx.guild_id.clone()
     };
-    let separator = args.get(1).cloned().unwrap_or_else(|| "\n".to_string());
+    let separator = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "\n".to_string());
 
     if guild_id_str.is_empty() {
         return FnOutput::Text(String::new());

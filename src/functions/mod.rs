@@ -975,7 +975,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         FnMeta {
             func: threads::startThread::run,
             min_args: 2,
-            max_args: 5,
+            max_args: 6,
         },
     );
     registry.insert(
@@ -2644,7 +2644,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         FnMeta {
             func: message::isMessageEdited::run,
             min_args: 1,
-            max_args: 2,
+            max_args: 3,
         },
     );
     registry.insert(

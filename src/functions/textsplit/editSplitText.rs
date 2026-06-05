@@ -3,8 +3,8 @@ use crate::context::{DiscordContext, FnOutput};
 /// ZeditSplitText{index;value}
 /// Replaces the element at the given 1-based index with a new value.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let index_str = args.get(0).cloned().unwrap_or_default();
-    let value     = args.get(1).cloned().unwrap_or_default();
+    let index_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let value     = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let index: usize = match index_str.parse::<usize>() {
         Ok(i) if i > 0 => i - 1, // convert to 0-based

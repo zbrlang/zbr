@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Formats a number of seconds into a human-readable string like "2d 5h 30m 15s".
 /// Only non-zero units are shown.
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
-    let secs_str = args.get(0).cloned().unwrap_or_default();
+    let secs_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if secs_str.is_empty() {
         return FnOutput::error("duration", crate::error_messages::required(1, "seconds"));
     }

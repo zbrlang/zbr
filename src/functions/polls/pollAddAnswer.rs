@@ -5,7 +5,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => return FnOutput::error("pollAddAnswer", crate::error_messages::required(1, "text")),
     };
-    let emoji = args.get(1).cloned().unwrap_or_default();
+    let emoji = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let temp = ctx.temp_vars.clone();
     tokio::task::block_in_place(|| {

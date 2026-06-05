@@ -136,14 +136,15 @@ fn parse_actions(json_str: &str) -> Result<Vec<Action>, String> {
 /// Creates an auto-moderation rule. eventType: "messagesend". triggerJSON/actionsJSON: see docs.
 /// exemptRoles/exemptChannels: comma-separated IDs.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let guild_id_str = args.get(0).cloned().unwrap_or_default();
-    let name = args.get(1).cloned().unwrap_or_default();
+    let guild_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let name = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let event_type_str = args
         .get(2)
+        .filter(|s| !s.is_empty())
         .map(|s| s.to_lowercase())
         .unwrap_or_default();
-    let trigger_json = args.get(3).cloned().unwrap_or_default();
-    let actions_json = args.get(4).cloned().unwrap_or_default();
+    let trigger_json = args.get(3).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let actions_json = args.get(4).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,

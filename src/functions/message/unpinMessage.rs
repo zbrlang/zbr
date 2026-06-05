@@ -11,7 +11,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 Some(s) if !s.is_empty() => s.clone(),
                 _ => ctx.channel_id.clone(),
             };
-            (cid_str, args.get(1).cloned().unwrap_or_default())
+            (cid_str, args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default())
         }
     };
     if mid_str.is_empty() {

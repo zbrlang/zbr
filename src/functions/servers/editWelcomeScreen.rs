@@ -8,10 +8,10 @@ use serenity::model::id::{ChannelId, GuildId, EmojiId};
 /// {"channel_id":"...","description":"...","emoji_name":"..."} or {"channel_id":"...","description":"...","emoji_id":"...","emoji_name":"..."}
 /// welcomeChannelsJSON can be empty string or omitted to clear channels.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let guild_id_str = args.get(0).cloned().unwrap_or_default();
+    let guild_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let enabled_str = args.get(1).map(|s| s.to_lowercase()).unwrap_or_default();
-    let description = args.get(2).cloned().unwrap_or_default();
-    let channels_json = args.get(3).cloned().unwrap_or_default();
+    let description = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let channels_json = args.get(3).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,

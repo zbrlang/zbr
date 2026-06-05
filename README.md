@@ -3,13 +3,11 @@
 ZBR is a scripting language for Discord bots powered by a high-performance Rust runtime engine. 
 You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no event handlers, no framework knowledge required.
 
-Previously a complex setup, **ZBR is now a streamlined CLI tool** distributed via npm. You can now initialize, manage, and run your entire bot engine with a single command.
-
 ## Quick Start
 
 Get your bot up and running in seconds:
 
-### Option 1: Webapp Editor (Recommended for testing)
+### Option 1: Webapp Editor (Recommended)
 Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a zero-setup development experience.
 1. Build your commands, manage variables, and tweak settings visually.
 2. Press **Run** to launch your bot instantly in the cloud for testing.
@@ -17,7 +15,7 @@ Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a zero-setup de
 
 > **Note:** The Webapp "Run" button is strictly for rapid prototyping and interactive testing. For 24/7 production hosting, you must export your project as a ZIP and use the CLI.
 
-### Option 2: CLI (For Technical Users)
+### Option 2: CLI
 1. **Install the CLI globally:**
    ```bash
    npm i @zbrlang/zbr
@@ -61,7 +59,7 @@ For those who prefer a visual development environment, the [ZBR Webapp](https://
 Zvar{xp;ZgetUserVar{xp}}
 Zvar{level;ZgetUserVar{level}}
 
-Ztitle{Zusername{}s Rank}
+Ztitle{Zusername's Rank}
 Zdescription{Level: Zvar{level}
 XP: Zvar{xp}}
 Zcolor{#5865F2}
@@ -76,7 +74,7 @@ ZaddField{Server Rank;#Zvar{rank};true}
 #option user|User to ban|user|required
 #option reason|Reason for the ban|string|optional
 
-ZonlyIf{ZisAdmin{}==true;You need administrator permission to use this command}
+ZonlyIf{ZisAdmin==true;You need administrator permission to use this command}
 Zban{Zoption{user};Zoption{reason}}
 Banned Zoption{user}.
 ```
@@ -86,7 +84,7 @@ Banned Zoption{user}.
 #name Confirm Ban Handler
 #type interaction
 
-Zephemeral{}
+Zephemeral
 Zban{ZgetServerVar{pending_ban}}
 Done.
 ```

@@ -6,8 +6,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(n) => n.clone(),
         None => return FnOutput::error("setChannelVar", crate::error_messages::required(1, "name")),
     };
-    let value      = args.get(1).cloned().unwrap_or_default();
-    let channel_id = args.get(2).cloned().unwrap_or_else(|| ctx.channel_id.clone());
+    let value      = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let channel_id = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.channel_id.clone());
     let bot_id     = ctx.bot_id.clone();
     let db = match &ctx.db {
         Some(d) => d.clone(),

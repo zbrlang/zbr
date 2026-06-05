@@ -5,7 +5,7 @@ use serenity::model::id::ChannelId;
 /// ZthreadLocked{threadID?}
 /// Returns true if the thread is locked.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = args.get(0).cloned().unwrap_or_else(|| ctx.channel_id.clone());
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.channel_id.clone());
     let cid = match validate_snowflake(&cid_str, "threadLocked", "thread ID") {
         Ok(id) => id,
         Err(e) => return e,

@@ -5,8 +5,8 @@ use serenity::model::id::GuildId;
 /// ZserverRoles{separator?;guildID?}
 /// Returns a separator-joined list of role IDs for the server.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let sep = args.get(0).cloned().unwrap_or_else(|| "\n".to_string());
-    let gid_str = args.get(1).cloned().unwrap_or_else(|| ctx.guild_id.clone());
+    let sep = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "\n".to_string());
+    let gid_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.guild_id.clone());
     let gid = match validate_snowflake(&gid_str, "serverRoles", "guild ID") {
         Ok(id) => id,
         Err(e) => return e,

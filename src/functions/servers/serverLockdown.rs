@@ -12,7 +12,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         .get(0)
         .map(|s| s.to_lowercase())
         .unwrap_or_default();
-    let duration_str = args.get(1).cloned().unwrap_or_else(|| "1h".to_string());
+    let duration_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "1h".to_string());
     let duration_clone = duration_str.clone();
 
     let enabled = match enabled_str.as_str() {

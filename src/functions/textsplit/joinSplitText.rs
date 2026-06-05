@@ -4,7 +4,7 @@ use crate::context::{DiscordContext, FnOutput};
 /// Joins all split elements with the given separator.
 /// If separator is empty, joins with no separator.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let separator = args.get(0).cloned().unwrap_or_default();
+    let separator = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let parts = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async {

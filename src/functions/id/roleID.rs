@@ -4,7 +4,7 @@ use serenity::model::id::GuildId;
 /// ZroleID{}       — author's top role ID
 /// ZroleID{name}   — find role by name in the guild
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let query = args.get(0).cloned().unwrap_or_default();
+    let query = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let http = match &ctx.http {
         Some(h) => h.clone(),

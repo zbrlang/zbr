@@ -2,9 +2,9 @@ use crate::context::{DiscordContext, FnOutput};
 use serenity::model::id::GuildId;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let separator = args.get(0).cloned().unwrap_or_else(|| "\n".to_string());
+    let separator = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "\n".to_string());
     
-    let gid_str = args.get(1).cloned().unwrap_or_else(|| ctx.guild_id.clone());
+    let gid_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.guild_id.clone());
     if gid_str.is_empty() {
         return FnOutput::error("channelNames", crate::error_messages::required(2, "guild ID"));
     }

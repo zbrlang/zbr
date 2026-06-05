@@ -24,10 +24,10 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 Err(_) => return FnOutput::error("argsCheck", crate::error_messages::expected_integer(2, "max", max_str)),
             }
         };
-        let err = args.get(2).cloned().unwrap_or_default();
+        let err = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
         (max, err)
     } else {
-        let err = args.get(1).cloned().unwrap_or_default();
+        let err = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
         (None, err)
     };
 

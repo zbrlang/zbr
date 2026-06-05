@@ -11,7 +11,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     if cid_str.is_empty() {
         return FnOutput::error("slowMode", crate::error_messages::required(1, "channel ID"));
     }
-    let dur_str = args.get(1).cloned().unwrap_or_default();
+    let dur_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if dur_str.is_empty() {
         return FnOutput::error("slowMode", crate::error_messages::required(2, "duration"));
     }

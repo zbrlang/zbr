@@ -2,7 +2,7 @@ use crate::context::{DiscordContext, FnOutput};
 
 /// ZpadLeft{text;width;char?}
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
-    let text = args.get(0).cloned().unwrap_or_default();
+    let text = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let width: usize = match args.get(1).and_then(|s| s.parse().ok()) {
         Some(w) => w,
         None => return FnOutput::error("padLeft", crate::error_messages::required(2, "width")),

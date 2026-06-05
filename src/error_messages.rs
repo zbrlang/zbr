@@ -1,8 +1,6 @@
 /// Centralized error message formatting for ZBR functions.
 /// Format: `Line N: Z{function} - {message}`
 
-// ── Argument count ─────────────────────────────────────────────────────────
-
 pub fn too_few_args(expected: usize, got: usize) -> String {
     format!(
         "expected at least {} argument{}, got {}",

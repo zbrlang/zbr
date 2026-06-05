@@ -3,7 +3,7 @@ use serenity::model::id::GuildId;
 use serenity::model::channel::ChannelType;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cat_id_str = args.get(0).cloned().unwrap_or_default();
+    let cat_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if cat_id_str.is_empty() {
         return FnOutput::error("categoryChannels", crate::error_messages::required(1, "category ID"));
     }
@@ -13,8 +13,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Err(_) => return FnOutput::error("categoryChannels", crate::error_messages::expected_snowflake(1, "category ID", &cat_id_str)),
     };
 
-    let separator = args.get(1).cloned().unwrap_or_else(|| "\n".to_string());
-    let return_type = args.get(2).cloned().unwrap_or_else(|| "name".to_string()).to_lowercase();
+    let separator = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "\n".to_string());
+    let return_type = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "name".to_string()).to_lowercase();
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,

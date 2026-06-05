@@ -5,7 +5,7 @@ use serenity::model::id::{ChannelId, GuildId};
 /// ZvoiceRequestToSpeak{channelID;cancel?}
 /// Requests to speak in the given stage channel, or cancels the request if cancel=true.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = args.get(0).cloned().unwrap_or_default();
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let cancel = args
         .get(1)
         .map(|s| s.to_lowercase() == "true")

@@ -4,22 +4,10 @@ use serenity::model::id::{ChannelId, MessageId};
 /// ZgetEmbedData{channelID;messageID;embedIndex;type}
 /// type: title, description, footer, color, image, timestamp
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let (cid_str, mid_str, embed_index_str, data_type) = match args.len() {
-        0 => (ctx.channel_id.clone(), String::new(), String::new(), String::new()),
-        1 => (ctx.channel_id.clone(), args[0].clone(), String::new(), String::new()),
-        _ => {
-            let cid_str = match args.get(0) {
-                Some(s) if !s.is_empty() => s.clone(),
-                _ => ctx.channel_id.clone(),
-            };
-            (
-                cid_str,
-                args.get(1).cloned().unwrap_or_default(),
-                args.get(2).cloned().unwrap_or_default(),
-                args.get(3).cloned().unwrap_or_default(),
-            )
-        }
-    };
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or(ctx.channel_id.clone());
+    let mid_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let embed_index_str = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let data_type = args.get(3).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     if mid_str.is_empty() {
         return FnOutput::error("getEmbedData", "messageID is required");

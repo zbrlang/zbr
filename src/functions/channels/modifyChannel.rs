@@ -3,7 +3,7 @@ use serenity::model::id::ChannelId;
 use serenity::builder::EditChannel;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = args.get(0).cloned().unwrap_or_default();
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if cid_str.is_empty() {
         return FnOutput::error("modifyChannel", crate::error_messages::required(1, "channel ID"));
     }
@@ -13,11 +13,11 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Err(_) => return FnOutput::error("modifyChannel", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),
     };
 
-    let name = args.get(1).cloned().unwrap_or_else(|| "!unchanged".to_string());
-    let topic = args.get(2).cloned().unwrap_or_else(|| "!unchanged".to_string());
-    let nsfw_str = args.get(3).cloned().unwrap_or_else(|| "!unchanged".to_string());
-    let position_str = args.get(4).cloned().unwrap_or_else(|| "!unchanged".to_string());
-    let category_id_str = args.get(5).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let name = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let topic = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let nsfw_str = args.get(3).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let position_str = args.get(4).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string());
+    let category_id_str = args.get(5).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "!unchanged".to_string()); // special case: allows "" to mean clear parent
 
     let mut builder = EditChannel::new();
 
@@ -44,8 +44,6 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     }
     if category_id_str != "!unchanged" {
         if category_id_str.is_empty() {
-            // How to remove category? Set parent_id to None... wait serenity EditChannel might not support removing parent easily?
-            // Passing None to category() clears it.
             builder = builder.category(None);
         } else {
             let cat_id: u64 = match category_id_str.parse() {

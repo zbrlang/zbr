@@ -12,21 +12,10 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         None => return FnOutput::error("sendMessage", "no HTTP client available"),
     };
 
-    let (channel_id_str, content, return_id_arg) = match args.len() {
-        0 => (ctx.channel_id.clone(), String::new(), None),
-        1 => (ctx.channel_id.clone(), args[0].clone(), None),
-        _ => {
-            let channel_id_str = match args.get(0) {
-                Some(s) if !s.is_empty() => s.clone(),
-                _ => ctx.channel_id.clone(),
-            };
-            (
-                channel_id_str,
-                args.get(1).cloned().unwrap_or_default(),
-                args.get(2),
-            )
-        }
-    };
+    let channel_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or(ctx.channel_id.clone());
+    let content = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let return_id_arg = args.get(2).filter(|s| !s.is_empty());
+
     let channel_id = match validate_snowflake(&channel_id_str, "sendMessage", "channel ID") {
         Ok(id) => id,
         Err(e) => return e,

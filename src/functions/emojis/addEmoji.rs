@@ -6,15 +6,15 @@ use serenity::model::id::GuildId;
 /// Downloads the image, base64-encodes it, and creates a guild emoji.
 /// returnEmoji: "true" returns the usable emoji string e.g. <:name:id>
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let name = args.get(0).cloned().unwrap_or_default();
+    let name = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if name.is_empty() {
         return FnOutput::error("addEmoji", crate::error_messages::required(1, "name"));
     }
 
-    let url = args.get(1).cloned().unwrap_or_default();
+    let url = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if let Err(e) = validate_url(&url, "addEmoji") { return e; }
 
-    let return_emoji = args.get(2).map(|s| s == "true").unwrap_or(false);
+    let return_emoji = args.get(2).filter(|s| !s.is_empty()).map(|s| s == "true").unwrap_or(false);
 
     let http = match &ctx.http {
         Some(h) => h.clone(),

@@ -6,8 +6,8 @@ use serenity::model::id::ChannelId;
 /// ZwebhookCreate{channelID;name}
 /// Creates a webhook in the given channel and returns its URL.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let channel_id_str = args.get(0).cloned().unwrap_or_default();
-    let name           = args.get(1).cloned().unwrap_or_default();
+    let channel_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let name           = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let channel_id = match validate_snowflake(&channel_id_str, "webhookCreate", "channel ID") {
         Ok(id) => id, Err(e) => return e,

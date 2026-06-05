@@ -2,7 +2,7 @@ use crate::context::{DiscordContext, FnOutput};
 use serenity::model::id::GuildId;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let gid_str = args.get(0).cloned().unwrap_or_else(|| ctx.guild_id.clone());
+    let gid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.guild_id.clone());
     let gid: u64 = match gid_str.parse() {
         Ok(id) => id,
         Err(_) => return FnOutput::error("rulesChannelID", crate::error_messages::expected_snowflake(1, "guild ID", &gid_str)),

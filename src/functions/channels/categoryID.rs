@@ -3,7 +3,7 @@ use serenity::model::id::GuildId;
 use serenity::model::channel::ChannelType;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let name = args.get(0).cloned().unwrap_or_default();
+    let name = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if name.is_empty() {
         return FnOutput::error("categoryID", crate::error_messages::required(1, "name"));
     }

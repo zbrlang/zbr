@@ -4,7 +4,7 @@ use serenity::model::channel::ChannelType;
 use serenity::builder::CreateChannel;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let name = args.get(0).cloned().unwrap_or_default();
+    let name = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if name.is_empty() {
         return FnOutput::error("createChannel", crate::error_messages::required(1, "name"));
     }

@@ -135,8 +135,8 @@ fn parse_actions(json_str: &str) -> Result<Vec<Action>, String> {
 /// ZautomodRuleEdit{guildID;ruleID;name?;eventType?;triggerJSON?;actionsJSON?;enabled?;exemptRoles?;exemptChannels?}
 /// Edits an auto-moderation rule. Use !unchanged for optional fields to skip.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let guild_id_str = args.get(0).cloned().unwrap_or_default();
-    let rule_id_str = args.get(1).cloned().unwrap_or_default();
+    let guild_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let rule_id_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let guild_id: u64 = match guild_id_str.parse() {
         Ok(id) => id,
@@ -157,13 +157,14 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         tokio::runtime::Handle::current().block_on(async move {
             let mut builder = EditAutoModRule::new();
 
-            let name = args.get(2).map(|s| s.as_str()).unwrap_or("!unchanged");
-            if name != "!unchanged" && !name.is_empty() {
+            let name = args.get(2).filter(|s| !s.is_empty()).map(|s| s.as_str()).unwrap_or("!unchanged");
+            if name != "!unchanged" {
                 builder = builder.name(name);
             }
 
             let event_type_str = args
                 .get(3)
+                .filter(|s| !s.is_empty())
                 .map(|s| s.to_lowercase())
                 .unwrap_or_else(|| "!unchanged".to_string());
             if event_type_str != "!unchanged" {
@@ -182,24 +183,27 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
             let trigger_json = args
                 .get(4)
+                .filter(|s| !s.is_empty())
                 .map(|s| s.as_str())
                 .unwrap_or("!unchanged");
-            if trigger_json != "!unchanged" && !trigger_json.is_empty() {
+            if trigger_json != "!unchanged" {
                 let trigger = parse_trigger(trigger_json)?;
                 builder = builder.trigger(trigger);
             }
 
             let actions_json = args
                 .get(5)
+                .filter(|s| !s.is_empty())
                 .map(|s| s.as_str())
                 .unwrap_or("!unchanged");
-            if actions_json != "!unchanged" && !actions_json.is_empty() {
+            if actions_json != "!unchanged" {
                 let actions = parse_actions(actions_json)?;
                 builder = builder.actions(actions);
             }
 
             let enabled_str = args
                 .get(6)
+                .filter(|s| !s.is_empty())
                 .map(|s| s.as_str())
                 .unwrap_or("!unchanged");
             if enabled_str != "!unchanged" {
@@ -215,8 +219,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
                 }
             }
 
-            let exempt_roles_str = args.get(7).map(|s| s.as_str()).unwrap_or("!unchanged");
-            if exempt_roles_str != "!unchanged" && !exempt_roles_str.is_empty() {
+            let exempt_roles_str = args.get(7).filter(|s| !s.is_empty()).map(|s| s.as_str()).unwrap_or("!unchanged");
+            if exempt_roles_str != "!unchanged" {
                 let roles: Vec<RoleId> = exempt_roles_str
                     .split(',')
                     .filter_map(|id| id.trim().parse::<u64>().ok().map(RoleId::new))
@@ -226,9 +230,10 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
             let exempt_channels_str = args
                 .get(8)
+                .filter(|s| !s.is_empty())
                 .map(|s| s.as_str())
                 .unwrap_or("!unchanged");
-            if exempt_channels_str != "!unchanged" && !exempt_channels_str.is_empty() {
+            if exempt_channels_str != "!unchanged" {
                 let channels: Vec<ChannelId> = exempt_channels_str
                     .split(',')
                     .filter_map(|id| id.trim().parse::<u64>().ok().map(ChannelId::new))

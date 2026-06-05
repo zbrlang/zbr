@@ -97,22 +97,24 @@
   },
   {
     "name": "Zalias",
-    "description": "Registers an alias that substitutes and evaluates the stored AST node when called. Aliases are local to the command execution.",
-    "syntax": "Zalias{expression;alias_name}",
+    "description": "Creates a runtime alias for a ZBR function. The alias can be called using Z+alias_name+{} syntax.",
+    "syntax": "Zalias{function;alias_name}",
     "variadic": false,
     "arguments": [
       {
-        "name": "expression",
-        "type": "string",
-        "required": true
+        "name": "function",
+        "type": "function",
+        "required": true,
+        "description": "A valid ZBR function call (e.g. Zusername{})"
       },
       {
         "name": "alias_name",
         "type": "string",
-        "required": true
+        "required": true,
+        "description": "The alias name without Z prefix. Call the alias using Z+alias_name+{} (e.g. Zgreet{})"
       }
     ],
-    "example": "Zalias{ZguildID{};ZGI}"
+    "example": "Zalias{Zusername;greet} Zgreet{}"
   },
   {
     "name": "ZaddField",

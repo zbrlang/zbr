@@ -2,7 +2,7 @@ use crate::context::{DiscordContext, FnOutput};
 use serenity::model::id::GuildId;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let guild_id_str = args.get(0).cloned().unwrap_or_else(|| ctx.guild_id.clone());
+    let guild_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.guild_id.clone());
     if guild_id_str.is_empty() {
         return FnOutput::Text(String::new());
     }

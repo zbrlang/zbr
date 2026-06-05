@@ -4,30 +4,10 @@ use serenity::model::id::{ChannelId, MessageId};
 /// ZgetMessage{channelID;messageID;type?}
 /// type: content (default), authorID, username, avatar
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let (cid_str, mid_str, msg_type) = match args.len() {
-        0 => (
-            ctx.channel_id.clone(),
-            String::new(),
-            "content".to_string(),
-        ),
-        1 => (
-            ctx.channel_id.clone(),
-            args[0].clone(),
-            "content".to_string(),
-        ),
-        _ => {
-            let cid_str = match args.get(0) {
-                Some(s) if !s.is_empty() => s.clone(),
-                _ => ctx.channel_id.clone(),
-            };
-            let mid_str = args.get(1).cloned().unwrap_or_default();
-            let msg_type = match args.get(2) {
-                Some(s) if !s.is_empty() => s.clone(),
-                _ => "content".to_string(),
-            };
-            (cid_str, mid_str, msg_type)
-        }
-    };
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or(ctx.channel_id.clone());
+    let mid_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let msg_type = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or("content".to_string());
+
     if mid_str.is_empty() {
         return FnOutput::error("getMessage", "messageID is required");
     }

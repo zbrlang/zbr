@@ -2,8 +2,8 @@ use crate::context::{DiscordContext, EmbedField, FnOutput};
 use super::helpers::{parse_index, read_embed, with_embed};
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let name = args.get(0).cloned().unwrap_or_default();
-    let value = args.get(1).cloned().unwrap_or_default();
+    let name = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let value = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let inline = args.get(2).map(|s| s == "true").unwrap_or(false);
     let index = match parse_index(args.get(3), "addField") {
         Ok(i) => i, Err(e) => return e,

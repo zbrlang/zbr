@@ -2,7 +2,7 @@ use crate::context::{DiscordContext, FnOutput};
 use serenity::model::id::GuildId;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let separator = args.get(0).cloned().unwrap_or_else(|| "\n".to_string());
+    let separator = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "\n".to_string());
 
     let gid: u64 = match ctx.guild_id.parse() {
         Ok(id) => id,

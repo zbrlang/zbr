@@ -7,7 +7,7 @@ pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => return FnOutput::error("url", crate::error_messages::required(1, "mode")),
     };
-    let text = args.get(1).cloned().unwrap_or_default();
+    let text = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     match mode.as_str() {
         "encode" => FnOutput::Text(

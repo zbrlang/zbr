@@ -3,7 +3,7 @@ use serenity::model::id::ChannelId;
 use serenity::model::channel::ChannelType;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = args.get(0).cloned().unwrap_or_else(|| ctx.channel_id.clone());
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.channel_id.clone());
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
         Err(_) => return FnOutput::error("voiceUserLimit", crate::error_messages::expected_snowflake(1, "channel ID", &cid_str)),

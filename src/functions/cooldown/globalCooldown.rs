@@ -4,8 +4,8 @@ use super::helpers::{apply_time_placeholders, parse_duration};
 /// ZglobalCooldown{duration;(errorMessage)}
 /// Per-user cooldown across all servers.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let duration_str = args.get(0).cloned().unwrap_or_default();
-    let error_msg    = args.get(1).cloned().unwrap_or_default();
+    let duration_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let error_msg    = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let duration_secs = match parse_duration(&duration_str) {
         Ok(d) => d,

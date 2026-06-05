@@ -6,7 +6,7 @@ use serenity::model::id::{AuditLogEntryId, GuildId};
 use std::sync::Arc;
 
 pub fn parse_guild_id(args: &[String], ctx: &DiscordContext, function: &str) -> Result<GuildId, FnOutput> {
-    let guild_id_str = args.get(0).cloned().unwrap_or_else(|| ctx.guild_id.clone());
+    let guild_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.guild_id.clone());
     let guild_id_str = guild_id_str.trim();
     if guild_id_str.is_empty() {
         return Err(FnOutput::error(function, "guild ID not found"));

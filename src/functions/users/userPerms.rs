@@ -43,12 +43,12 @@ const PERMS: &[(&str, Permissions)] = &[
 
 /// ZuserPerms{userID;amount;separator}
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let mut user_id_str = args.get(0).cloned().unwrap_or_else(|| ctx.author_id.clone());
+    let mut user_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.author_id.clone());
     if user_id_str.is_empty() {
         user_id_str = ctx.author_id.clone();
     }
-    let amount_str = args.get(1).cloned().unwrap_or_default();
-    let separator = args.get(2).cloned().unwrap_or_else(|| "\n".to_string());
+    let amount_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let separator = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| "\n".to_string());
 
     let uid: u64 = match user_id_str.parse() {
         Ok(id) => id,

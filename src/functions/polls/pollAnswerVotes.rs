@@ -10,7 +10,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => return FnOutput::error("pollAnswerVotes", crate::error_messages::required(2, "answerID")),
     };
-    let cid_str = args.get(2).cloned().unwrap_or_else(|| ctx.channel_id.clone());
+    let cid_str = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.channel_id.clone());
     let cid: u64 = match cid_str.parse() {
         Ok(id) => id,
         Err(_) => return FnOutput::error("pollAnswerVotes", crate::error_messages::expected_snowflake(3, "channelID", &cid_str)),

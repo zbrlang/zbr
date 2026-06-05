@@ -3,8 +3,8 @@ use serenity::model::id::{GuildId, RoleId};
 use serenity::builder::EditRole;
 
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let rid_str = args.get(0).cloned().unwrap_or_default();
-    let color_str = args.get(1).cloned().unwrap_or_default();
+    let rid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let color_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     if rid_str.is_empty() || color_str.is_empty() {
         return FnOutput::error("colorRole", "role ID and color are required");

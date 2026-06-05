@@ -5,7 +5,7 @@ use serenity::model::id::{EmojiId, GuildId};
 /// ZemojiExists{id}
 /// Returns "true" if the emoji ID exists in the current server, "false" otherwise.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let id_str = args.get(0).cloned().unwrap_or_default();
+    let id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let emoji_id = match validate_snowflake(&id_str, "emojiExists", "emoji ID") {
         Ok(id) => id, Err(e) => return e,
     };

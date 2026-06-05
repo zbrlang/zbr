@@ -6,7 +6,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => ctx.author_id.clone(),
     };
-    let role_id_str = args.get(1).cloned().unwrap_or_default();
+    let role_id_str = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     if role_id_str.is_empty() {
         return FnOutput::error("hasRole", crate::error_messages::required(2, "role ID"));

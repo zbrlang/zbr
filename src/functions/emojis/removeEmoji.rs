@@ -5,7 +5,7 @@ use serenity::model::id::{EmojiId, GuildId};
 /// ZremoveEmoji{id}
 /// Deletes a custom emoji from the server. Requires MANAGE_GUILD_EXPRESSIONS permission.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let id_str = args.get(0).cloned().unwrap_or_default();
+    let id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let emoji_id = match validate_snowflake(&id_str, "removeEmoji", "emoji ID") {
         Ok(id) => id, Err(e) => return e,
     };

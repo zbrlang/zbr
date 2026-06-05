@@ -5,12 +5,12 @@ use serenity::model::id::{ChannelId, GuildId, UserId};
 /// ZvoiceSuppress{userID;suppress;channelID}
 /// Suppress or unsuppress a user in a stage channel. suppress: true/false. channelID is the stage channel ID.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let uid_str = args.get(0).cloned().unwrap_or_default();
+    let uid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let suppress_str = args
         .get(1)
         .map(|s| s.to_lowercase())
         .unwrap_or_default();
-    let cid_str = args.get(2).cloned().unwrap_or_default();
+    let cid_str = args.get(2).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let uid: u64 = match uid_str.parse() {
         Ok(id) => id,

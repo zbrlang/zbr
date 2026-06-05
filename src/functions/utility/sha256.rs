@@ -5,7 +5,7 @@ use std::fmt::Write;
 /// Zsha256{text}
 /// Returns the SHA-256 hash of the input text as a hex string.
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
-    let text = args.get(0).cloned().unwrap_or_default();
+    let text = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if text.is_empty() {
         return FnOutput::error("sha256", crate::error_messages::required(1, "text"));
     }

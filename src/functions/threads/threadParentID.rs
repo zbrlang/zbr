@@ -6,7 +6,7 @@ use serenity::model::id::ChannelId;
 /// ZthreadParentID{threadID?}
 /// Returns the parent channel ID of the thread, or empty string.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = args.get(0).cloned().unwrap_or_else(|| ctx.channel_id.clone());
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_else(|| ctx.channel_id.clone());
     let cid = match validate_snowflake(&cid_str, "threadParentID", "thread ID") {
         Ok(id) => id,
         Err(e) => return e,

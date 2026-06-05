@@ -11,7 +11,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         Some(s) if !s.is_empty() => s.clone(),
         _ => return FnOutput::error("editButton", crate::error_messages::required(1, "customID")),
     };
-    let label = args.get(1).cloned().unwrap_or_default();
+    let label = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let style_str = match args.get(2) {
         Some(s) if !s.is_empty() => s.to_lowercase(),
         _ => "secondary".to_string(),

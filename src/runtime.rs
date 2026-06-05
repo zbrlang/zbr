@@ -59,7 +59,6 @@ fn group_statements(code: &str) -> Vec<String> {
 pub struct Runtime {
     registry: HashMap<String, FnMeta>,
     aliases: HashMap<String, Node>,
-    alias_depth: u32,
     pub context: DiscordContext,
     pub should_reply: bool,
 }
@@ -68,12 +67,11 @@ impl Runtime {
     pub fn new(context: DiscordContext) -> Self {
         let mut registry = HashMap::new();
         functions::register(&mut registry);
-        Runtime { 
-            registry, 
+        Runtime {
+            registry,
             aliases: HashMap::new(),
-            alias_depth: 0,
-            context, 
-            should_reply: false 
+            context,
+            should_reply: false,
         }
     }
 
@@ -228,19 +226,7 @@ impl Runtime {
 
     pub fn evaluate(&mut self, node: Node) -> Result<FnOutput, String> {
         match node {
-            Node::StringLiteral(s) => {
-                if let Some(aliased_node) = self.aliases.get(&s).cloned() {
-                    self.alias_depth += 1;
-                    if self.alias_depth > 50 {
-                        return Err(format!("Zalias - maximum recursion depth (50) exceeded at {}", s));
-                    }
-                    let res = self.evaluate(aliased_node);
-                    self.alias_depth -= 1;
-                    res
-                } else {
-                    Ok(FnOutput::Text(s))
-                }
-            }
+            Node::StringLiteral(s) => { Ok(FnOutput::Text(s)) }
             Node::Concat(segments) => {
                 let mut result = String::new();
                 for segment in segments {
@@ -261,6 +247,23 @@ impl Runtime {
                 Ok(FnOutput::Text(result))
             }
             Node::FunctionCall { name, args } => {
+                // Check if this name is an alias
+                if let Some(aliased_node) = self.aliases.get(&name).cloned() {
+                    match aliased_node {
+                        Node::FunctionCall { name: aliased_name, args: aliased_args } => {
+                            let mut merged_args = aliased_args;
+                            merged_args.extend(args);
+                            return self.evaluate(Node::FunctionCall {
+                                name: aliased_name,
+                                args: merged_args,
+                            });
+                        }
+                        _ => {
+                            return self.evaluate(aliased_node);
+                        }
+                    }
+                }
+
                 // ── Lazy special cases
                 if name == "if" {
                     return self.evaluate_if(args);
@@ -322,22 +325,21 @@ impl Runtime {
                     let mut eval_output: Vec<String> = Vec::new();
                     let stmts = group_statements(&code);
                     for stmt in stmts {
-                        match crate::parser::parse_line(&stmt) {
-                            Some(node) =>
-                                match self.evaluate(node)? {
-                                    FnOutput::Text(t) => eval_output.push(t),
-                                    FnOutput::Reply => {
-                                        return Ok(FnOutput::Reply);
-                                    }
-                                    FnOutput::Empty => {}
-                                    FnOutput::Error(e) => {
-                                        return Ok(FnOutput::Error(e));
-                                    }
-                                    FnOutput::UserError(e) => {
-                                        return Ok(FnOutput::UserError(e));
-                                    }
+                        // Crucial: use parse_line and evaluate sequentially for each statement
+                        if let Some(node) = crate::parser::parse_line(&stmt, Some(&self.registry)) {
+                            match self.evaluate(node)? {
+                                FnOutput::Text(t) => eval_output.push(t),
+                                FnOutput::Reply => {
+                                    return Ok(FnOutput::Reply);
                                 }
-                            None => {}
+                                FnOutput::Empty => {}
+                                FnOutput::Error(e) => {
+                                    return Ok(FnOutput::Error(e));
+                                }
+                                FnOutput::UserError(e) => {
+                                    return Ok(FnOutput::UserError(e));
+                                }
+                            }
                         }
                     }
                     return Ok(
@@ -367,7 +369,7 @@ impl Runtime {
                     }
                 }
 
-                match self.registry.get(&name) {
+                match self.registry.get(if name.starts_with('Z') { &name[1..] } else { &name }) {
                     Some(meta) => {
                         let got = resolved.len();
                         if got < meta.min_args {
@@ -842,14 +844,16 @@ impl Runtime {
     /// Registers an alias that substitutes and evaluates the stored AST node.
     fn evaluate_alias(&mut self, args: Vec<Node>) -> Result<FnOutput, String> {
         if args.len() < 2 {
-            return Err("Zalias - expression and alias_name are required".to_string());
+            return Ok(FnOutput::error("alias", crate::error_messages::too_few_args(2, args.len())));
         }
 
         // Evaluate the alias name eagerly
-        let alias_name = match self.evaluate(args[1].clone())? {
+        let alias_name_raw = match self.evaluate(args[1].clone())? {
             FnOutput::Text(t) => t.trim().to_string(),
             FnOutput::Empty => {
-                return Err("Zalias - alias_name cannot be empty".to_string());
+                return Ok(
+                    FnOutput::error("alias", crate::error_messages::required(2, "alias_name"))
+                );
             }
             FnOutput::Error(e) => {
                 return Ok(FnOutput::Error(e));
@@ -862,12 +866,52 @@ impl Runtime {
             }
         };
 
-        if alias_name.is_empty() {
-            return Err("Zalias - alias_name cannot be empty".to_string());
+        if alias_name_raw.is_empty() {
+            return Ok(FnOutput::error("alias", crate::error_messages::required(2, "alias_name")));
+        }
+
+        // Validate that the expression is not empty
+        if let Node::StringLiteral(ref s) = args[0] {
+            if s.trim().is_empty() {
+                return Ok(
+                    FnOutput::error("alias", crate::error_messages::required(1, "expression"))
+                );
+            }
+        }
+
+        // Strip 'Z' if present for consistency
+        let alias_name = if alias_name_raw.starts_with('Z') {
+            alias_name_raw[1..].to_string()
+        } else {
+            alias_name_raw
+        };
+
+        // Convert StringLiteral starting with Z to FunctionCall
+        let aliased_node = if let Node::StringLiteral(ref s) = args[0] {
+            if s.starts_with('Z') {
+                Node::FunctionCall {
+                    name: s[1..].to_string(),
+                    args: Vec::new(),
+                }
+            } else {
+                args[0].clone()
+            }
+        } else {
+            args[0].clone()
+        };
+
+        // Validate that the aliased node is a known function
+        if let Node::FunctionCall { ref name, .. } = aliased_node {
+            let fn_name = if name.starts_with('Z') { &name[1..] } else { name };
+            if !self.registry.contains_key(fn_name) {
+                return Ok(
+                    FnOutput::error("alias", crate::error_messages::not_found("function", name))
+                );
+            }
         }
 
         // Store the raw expression node
-        self.aliases.insert(alias_name, args[0].clone());
+        self.aliases.insert(alias_name, aliased_node);
 
         Ok(FnOutput::Empty)
     }

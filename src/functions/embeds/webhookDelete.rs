@@ -4,7 +4,7 @@ use super::helpers::validate_url;
 /// ZwebhookDelete{webhookURL}
 /// Deletes a webhook by its URL.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let url = args.get(0).cloned().unwrap_or_default();
+    let url = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if let Err(e) = validate_url(&url, "webhookDelete") { return e; }
 
     let http = match &ctx.http {

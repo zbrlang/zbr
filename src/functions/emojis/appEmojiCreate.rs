@@ -4,8 +4,8 @@ use serenity::builder::CreateAttachment;
 /// ZappEmojiCreate{name;imageURL}
 /// Creates a new application emoji from an image URL. Returns the emoji ID.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let name = args.get(0).cloned().unwrap_or_default();
-    let image_url = args.get(1).cloned().unwrap_or_default();
+    let name = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
+    let image_url = args.get(1).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     if name.is_empty() {
         return FnOutput::error("appEmojiCreate", crate::error_messages::required(1, "name"));

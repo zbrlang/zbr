@@ -5,7 +5,7 @@ use serenity::model::id::{GuildId, StickerId};
 /// ZstickerEdit{stickerID;name?;tags?;description?}
 /// Edits a sticker's metadata. Use !unchanged for fields to skip.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let sid_str = args.get(0).cloned().unwrap_or_default();
+    let sid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
 
     let sid: u64 = match sid_str.parse() {
         Ok(id) => id,

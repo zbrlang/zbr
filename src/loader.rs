@@ -1,9 +1,9 @@
 use crate::ast::Node;
 use crate::parser::parse_line;
-use crate::types::{Command, CommandOption, CommandScope, CommandType, Config, OptionType};
+use crate::types::{ Command, CommandOption, CommandScope, CommandType, Config, OptionType };
 use std::collections::HashMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::{ Path, PathBuf };
 use std::sync::Arc;
 
 pub struct ParseError {
@@ -92,7 +92,7 @@ fn parse_file(path: &Path, content: &str) -> Result<(CommandMetadata, Vec<Node>)
                     message: "Invalid #option format — use name|description|type|required".into(),
                 });
             }
-        } else if let Some(node) = parse_line(line) {
+        } else if let Some(node) = parse_line(line, None) {
             nodes.push(node);
         }
     }
@@ -145,11 +145,13 @@ pub fn load_commands(dir: &str) -> HashMap<String, Command> {
         let content = match fs::read_to_string(&path) {
             Ok(c) => c,
             Err(e) => {
-                report_error(&ParseError {
-                    path: path,
-                    line: 0,
-                    message: format!("Failed to read file: {}", e),
-                });
+                report_error(
+                    &(ParseError {
+                        path: path,
+                        line: 0,
+                        message: format!("Failed to read file: {}", e),
+                    })
+                );
                 continue;
             }
         };
@@ -157,22 +159,21 @@ pub fn load_commands(dir: &str) -> HashMap<String, Command> {
         match parse_file(&path, &content) {
             Ok((meta, nodes)) => {
                 let ast = Arc::new(Node::Concat(nodes));
-                let cmd_name = meta.name.unwrap_or_else(|| meta.trigger.trim_start_matches(['!', '/']).to_string());
+                let cmd_name = meta.name.unwrap_or_else(||
+                    meta.trigger.trim_start_matches(['!', '/']).to_string()
+                );
                 if config.logging {
                     println!("Loaded command: {} → {}", cmd_name, meta.trigger);
                 }
-                commands.insert(
-                    meta.trigger.clone(),
-                    Command {
-                        name: cmd_name,
-                        trigger: meta.trigger,
-                        description: meta.description,
-                        command_type: meta.command_type,
-                        scope: meta.scope,
-                        options: meta.options,
-                        ast,
-                    },
-                );
+                commands.insert(meta.trigger.clone(), Command {
+                    name: cmd_name,
+                    trigger: meta.trigger,
+                    description: meta.description,
+                    command_type: meta.command_type,
+                    scope: meta.scope,
+                    options: meta.options,
+                    ast,
+                });
             }
             Err(e) => {
                 report_error(&e);

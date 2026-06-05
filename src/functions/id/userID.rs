@@ -4,7 +4,7 @@ use serenity::model::id::GuildId;
 /// ZuserID{}       — author's ID
 /// ZuserID{name}   — find user by name in the guild
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let query = args.get(0).cloned().unwrap_or_default();
+    let query = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     if query.is_empty() {
         return FnOutput::Text(ctx.author_id.clone());
     }

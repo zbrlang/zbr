@@ -6,7 +6,7 @@ use serenity::model::id::GuildId;
 /// Lists threads in a channel. active: true/false. private: true=private archived, false=public archived (default). Ignored if active=true.
 /// Returns space-separated thread IDs.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let cid_str = args.get(0).cloned().unwrap_or_default();
+    let cid_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let active_str = args.get(1).map(|s| s.to_lowercase()).unwrap_or_default();
     let private_str = args.get(2).map(|s| s.to_lowercase()).unwrap_or_default();
 

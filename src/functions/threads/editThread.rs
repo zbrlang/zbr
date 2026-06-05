@@ -7,7 +7,7 @@ use serenity::model::id::ChannelId;
 /// ZeditThread{threadID;(name);(archived);(archiveDuration);(locked);(slowmode)}
 /// Use "!unchanged" for any field you want to leave as-is.
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
-    let thread_id_str = args.get(0).cloned().unwrap_or_default();
+    let thread_id_str = args.get(0).filter(|s| !s.is_empty()).cloned().unwrap_or_default();
     let thread_id = match validate_snowflake(&thread_id_str, "editThread", "thread ID") {
         Ok(id) => id, Err(e) => return e,
     };
@@ -17,35 +17,35 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
         None => return FnOutput::error("editThread", crate::error_messages::action_failed("get HTTP client")),
     };
 
-    // Parse each optional field — "!unchanged" or missing = skip
+    // Parse each optional field — "!unchanged" or empty = skip
     let name = args.get(1).filter(|s| !s.is_empty() && s.as_str() != "!unchanged").cloned();
 
-    let archived: Option<bool> = match args.get(2).map(|s| s.as_str()) {
-        Some(s) if s != "!unchanged" && !s.is_empty() => match validate_bool(s, "editThread") {
+    let archived: Option<bool> = match args.get(2).filter(|s| !s.is_empty()) {
+        Some(s) if s != "!unchanged" => match validate_bool(s, "editThread") {
             Ok(b) => Some(b), Err(e) => return e,
         },
         _ => None,
     };
 
-    let archive_duration: Option<AutoArchiveDuration> = match args.get(3).map(|s| s.as_str()) {
-        Some("60")    => Some(AutoArchiveDuration::OneHour),
-        Some("1440")  => Some(AutoArchiveDuration::OneDay),
-        Some("4320")  => Some(AutoArchiveDuration::ThreeDays),
-        Some("10080") => Some(AutoArchiveDuration::OneWeek),
-        Some(s) if s != "!unchanged" && !s.is_empty() =>
+    let archive_duration: Option<AutoArchiveDuration> = match args.get(3).filter(|s| !s.is_empty()) {
+        Some(s) if s == "60" => Some(AutoArchiveDuration::OneHour),
+        Some(s) if s == "1440" => Some(AutoArchiveDuration::OneDay),
+        Some(s) if s == "4320" => Some(AutoArchiveDuration::ThreeDays),
+        Some(s) if s == "10080" => Some(AutoArchiveDuration::OneWeek),
+        Some(s) if s != "!unchanged" =>
             return FnOutput::error("editThread", crate::error_messages::expected_choice(4, "archive duration", "60, 1440, 4320, 10080", s)),
         _ => None,
     };
 
-    let locked: Option<bool> = match args.get(4).map(|s| s.as_str()) {
-        Some(s) if s != "!unchanged" && !s.is_empty() => match validate_bool(s, "editThread") {
+    let locked: Option<bool> = match args.get(4).filter(|s| !s.is_empty()) {
+        Some(s) if s != "!unchanged" => match validate_bool(s, "editThread") {
             Ok(b) => Some(b), Err(e) => return e,
         },
         _ => None,
     };
 
-    let slowmode: Option<u16> = match args.get(5).map(|s| s.as_str()) {
-        Some(s) if s != "!unchanged" && !s.is_empty() => match s.parse::<u16>() {
+    let slowmode: Option<u16> = match args.get(5).filter(|s| !s.is_empty()) {
+        Some(s) if s != "!unchanged" => match s.parse::<u16>() {
             Ok(n) => Some(n),
             Err(_) => return FnOutput::error("editThread", crate::error_messages::expected_integer(6, "slowmode", s)),
         },

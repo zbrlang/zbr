@@ -2,6 +2,22 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.5.0 - Parser Flexibility and Alias Robustness
+
+This release introduces major improvements to the parser's flexibility, simplifies function invocation, and resolves critical bugs in the alias system and positional argument handling.
+
+### Core
+- **Optional Brackets** — Zero-argument function calls no longer require curly brackets (e.g., `Zusername` works the same as `Zusername{}`).
+- **Literal Text Handling** — Unknown Z-prefixed identifiers (e.g., `ZUnknown`) without brackets are now treated as literal text instead of causing runtime errors.
+- **Nested Bracketless Calls** — Bracketless function calls are now correctly recognized and evaluated even when nested within the arguments of other function calls (e.g., `ZsendMessage{ZchannelID;hello}`).
+- **Alias Fixes** — Resolved argument merging issues where aliased function calls were losing arguments, and added validation to ensure the aliased function is a valid ZBR function.
+
+### Argument Parsing
+- **Empty Argument Preservation** — `split_args` now correctly preserves empty arguments between semicolons (e.g., `Zfunc{;arg2}` correctly maps `arg2` to index 1).
+- **Positional Argument Robustness** — Refactored 161 functions across the codebase to explicitly handle empty string arguments as "use default" values, preventing positional misalignment bugs.
+
+---
+
 ## v1.4.4 - Runtime Aliases and Reply Fix
 
 This release introduces the `Zalias` system for improved code reusability and fixes a bug in message evaluation.
