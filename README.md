@@ -18,8 +18,14 @@ Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a zero-setup de
 ### Option 2: CLI
 1. **Install the CLI globally:**
    ```bash
-   npm i @zbrlang/zbr
+   npm i -g @zbrlang/zbr
    ```
+
+> Some devices need an extra step if the CLI doesn't work after install, run:
+> ```bash
+> npm config set ignore-scripts false
+> ```
+>  and than reinstall ZBR using the first command.
 
 2. **Initialize a new project:**
    ```bash
