@@ -2,6 +2,15 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.5.3 - Fixes and Build Target Optimization
+
+This release fixes critical installation issues for Android/Termux and corrects binary path configurations.
+
+### Fixes
+- Fixed duplicate key variable in `postinstall.js` causing Android Termux install to fail
+- Fixed `cli.js` binary paths pointing to wrong directory and old binary names
+- Removed iOS binary build target
+
 ## v1.5.2 - Expansion of Function API and Category Reorganization
 
 This release introduces over 30 new functions, organizes webhook and template functionality into dedicated categories, and adds shard-aware utility functions for advanced bot monitoring.
