@@ -1,6 +1,6 @@
 {
   "name": "@zbrlang/zbr",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "ZBR CLI, A simple and powerful Discord bot scripting engine.",
   "bin": {
     "zbr": "./bin/cli.js"
