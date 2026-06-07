@@ -27,12 +27,6 @@ jobs:
             cross: true
 
           - os: macos-latest
-            target: aarch64-apple-ios
-            binary: zbr
-            asset_name: zbr-ios-arm64
-            cross: false
-
-          - os: macos-latest
             target: x86_64-apple-darwin
             binary: zbr
             asset_name: zbr-darwin-x64

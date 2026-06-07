@@ -262,11 +262,13 @@ function getBinaryPath() {
   const arch = process.arch;
 
   const binaryMap = {
-    'linux-x64': 'zbr',
-    'darwin-x64': 'zbr-darwin-x64',
-    'darwin-arm64': 'zbr-darwin-arm64',
-    'win32-x64': 'zbr.exe'
-  };
+  'linux-x64':   'zbr-linux-x64',
+  'linux-arm64': 'zbr-linux-arm64',
+  'darwin-x64':  'zbr-darwin-x64',
+  'darwin-arm64':'zbr-darwin-arm64',
+  'win32-x64':   'zbr-windows-x64.exe',
+  'win32-arm64': 'zbr-windows-arm64.exe',
+};
 
   const key = `${platform}-${arch}`;
   const name = binaryMap[key];
@@ -277,7 +279,7 @@ function getBinaryPath() {
     process.exit(1);
   }
 
-  return path.join(__dirname, name);
+  return path.join(__dirname, '..', 'bin', name);
 }
 
 function run() {
@@ -324,11 +326,13 @@ function update() {
   const arch = process.arch;
 
   const binaryMap = {
-    'linux-x64': 'zbr',
-    'darwin-x64': 'zbr-darwin-x64',
-    'darwin-arm64': 'zbr-darwin-arm64',
-    'win32-x64': 'zbr.exe'
-  };
+  'linux-x64':   'zbr-linux-x64',
+  'linux-arm64': 'zbr-linux-arm64',
+  'darwin-x64':  'zbr-darwin-x64',
+  'darwin-arm64':'zbr-darwin-arm64',
+  'win32-x64':   'zbr-windows-x64.exe',
+  'win32-arm64': 'zbr-windows-arm64.exe',
+};
 
   const key = `${platform}-${arch}`;
   const binaryName = binaryMap[key];

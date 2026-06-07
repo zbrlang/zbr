@@ -13,7 +13,9 @@ const platformMap = {
   'win32-arm64':  { name: 'zbr-windows-arm64.exe', url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr-windows-arm64.exe`},
 };
 
-const key = `${process.platform}-${process.arch}`;
+const platform = process.platform === 'android' ? 'linux' : process.platform;
+const arch = process.arch;
+const key = `${platform}-${arch}`;
 const target = platformMap[key];
 
 if (!target) {
