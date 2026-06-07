@@ -1,5 +1,5 @@
 use crate::context::{DiscordContext, FnOutput};
-use super::helpers::validate_url;
+use crate::functions::embeds::helpers::validate_url;
 
 /// ZwebhookDelete{webhookURL}
 /// Deletes a webhook by its URL.

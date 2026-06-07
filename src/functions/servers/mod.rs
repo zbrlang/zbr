@@ -16,3 +16,7 @@ pub mod serverModify;
 pub mod serverVerificationLevel;
 pub mod editWelcomeScreen;
 pub mod welcomeScreen;
+
+pub mod memberPending;
+pub mod memberSearch;
+pub mod memberFlags;

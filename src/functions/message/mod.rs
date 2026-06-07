@@ -1,5 +1,3 @@
-#![allow(non_snake_case)]
-
 pub mod deleteMessage;
 pub mod dm;
 pub mod editMessage;
@@ -18,3 +16,8 @@ pub mod publishMessage;
 pub mod repliedMessageID;
 pub mod unpinMessage;
 pub mod useChannel;
+
+pub mod messageFlags;
+pub mod forwardMessage;
+pub mod messageSnapshot;
+pub mod suppressEmbeds;

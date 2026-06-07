@@ -4,6 +4,7 @@ bin/*
 
 cli.js
 todo.txt
+run.txt
 .env
 
 *.db

@@ -5,10 +5,12 @@ const path = require('path');
 const VERSION = require('./package.json').version;
 
 const platformMap = {
-  'linux-x64':    { name: 'zbr',            url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr` },
+  'linux-x64':    { name: 'zbr-linux-x64',            url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr-linux-x64` },
+  'linux-arm64':  { name: 'zbr-linux-arm64', url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr-linux-arm64`},
   'darwin-x64':   { name: 'zbr-darwin-x64', url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr-darwin-x64` },
   'darwin-arm64': { name: 'zbr-darwin-arm64', url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr-darwin-arm64` },
-  'win32-x64':    { name: 'zbr.exe',        url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr.exe` },
+  'win32-x64':    { name: 'zbr-windows-x64.exe',        url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr-windows-x64.exe` },
+  'win32-arm64':  { name: 'zbr-windows-arm64.exe', url: `https://github.com/zbrlang/zbr/releases/download/v${VERSION}/zbr-windows-arm64.exe`},
 };
 
 const key = `${process.platform}-${process.arch}`;

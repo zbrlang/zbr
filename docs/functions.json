@@ -68,7 +68,7 @@
         "required": true
       }
     ],
-    "example": "ZaddCmdReactions{\u2705;\ud83d\ude80}"
+    "example": "ZaddCmdReactions{✅;🚀}"
   },
   {
     "name": "ZaddEmoji",
@@ -94,27 +94,6 @@
       }
     ],
     "example": "ZaddEmoji{wave;https://example.com/wave.png;true}"
-  },
-  {
-    "name": "Zalias",
-    "description": "Creates a runtime alias for a ZBR function. The alias can be called using Z+alias_name+{} syntax.",
-    "syntax": "Zalias{function;alias_name}",
-    "variadic": false,
-    "arguments": [
-      {
-        "name": "function",
-        "type": "function",
-        "required": true,
-        "description": "A valid ZBR function call (e.g. Zusername{})"
-      },
-      {
-        "name": "alias_name",
-        "type": "string",
-        "required": true,
-        "description": "The alias name without Z prefix. Call the alias using Z+alias_name+{} (e.g. Zgreet{})"
-      }
-    ],
-    "example": "Zalias{Zusername;greet} Zgreet{}"
   },
   {
     "name": "ZaddField",
@@ -200,7 +179,7 @@
         "required": true
       }
     ],
-    "example": "ZaddMessageReactions{123456789012345678;987654321098765432;\ud83d\udc4d;\ud83c\udf89}"
+    "example": "ZaddMessageReactions{123456789012345678;987654321098765432;👍;🎉}"
   },
   {
     "name": "ZaddReactions",
@@ -214,7 +193,7 @@
         "required": true
       }
     ],
-    "example": "ZaddReactions{\ud83d\udc4d;\u2764\ufe0f;\ud83c\udf89}"
+    "example": "ZaddReactions{👍;❤️;🎉}"
   },
   {
     "name": "ZaddRoleSelect",
@@ -280,7 +259,7 @@
         "required": false
       }
     ],
-    "example": "ZaddSelectMenuOption{Red;red;The color red;false;\ud83d\udd34}"
+    "example": "ZaddSelectMenuOption{Red;red;The color red;false;🔴}"
   },
   {
     "name": "ZaddTextInput",
@@ -381,6 +360,27 @@
       }
     ],
     "example": "ZafkTimeout{}"
+  },
+  {
+    "name": "Zalias",
+    "description": "Creates a runtime alias for a ZBR function. The alias can be called using Z+alias_name+{} syntax.",
+    "syntax": "Zalias{function;alias_name}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "function",
+        "type": "function",
+        "required": true,
+        "description": "A valid ZBR function call (e.g. Zusername{})"
+      },
+      {
+        "name": "alias_name",
+        "type": "string",
+        "required": true,
+        "description": "The alias name without Z prefix. Call the alias using Z+alias_name+{} (e.g. Zgreet{})"
+      }
+    ],
+    "example": "Zalias{Zusername;greet} Zgreet{}"
   },
   {
     "name": "ZallMembersCount",
@@ -1186,6 +1186,31 @@
     "example": "ZbotTyping{}"
   },
   {
+    "name": "ZbulkBan",
+    "description": "Bans multiple users in one call. Returns the count of successfully banned users.",
+    "syntax": "ZbulkBan{userIDs;deleteDays?;reason?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "userIDs",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "deleteDays",
+        "type": "integer",
+        "required": false,
+        "default": "0"
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "example": "ZbulkBan{123,456;7;Spamming}"
+  },
+  {
     "name": "ZbyteCount",
     "description": "Returns the number of UTF-8 bytes in the text.",
     "syntax": "ZbyteCount{text}",
@@ -1313,7 +1338,7 @@
         "default": "Seconds"
       }
     ],
-    "example": "ZchangeCooldownTime{d\u00edas;horas;minutos;segundos}"
+    "example": "ZchangeCooldownTime{días;horas;minutos;segundos}"
   },
   {
     "name": "ZchangeNickname",
@@ -1438,6 +1463,20 @@
       }
     ],
     "example": "ZchannelNames{, }"
+  },
+  {
+    "name": "ZchannelOverwrites",
+    "description": "Returns the full permission overwrite list on a channel as a JSON array.",
+    "syntax": "ZchannelOverwrites{channelID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZchannelOverwrites{123456789012345678}"
   },
   {
     "name": "ZchannelPosition",
@@ -1612,7 +1651,7 @@
         "required": true
       }
     ],
-    "example": "ZclearReactions{123456789012345678;987654321098765432;\ud83d\udc4d}"
+    "example": "ZclearReactions{123456789012345678;987654321098765432;👍}"
   },
   {
     "name": "Zcolor",
@@ -1778,7 +1817,7 @@
         "default": "false"
       }
     ],
-    "example": "ZcreateForumTag{987654321012345678;Bug Report;\ud83d\udc1b;false}"
+    "example": "ZcreateForumTag{987654321012345678;Bug Report;🐛;false}"
   },
   {
     "name": "ZcreateInvite",
@@ -1805,6 +1844,31 @@
       }
     ],
     "example": "ZcreateInvite{1234567890123456789;10;86400}"
+  },
+  {
+    "name": "ZcreateInviteWithRoles",
+    "description": "Creates an invite that auto-assigns the given roles when someone joins through it.",
+    "syntax": "ZcreateInviteWithRoles{channelID;roleIDs;maxAgeDays?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "roleIDs",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "maxAgeDays",
+        "type": "integer",
+        "required": false,
+        "default": "0"
+      }
+    ],
+    "example": "ZcreateInviteWithRoles{123456789012345678;123,456;7}"
   },
   {
     "name": "ZcreatePost",
@@ -1870,6 +1934,25 @@
     "example": "ZcreateRole{Moderator;#FF5733;true;false}"
   },
   {
+    "name": "ZcreateServerTemplate",
+    "description": "Creates a new server template from the current guild's structure. Returns the template code.",
+    "syntax": "ZcreateServerTemplate{name;description?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "example": "ZcreateServerTemplate{My Template;Cool server layout}"
+  },
+  {
     "name": "ZcreationDate",
     "description": "Returns the creation date derived from any Discord snowflake ID, formatted according to the optional format string.",
     "syntax": "ZcreationDate{id?;format?}",
@@ -1913,6 +1996,14 @@
       }
     ],
     "example": "ZcropText{This is a long sentence;15;...}"
+  },
+  {
+    "name": "ZcurrentShard",
+    "description": "Returns the shard ID the current guild is on.",
+    "syntax": "ZcurrentShard{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZcurrentShard{}"
   },
   {
     "name": "ZcustomEmoji",
@@ -2102,6 +2193,20 @@
     "example": "ZdeleteRole{987654321012345678}"
   },
   {
+    "name": "ZdeleteServerTemplate",
+    "description": "Deletes a server template from the guild by its code.",
+    "syntax": "ZdeleteServerTemplate{code}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "code",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZdeleteServerTemplate{abc123}"
+  },
+  {
     "name": "ZdeleteSticker",
     "description": "Deletes a guild sticker from the current server by its sticker ID.",
     "syntax": "ZdeleteSticker{stickerID}",
@@ -2114,6 +2219,30 @@
       }
     ],
     "example": "ZdeleteSticker{1234567890123456789}"
+  },
+  {
+    "name": "ZdeleteWebhookMessage",
+    "description": "Deletes a message sent by a webhook via its token.",
+    "syntax": "ZdeleteWebhookMessage{webhookID;webhookToken;messageID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "webhookID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "webhookToken",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZdeleteWebhookMessage{123;abc;456}"
   },
   {
     "name": "Zdescription",
@@ -2512,6 +2641,35 @@
     "example": "ZeditThread{123456789012345678;Updated Name;;;false;10}"
   },
   {
+    "name": "ZeditWebhookMessage",
+    "description": "Edits a message sent by a webhook using the webhook token.",
+    "syntax": "ZeditWebhookMessage{webhookID;webhookToken;messageID;content}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "webhookID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "webhookToken",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZeditWebhookMessage{123;abc;456;New Content}"
+  },
+  {
     "name": "ZeditWelcomeScreen",
     "description": "Edits the guild's welcome screen settings.",
     "syntax": "ZeditWelcomeScreen{guildID;enabled;description?;welcomeChannelsJSON?}",
@@ -2539,6 +2697,25 @@
       }
     ],
     "example": "ZeditWelcomeScreen{123456789012345678;true;Welcome!;[{\"channel_id\":\"123\",\"description\":\"Chat here\"}]}"
+  },
+  {
+    "name": "ZeffectivePerms",
+    "description": "Computes the final permission bitfield for a user in a channel after all role and channel overwrites are applied.",
+    "syntax": "ZeffectivePerms{userID;channelID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZeffectivePerms{123456789012345678;987654321098765432}"
   },
   {
     "name": "ZemojiExists",
@@ -2989,6 +3166,25 @@
     "example": "ZforumTags{987654321012345678}"
   },
   {
+    "name": "ZforwardMessage",
+    "description": "Forwards a message to another channel using Discord's native message forward feature.",
+    "syntax": "ZforwardMessage{sourceMessageID;targetChannelID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "sourceMessageID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "targetChannelID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZforwardMessage{123456789012345678;987654321098765432}"
+  },
+  {
     "name": "ZfromTimestamp",
     "description": "Formats a Unix timestamp into a human-readable date/time string using the active timezone and the specified format.",
     "syntax": "ZfromTimestamp{unix;format?}",
@@ -3199,7 +3395,7 @@
         "required": true
       }
     ],
-    "example": "ZgetReactions{123456789012345678;987654321098765432;, ;\ud83d\udc4d}"
+    "example": "ZgetReactions{123456789012345678;987654321098765432;, ;👍}"
   },
   {
     "name": "ZgetRoleSelectRoleCount",
@@ -3396,6 +3592,30 @@
     "example": "ZgetVar{maintenance_mode}"
   },
   {
+    "name": "ZgetWebhookMessage",
+    "description": "Fetches the content of a previously sent webhook message by ID using its token.",
+    "syntax": "ZgetWebhookMessage{webhookID;webhookToken;messageID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "webhookID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "webhookToken",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZgetWebhookMessage{123;abc;456}"
+  },
+  {
     "name": "ZglobalCooldown",
     "description": "Applies a per-user global cooldown across all servers, preventing the user from running the command until the duration expires.",
     "syntax": "ZglobalCooldown{duration;errorMessage?}",
@@ -3451,6 +3671,30 @@
     "variadic": false,
     "arguments": [],
     "example": "ZguildID{}"
+  },
+  {
+    "name": "ZhasPerm",
+    "description": "Checks if a user has a specific permission in a channel (includes channel overwrites).",
+    "syntax": "ZhasPerm{userID;channelID;permissionName}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "permissionName",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZhasPerm{123456789012345678;987654321098765432;manageMessages}"
   },
   {
     "name": "ZhasRole",
@@ -4029,8 +4273,8 @@
   },
   {
     "name": "ZisTimedOut",
-    "description": "Returns true if the specified user currently has an active communication timeout.",
-    "syntax": "ZisTimedOut{userID?}",
+    "description": "Returns true if the specified user currently has an active communication timeout. If returnTimestamp is true, returns the expiry timestamp as a Unix string instead of a boolean.",
+    "syntax": "ZisTimedOut{userID?;returnTimestamp?}",
     "variadic": false,
     "arguments": [
       {
@@ -4038,9 +4282,15 @@
         "type": "snowflake",
         "required": false,
         "default": "author"
+      },
+      {
+        "name": "returnTimestamp",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
       }
     ],
-    "example": "ZisTimedOut{123456789012345678}"
+    "example": "ZisTimedOut{123456789012345678;true}"
   },
   {
     "name": "ZisUserDMEnabled",
@@ -4519,6 +4769,60 @@
     "example": "Zmd5{hello}"
   },
   {
+    "name": "ZmemberFlags",
+    "description": "Returns true or false whether a guild member has the specified flag set. Supported flags: BYPASSES_VERIFICATION, DID_REJOIN, COMPLETED_ONBOARDING, STARTED_ONBOARDING.",
+    "syntax": "ZmemberFlags{userID;flagName}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "flagName",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZmemberFlags{123456789012345678;DID_REJOIN}"
+  },
+  {
+    "name": "ZmemberPending",
+    "description": "Returns true or false whether a guild member has not yet completed membership screening.",
+    "syntax": "ZmemberPending{userID?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": false,
+        "default": "author"
+      }
+    ],
+    "example": "ZmemberPending{123456789012345678}"
+  },
+  {
+    "name": "ZmemberSearch",
+    "description": "Searches guild members by username or nickname query string. Returns a comma-separated list of user IDs.",
+    "syntax": "ZmemberSearch{query;limit?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "query",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "default": "100"
+      }
+    ],
+    "example": "ZmemberSearch{John;10}"
+  },
+  {
     "name": "ZmembersCount",
     "description": "Returns the total number of members in the guild, or the count filtered by presence status.",
     "syntax": "ZmembersCount{status?}",
@@ -4568,6 +4872,25 @@
     "example": "Zmessage{1}"
   },
   {
+    "name": "ZmessageFlags",
+    "description": "Returns true or false whether a message has the specified flag set. Supported flags: SUPPRESS_EMBEDS, EPHEMERAL, HAS_THREAD, LOADING, SUPPRESS_NOTIFICATIONS.",
+    "syntax": "ZmessageFlags{messageID;flagName}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "flagName",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZmessageFlags{123456789012345678;EPHEMERAL}"
+  },
+  {
     "name": "ZmessageID",
     "description": "Returns the ID of the message that triggered the current command execution.",
     "syntax": "ZmessageID{}",
@@ -4593,6 +4916,25 @@
       }
     ],
     "example": "ZmessageLink{987654321098765432;123456789012345678}"
+  },
+  {
+    "name": "ZmessageSnapshot",
+    "description": "Accesses snapshot data inside a forwarded message. Fields: content, author, attachments, embeds.",
+    "syntax": "ZmessageSnapshot{messageID;fieldName}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "fieldName",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZmessageSnapshot{123456789012345678;content}"
   },
   {
     "name": "Zmin",
@@ -4846,6 +5188,38 @@
       }
     ],
     "example": "ZnumberSeparator{1000000}"
+  },
+  {
+    "name": "ZonboardingDefaultChannels",
+    "description": "Returns a comma-separated list of channel IDs members are auto-opted into via onboarding.",
+    "syntax": "ZonboardingDefaultChannels{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZonboardingDefaultChannels{}"
+  },
+  {
+    "name": "ZonboardingEnabled",
+    "description": "Returns true or false whether onboarding is enabled on the guild.",
+    "syntax": "ZonboardingEnabled{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZonboardingEnabled{}"
+  },
+  {
+    "name": "ZonboardingMode",
+    "description": "Returns the onboarding mode of the guild: ONBOARDING_DEFAULT or ONBOARDING_ADVANCED.",
+    "syntax": "ZonboardingMode{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZonboardingMode{}"
+  },
+  {
+    "name": "ZonboardingPrompts",
+    "description": "Returns the guild's onboarding prompts as a pretty-printed JSON string.",
+    "syntax": "ZonboardingPrompts{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZonboardingPrompts{}"
   },
   {
     "name": "ZonlyAdmin",
@@ -5205,6 +5579,20 @@
     "example": "ZparentID{1234567890123456789}"
   },
   {
+    "name": "ZpermNames",
+    "description": "Converts a permission bitfield integer to a comma-separated list of human-readable permission names.",
+    "syntax": "ZpermNames{bitfield}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "bitfield",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "ZpermNames{8}"
+  },
+  {
     "name": "ZpinList",
     "description": "Returns a space-separated list of pinned message IDs in a channel.",
     "syntax": "ZpinList{channelID?}",
@@ -5263,7 +5651,7 @@
         "required": false
       }
     ],
-    "example": "ZpollAddAnswer{Yes;\u2705}"
+    "example": "ZpollAddAnswer{Yes;✅}"
   },
   {
     "name": "ZpollAllowMultiselect",
@@ -6412,6 +6800,14 @@
     "example": "ZserverStickers{}"
   },
   {
+    "name": "ZserverTemplates",
+    "description": "Returns a JSON array of all templates on the current guild, including code, name, and description.",
+    "syntax": "ZserverTemplates{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZserverTemplates{}"
+  },
+  {
     "name": "ZserverVerificationLevel",
     "description": "Returns the verification level of the current guild as a string such as none, low, medium, high, or very_high.",
     "syntax": "ZserverVerificationLevel{}",
@@ -6624,6 +7020,34 @@
     "example": "ZslowMode{1234567890123456789;30s}"
   },
   {
+    "name": "ZsnowflakeAge",
+    "description": "Returns a human-readable age from any snowflake like '3 days ago'.",
+    "syntax": "ZsnowflakeAge{snowflakeID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "snowflakeID",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZsnowflakeAge{123456789012345678}"
+  },
+  {
+    "name": "ZsnowflakeTimestamp",
+    "description": "Extracts the Unix timestamp from any Discord snowflake ID.",
+    "syntax": "ZsnowflakeTimestamp{snowflakeID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "snowflakeID",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZsnowflakeTimestamp{123456789012345678}"
+  },
+  {
     "name": "Zsort",
     "description": "Sorts a variadic list of numbers in ascending or descending order and returns up to a specified count joined by a separator.",
     "syntax": "Zsort{number;...;direction;return_amount;separator}",
@@ -6720,7 +7144,7 @@
         "required": false
       }
     ],
-    "example": "ZsoundboardEdit{123456789012345678;New Name;50;\ud83d\udd14}"
+    "example": "ZsoundboardEdit{123456789012345678;New Name;50;🔔}"
   },
   {
     "name": "ZsoundboardPlay",
@@ -6821,6 +7245,20 @@
     "example": "Zsqrt{25}"
   },
   {
+    "name": "ZstageAudience",
+    "description": "Returns a comma-separated list of user IDs who are in the audience of a stage channel.",
+    "syntax": "ZstageAudience{channelID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZstageAudience{123456789012345678}"
+  },
+  {
     "name": "ZstageCreate",
     "description": "Creates a new stage instance in the specified stage channel with the given topic.",
     "syntax": "ZstageCreate{channelID;topic}",
@@ -6871,6 +7309,20 @@
       }
     ],
     "example": "ZstageEdit{987654321012345678;New Topic Here}"
+  },
+  {
+    "name": "ZstageSpeakers",
+    "description": "Returns a comma-separated list of user IDs who are currently speaking in a stage channel.",
+    "syntax": "ZstageSpeakers{channelID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZstageSpeakers{123456789012345678}"
   },
   {
     "name": "ZstageTopic",
@@ -7152,6 +7604,25 @@
     "example": "Zsum{5;3;2}"
   },
   {
+    "name": "ZsuppressEmbeds",
+    "description": "Suppresses or un-suppresses link embeds on an existing message.",
+    "syntax": "ZsuppressEmbeds{messageID;suppress}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "suppress",
+        "type": "boolean",
+        "required": true
+      }
+    ],
+    "example": "ZsuppressEmbeds{123456789012345678;true}"
+  },
+  {
     "name": "ZsuppressErrors",
     "description": "Activates error suppression for the current execution, optionally showing a custom message or a specific embed slot instead of the real error.",
     "syntax": "ZsuppressErrors{errorText?;embedIndex?}",
@@ -7185,12 +7656,40 @@
     "example": "ZsyncPerms{123456789012345678}"
   },
   {
+    "name": "ZsyncServerTemplate",
+    "description": "Syncs an existing server template to match the current guild state.",
+    "syntax": "ZsyncServerTemplate{code}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "code",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZsyncServerTemplate{abc123}"
+  },
+  {
     "name": "ZsystemChannelID",
     "description": "Returns the ID of the system messages channel in the current guild, or an empty string if none is configured.",
     "syntax": "ZsystemChannelID{}",
     "variadic": false,
     "arguments": [],
     "example": "ZsystemChannelID{}"
+  },
+  {
+    "name": "ZtemplateName",
+    "description": "Returns the display name of a server template by its code.",
+    "syntax": "ZtemplateName{code}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "code",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZtemplateName{abc123}"
   },
   {
     "name": "ZtextSplit",
@@ -7550,6 +8049,14 @@
     "example": "Ztitlecase{hello world}"
   },
   {
+    "name": "ZtotalShards",
+    "description": "Returns the total number of shards the bot is running.",
+    "syntax": "ZtotalShards{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZtotalShards{}"
+  },
+  {
     "name": "ZtrimContent",
     "description": "Collapses multiple consecutive spaces into a single space and trims leading and trailing whitespace.",
     "syntax": "ZtrimContent{text}",
@@ -7673,6 +8180,14 @@
     "example": "ZuntimeOut{123456789012345678}"
   },
   {
+    "name": "Zupdate",
+    "description": "Signals that the interaction response should update the original message instead of sending a new reply. Only valid inside interaction handlers (buttons, select menus).",
+    "syntax": "Zupdate{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "Zupdate{}"
+  },
+  {
     "name": "Zuppercase",
     "description": "Converts all characters in the text to uppercase.",
     "syntax": "Zuppercase{text}",
@@ -7685,14 +8200,6 @@
       }
     ],
     "example": "Zuppercase{Hello World}"
-  },
-  {
-    "name": "Zupdate",
-    "description": "Signals that the interaction response should update the original message instead of sending a new reply. Only valid inside interaction handlers (buttons, select menus).",
-    "syntax": "Zupdate{}",
-    "variadic": false,
-    "arguments": [],
-    "example": "Zupdate{}"
   },
   {
     "name": "Zuptime",
@@ -7906,7 +8413,7 @@
         "required": true
       }
     ],
-    "example": "ZuserReacted{123456789012345678;987654321098765432;111222333444555666;\ud83d\udc4d}"
+    "example": "ZuserReacted{123456789012345678;987654321098765432;111222333444555666;👍}"
   },
   {
     "name": "ZuserRoles",
@@ -8251,6 +8758,34 @@
     "variadic": false,
     "arguments": [],
     "example": "ZvoiceOld{}"
+  },
+  {
+    "name": "ZvoiceQuality",
+    "description": "Returns the video quality mode of a voice channel (AUTO or FULL).",
+    "syntax": "ZvoiceQuality{channelID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZvoiceQuality{123456789012345678}"
+  },
+  {
+    "name": "ZvoiceRegion",
+    "description": "Returns the voice region of a voice channel (e.g., 'us-west', 'automatic').",
+    "syntax": "ZvoiceRegion{channelID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZvoiceRegion{123456789012345678}"
   },
   {
     "name": "ZvoiceRequestToSpeak",

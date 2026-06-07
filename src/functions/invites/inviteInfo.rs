@@ -23,11 +23,8 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
             };
 
             match info_type.to_lowercase().as_str() {
-                "uses" => Ok("0".to_string()), // Invite metadata is not easily accessible via get_invite in 0.12
                 "channel" => Ok(invite.channel.id.to_string()),
-                "creationDate" => Ok("".to_string()),
                 "inviter" => Ok(invite.inviter.map(|u| u.id.to_string()).unwrap_or_default()),
-                "isTemporary" => Ok("false".to_string()),
                 _ => Err("invalid type"),
             }
         })
@@ -36,7 +33,7 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     match result {
         Ok(val) => {
             if val == "invalid type" {
-                FnOutput::error("inviteInfo", format!("invalid type: '{}' (expected uses, channel, creationDate, inviter, or isTemporary)", info_type))
+                FnOutput::error("inviteInfo", format!("invalid type: '{}' (expected channel or inviter)", info_type))
             } else {
                 FnOutput::Text(val)
             }

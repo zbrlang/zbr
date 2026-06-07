@@ -1,6 +1,5 @@
-#![allow(non_snake_case)]
-pub mod helpers;
 pub mod checkUserPerms;
+pub mod helpers;
 pub mod ignoreChannels;
 pub mod onlyAdmin;
 pub mod onlyBotChannelPerms;
@@ -8,10 +7,15 @@ pub mod onlyBotPerms;
 pub mod onlyForCategories;
 pub mod onlyForChannels;
 pub mod onlyForIDs;
-pub mod onlyForRoles;
 pub mod onlyForRoleIDs;
+pub mod onlyForRoles;
 pub mod onlyForServers;
 pub mod onlyForUsers;
+pub mod onlyIfMessageContains;
 pub mod onlyNSFW;
 pub mod onlyPerms;
-pub mod onlyIfMessageContains;
+
+pub mod effectivePerms;
+pub mod hasPerm;
+pub mod permNames;
+pub mod channelOverwrites;

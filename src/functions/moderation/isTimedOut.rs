@@ -1,11 +1,15 @@
 use crate::context::{DiscordContext, FnOutput};
 use serenity::model::id::{GuildId, UserId};
 
-/// ZisTimedOut{userID?}
+/// ZisTimedOut{userID?;returnTimestamp?}
 pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let uid_str = match args.get(0) {
         Some(s) if !s.is_empty() => s.clone(),
         _ => ctx.author_id.clone(),
+    };
+    let return_timestamp = match args.get(1) {
+        Some(s) => s.to_lowercase() == "true",
+        None => false,
     };
 
     let uid: u64 = match uid_str.parse() {
@@ -33,11 +37,21 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
 
     match result {
         Ok(member) => {
-            let timed_out = member
-                .communication_disabled_until
-                .map(|ts| ts.unix_timestamp() > chrono::Utc::now().timestamp())
-                .unwrap_or(false);
-            FnOutput::Text(timed_out.to_string())
+            if let Some(ts) = member.communication_disabled_until {
+                let expiry = ts.unix_timestamp();
+                if expiry > chrono::Utc::now().timestamp() {
+                    if return_timestamp {
+                        return FnOutput::Text(expiry.to_string());
+                    } else {
+                        return FnOutput::Text("true".to_string());
+                    }
+                }
+            }
+            if return_timestamp {
+                FnOutput::Text(String::new())
+            } else {
+                FnOutput::Text("false".to_string())
+            }
         }
         Err(_) => FnOutput::error("isTimedOut", crate::error_messages::not_found("member", &uid_str)),
     }

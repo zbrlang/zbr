@@ -14,6 +14,3 @@ pub mod authorURL;
 pub mod addField;
 pub mod timestamp;
 pub mod sendEmbed;
-pub mod webhookCreate;
-pub mod webhookDelete;
-pub mod sendWebhook;

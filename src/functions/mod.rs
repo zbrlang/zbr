@@ -22,6 +22,7 @@ pub mod loops;
 pub mod math;
 pub mod message;
 pub mod moderation;
+pub mod onboarding;
 pub mod permissions;
 pub mod polls;
 pub mod random;
@@ -32,12 +33,14 @@ pub mod soundboard;
 pub mod stage;
 pub mod stickers;
 pub mod string;
+pub mod templates;
 pub mod textsplit;
 pub mod threads;
 pub mod time;
 pub mod users;
 pub mod variables;
 pub mod voice;
+pub mod webhooks;
 
 pub mod automod;
 pub mod utility;
@@ -1426,7 +1429,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     registry.insert(
         "webhookCreate".to_string(),
         FnMeta {
-            func: embeds::webhookCreate::run,
+            func: webhooks::webhookCreate::run,
             min_args: 2,
             max_args: 3,
         },
@@ -1434,7 +1437,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     registry.insert(
         "webhookDelete".to_string(),
         FnMeta {
-            func: embeds::webhookDelete::run,
+            func: webhooks::webhookDelete::run,
             min_args: 1,
             max_args: 1,
         },
@@ -1442,7 +1445,7 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
     registry.insert(
         "sendWebhook".to_string(),
         FnMeta {
-            func: embeds::sendWebhook::run,
+            func: webhooks::sendWebhook::run,
             min_args: 1,
             max_args: 3,
         },
@@ -4020,4 +4023,42 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
             max_args: 1,
         },
     );
+
+    // New Functions
+    registry.insert("memberPending".to_string(), FnMeta { func: servers::memberPending::run, min_args: 0, max_args: 1 });
+    registry.insert("memberSearch".to_string(), FnMeta { func: servers::memberSearch::run, min_args: 1, max_args: 2 });
+    registry.insert("memberFlags".to_string(), FnMeta { func: servers::memberFlags::run, min_args: 2, max_args: 2 });
+    registry.insert("createInviteWithRoles".to_string(), FnMeta { func: invites::createInviteWithRoles::run, min_args: 2, max_args: 3 });
+    registry.insert("serverTemplates".to_string(), FnMeta { func: templates::serverTemplates::run, min_args: 0, max_args: 0 });
+    registry.insert("createServerTemplate".to_string(), FnMeta { func: templates::createServerTemplate::run, min_args: 1, max_args: 2 });
+    registry.insert("syncServerTemplate".to_string(), FnMeta { func: templates::syncServerTemplate::run, min_args: 1, max_args: 1 });
+    registry.insert("deleteServerTemplate".to_string(), FnMeta { func: templates::deleteServerTemplate::run, min_args: 1, max_args: 1 });
+    registry.insert("templateName".to_string(), FnMeta { func: templates::templateName::run, min_args: 1, max_args: 1 });
+    registry.insert("onboardingEnabled".to_string(), FnMeta { func: onboarding::onboardingEnabled::run, min_args: 0, max_args: 0 });
+    registry.insert("onboardingMode".to_string(), FnMeta { func: onboarding::onboardingMode::run, min_args: 0, max_args: 0 });
+    registry.insert("onboardingDefaultChannels".to_string(), FnMeta { func: onboarding::onboardingDefaultChannels::run, min_args: 0, max_args: 0 });
+    registry.insert("onboardingPrompts".to_string(), FnMeta { func: onboarding::onboardingPrompts::run, min_args: 0, max_args: 0 });
+    registry.insert("messageFlags".to_string(), FnMeta { func: message::messageFlags::run, min_args: 2, max_args: 2 });
+    registry.insert("forwardMessage".to_string(), FnMeta { func: message::forwardMessage::run, min_args: 2, max_args: 2 });
+    registry.insert("messageSnapshot".to_string(), FnMeta { func: message::messageSnapshot::run, min_args: 2, max_args: 2 });
+    registry.insert("suppressEmbeds".to_string(), FnMeta { func: message::suppressEmbeds::run, min_args: 2, max_args: 2 });
+    registry.insert("effectivePerms".to_string(), FnMeta { func: permissions::effectivePerms::run, min_args: 2, max_args: 2 });
+    registry.insert("hasPerm".to_string(), FnMeta { func: permissions::hasPerm::run, min_args: 3, max_args: 3 });
+    registry.insert("permNames".to_string(), FnMeta { func: permissions::permNames::run, min_args: 1, max_args: 1 });
+    registry.insert("channelOverwrites".to_string(), FnMeta { func: permissions::channelOverwrites::run, min_args: 1, max_args: 1 });
+    registry.insert("voiceRegion".to_string(), FnMeta { func: voice::voiceRegion::run, min_args: 1, max_args: 1 });
+    registry.insert("voiceQuality".to_string(), FnMeta { func: voice::voiceQuality::run, min_args: 1, max_args: 1 });
+    registry.insert("stageSpeakers".to_string(), FnMeta { func: stage::stageSpeakers::run, min_args: 1, max_args: 1 });
+    registry.insert("stageAudience".to_string(), FnMeta { func: stage::stageAudience::run, min_args: 1, max_args: 1 });
+    registry.insert("editWebhookMessage".to_string(), FnMeta { func: webhooks::editWebhookMessage::run, min_args: 4, max_args: 4 });
+    registry.insert("deleteWebhookMessage".to_string(), FnMeta { func: webhooks::deleteWebhookMessage::run, min_args: 3, max_args: 3 });
+    registry.insert("getWebhookMessage".to_string(), FnMeta { func: webhooks::getWebhookMessage::run, min_args: 3, max_args: 3 });
+    registry.insert("sendWebhook".to_string(), FnMeta { func: webhooks::sendWebhook::run, min_args: 1, max_args: 3 });
+    registry.insert("webhookCreate".to_string(), FnMeta { func: webhooks::webhookCreate::run, min_args: 2, max_args: 2 });
+    registry.insert("webhookDelete".to_string(), FnMeta { func: webhooks::webhookDelete::run, min_args: 1, max_args: 1 });
+    registry.insert("snowflakeTimestamp".to_string(), FnMeta { func: utility::snowflakeTimestamp::run, min_args: 1, max_args: 1 });
+    registry.insert("snowflakeAge".to_string(), FnMeta { func: utility::snowflakeAge::run, min_args: 1, max_args: 1 });
+    registry.insert("bulkBan".to_string(), FnMeta { func: utility::bulkBan::run, min_args: 1, max_args: 3 });
+    registry.insert("currentShard".to_string(), FnMeta { func: bot::currentShard::run, min_args: 0, max_args: 0 });
+    registry.insert("totalShards".to_string(), FnMeta { func: bot::totalShards::run, min_args: 0, max_args: 0 });
 }

@@ -132,7 +132,9 @@ impl Bot {
                 bot_id: self.bot_id.clone(),
                 http: Some(ctx.http.clone()),
                 cache: ctx.cache.clone(),
-                shard_latency: get_latency(ctx).await,
+                shard_latency: get_latency(&ctx).await,
+                shard_id: ctx.shard_id.0 as u64,
+                total_shards: ctx.shard_id.0 as u64,
             };
             let data = executor::execute_code(ast, context, &state);
             send_event_response(ctx, &channel_id, &data).await;
@@ -424,7 +426,10 @@ impl EventHandler for Bot {
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
                         shard_latency: get_latency(&ctx).await,
-                    };
+                        shard_id: ctx.shard_id.0 as u64,
+                        total_shards: ctx.shard_id.0 as u64,
+                        };
+
                     let data = executor::execute_code(ast, context, &state);
 
                     send_response(&ctx, &msg, &data).await;
@@ -976,7 +981,10 @@ impl EventHandler for Bot {
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
                         shard_latency: get_latency(&ctx).await,
-                    };
+                        shard_id: ctx.shard_id.0 as u64,
+                        total_shards: ctx.shard_id.0 as u64,
+                        };
+
                     let data = executor::execute_code(ast, context, &state);
 
                     let built_embeds = build_embeds(&data.embeds);
@@ -1114,7 +1122,10 @@ impl EventHandler for Bot {
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
                         shard_latency: get_latency(&ctx).await,
-                    };
+                        shard_id: ctx.shard_id.0 as u64,
+                        total_shards: ctx.shard_id.0 as u64,
+                        };
+
                     let data = executor::execute_code(ast, context, &state);
 
                     // If Zdefer was called, send a deferred acknowledgment
@@ -1272,7 +1283,10 @@ impl EventHandler for Bot {
                         http: Some(ctx.http.clone()),
                         cache: ctx.cache.clone(),
                         shard_latency: get_latency(&ctx).await,
-                    };
+                        shard_id: ctx.shard_id.0 as u64,
+                        total_shards: ctx.shard_id.0 as u64,
+                        };
+
                     let data = executor::execute_code(ast, context, &state);
 
                     let built_embeds = build_embeds(&data.embeds);

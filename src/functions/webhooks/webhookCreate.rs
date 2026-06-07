@@ -1,5 +1,5 @@
 use crate::context::{DiscordContext, FnOutput};
-use super::helpers::validate_snowflake;
+use crate::functions::embeds::helpers::validate_snowflake;
 use serenity::builder::CreateWebhook;
 use serenity::model::id::ChannelId;
 

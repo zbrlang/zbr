@@ -16,3 +16,5 @@ pub mod botCommands;
 pub mod slashCommandsCount;
 pub mod slashID;
 pub mod enabled;
+pub mod currentShard;
+pub mod totalShards;

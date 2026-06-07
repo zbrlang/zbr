@@ -1,5 +1,5 @@
 use crate::context::{DiscordContext, FnOutput};
-use super::helpers::{parse_index, validate_bool, validate_embed_sendable, validate_url};
+use crate::functions::embeds::helpers::{parse_index, validate_bool, validate_embed_sendable, validate_url};
 use serde_json::{json, Value};
 
 /// ZsendWebhook{webhookURL;(index);(returnID)}
