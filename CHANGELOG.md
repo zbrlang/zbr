@@ -2,6 +2,11 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.5.5 - Binary Permissions Fix
+
+### Core
+- **Binary Permissions**: Fixed an issue in `bin/cli.js` where the resolved runtime binary lacked executable permissions on Unix-based platforms, causing `zbr version` and other commands to fail.
+
 ## v1.5.4 - Platform-Specific Package Migration
 
 This release migrates the installation process from a `postinstall` script to platform-specific optional npm packages, improving reliability and compatibility across different operating systems and CPU architectures.

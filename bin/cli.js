@@ -291,7 +291,13 @@ function getBinaryPath() {
       "win32-x64": "zbr-windows-x64.exe",
       "win32-arm64": "zbr-windows-arm64.exe",
     };
-    return path.join(pkgRoot, binaryMapFiles[key]);
+    const binaryPath = path.join(pkgRoot, binaryMapFiles[key]);
+    if (process.platform !== "win32") {
+      try {
+        fs.chmodSync(binaryPath, 0o755);
+      } catch (err) {}
+    }
+    return binaryPath;
   } catch (err) {
     console.error(`Runtime engine package ${pkgName} not found.`);
     console.error("Run: npm i -g @zbrlang/zbr to reinstall");
