@@ -2,6 +2,11 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.5.6 - Android OS Metadata Support
+
+### Core
+- **OS Metadata**: Updated `packages/zbr-linux-arm64/package.json` to explicitly include `android` in the `os` field, ensuring better compatibility and installation support for Android devices via Termux.
+
 ## v1.5.5 - Binary Permissions Fix
 
 ### Core
