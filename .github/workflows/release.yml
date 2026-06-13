@@ -102,6 +102,8 @@ jobs:
     name: Publish to npm
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
@@ -117,11 +119,43 @@ jobs:
         id: tag_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Update package.json version
-        run: npm pkg set version=${{ steps.tag_version.outputs.VERSION }}
+      - name: Download and prepare binaries
+        run: |
+          for asset in zbr-linux-x64 zbr-linux-arm64 zbr-darwin-x64 zbr-darwin-arm64 zbr-windows-x64.exe zbr-windows-arm64.exe; do
+            gh release download ${{ github.ref_name }} --pattern "$asset"
+          done
+          cp zbr-linux-x64 packages/zbr-linux-x64/
+          cp zbr-linux-arm64 packages/zbr-linux-arm64/
+          cp zbr-darwin-x64 packages/zbr-darwin-x64/
+          cp zbr-darwin-arm64 packages/zbr-darwin-arm64/
+          cp zbr-windows-x64.exe packages/zbr-windows-x64/
+          cp zbr-windows-arm64.exe packages/zbr-windows-arm64/
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish to npm
-        run: npm publish --access public
+      - name: Update versions and publish platform packages
+        run: |
+          VERSION=${{ steps.tag_version.outputs.VERSION }}
+          for pkg in packages/zbr-*; do
+            cd $pkg
+            npm pkg set version=$VERSION
+            npm publish --access public
+            cd ../..
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Update main package version and publish
+        run: |
+          VERSION=${{ steps.tag_version.outputs.VERSION }}
+          npm pkg set version=$VERSION
+          npm pkg set optionalDependencies.@zbrlang/zbr-linux-x64=$VERSION
+          npm pkg set optionalDependencies.@zbrlang/zbr-linux-arm64=$VERSION
+          npm pkg set optionalDependencies.@zbrlang/zbr-darwin-x64=$VERSION
+          npm pkg set optionalDependencies.@zbrlang/zbr-darwin-arm64=$VERSION
+          npm pkg set optionalDependencies.@zbrlang/zbr-windows-x64=$VERSION
+          npm pkg set optionalDependencies.@zbrlang/zbr-windows-arm64=$VERSION
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

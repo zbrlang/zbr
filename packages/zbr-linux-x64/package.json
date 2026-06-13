@@ -1,0 +1,7 @@
+{
+  "name": "@zbrlang/zbr-linux-x64",
+  "version": "1.5.4",
+  "os": ["linux"],
+  "cpu": ["x64"],
+  "files": ["zbr-linux-x64"]
+}

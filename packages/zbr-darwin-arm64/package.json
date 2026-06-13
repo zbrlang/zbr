@@ -1,0 +1,7 @@
+{
+  "name": "@zbrlang/zbr-darwin-arm64",
+  "version": "1.5.4",
+  "os": ["darwin"],
+  "cpu": ["arm64"],
+  "files": ["zbr-darwin-arm64"]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@zbrlang/zbr-windows-arm64",
+  "version": "1.5.4",
+  "os": ["win32"],
+  "cpu": ["arm64"],
+  "files": ["zbr-windows-arm64.exe"]
+}

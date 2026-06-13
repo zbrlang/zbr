@@ -2,6 +2,21 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.5.4 - Platform-Specific Package Migration
+
+This release migrates the installation process from a `postinstall` script to platform-specific optional npm packages, improving reliability and compatibility across different operating systems and CPU architectures.
+
+### Core
+- **Optional Dependencies**: Replaced `postinstall.js` with 6 platform-specific optional packages (`@zbrlang/zbr-linux-x64`, `@zbrlang/zbr-linux-arm64`, `@zbrlang/zbr-darwin-x64`, `@zbrlang/zbr-darwin-arm64`, `@zbrlang/zbr-windows-x64`, `@zbrlang/zbr-windows-arm64`).
+- **Binary Resolution**: Updated `bin/cli.js` to dynamically resolve the binary path from the installed optional package.
+- **Android Support**: Added `android` platform normalization to `linux` in `bin/cli.js`.
+
+### CLI
+- **`zbr update`**: Reworked to run `npm i -g @zbrlang/zbr@latest` instead of manual binary downloads.
+
+### CI/CD
+- **Release Workflow**: Updated `.github/workflows/release.yml` to automatically download, version, and publish the platform-specific packages to npm.
+
 ## v1.5.3 - Fixes and Build Target Optimization
 
 This release fixes critical installation issues for Android/Termux and corrects binary path configurations.
