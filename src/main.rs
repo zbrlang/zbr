@@ -26,7 +26,34 @@ async fn main() {
         println!("v{}", env!("CARGO_PKG_VERSION"));
         return;
     }
+
     dotenv().ok();
+
+    if args.contains(&"--validate".to_string()) {
+        println!("Validating commands...");
+        let mut errors = false;
+        if env::var("DISCORD_TOKEN").is_err() {
+            println!("Error: Missing DISCORD_TOKEN");
+            errors = true;
+        }
+        if env::var("DATABASE_URL").is_err() {
+            println!("Error: Missing DATABASE_URL");
+            errors = true;
+        }
+
+        let mut registry = std::collections::HashMap::new();
+        functions::register(&mut registry);
+
+        // This will print errors if loading fails
+        loader::load_commands("commands", &registry);
+
+        println!("Validation complete.");
+        if errors {
+            std::process::exit(1);
+        }
+        return;
+    }
+
     crate::context::START_TIME.set(std::time::Instant::now()).unwrap();
     let database = Arc::new(db::connect().await);
     let bot_id = env::var("BOT_ID").unwrap_or_else(|_| "default".to_string());
@@ -51,7 +78,21 @@ async fn main() {
 
     let watcher_registry = registry.clone();
     tokio::spawn(async move {
-        while rx.recv().await.is_some() {
+        while let Some(_) = rx.recv().await {
+            // Debounce: Wait for events to stop coming in for 300ms
+            loop {
+                tokio::select! {
+                    _ = tokio::time::sleep(tokio::time::Duration::from_millis(300)) => {
+                        // Timer expired, perform reload
+                        break;
+                    }
+                    _ = rx.recv() => {
+                        // Another event came in, reset timer
+                        continue;
+                    }
+                }
+            }
+
             println!("Commands folder changed, reloading...");
             let new_commands = loader::load_commands("commands", &watcher_registry);
             let mut map = commands_for_watcher.write().await;

@@ -1,6 +1,6 @@
 {
   "name": "@zbrlang/zbr-windows-x64",
-  "version": "1.5.6",
+  "version": "1.6.0",
   "os": ["win32"],
   "cpu": ["x64"],
   "files": ["zbr-windows-x64.exe"]

@@ -141,6 +141,9 @@ fn parse_file(
             depth += get_brace_change(trimmed);
 
             if depth == 0 {
+                crate::runtime::CURRENT_LOCATION.with(|loc| {
+                    *loc.borrow_mut() = (path.to_string_lossy().to_string(), line_num);
+                });
                 if let Some(node) = parse_line(buffer.trim(), Some(registry)) {
                     nodes.push(node);
                 }

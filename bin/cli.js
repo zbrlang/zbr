@@ -18,6 +18,7 @@ Usage: zbr <command>
 Commands:
   init <folder>  Initialize a new ZBR project in the specified folder (defaults to current directory)
   run            Start the ZBR runtime engine and bring your bot online
+  validate       Validate all commands in the commands/ folder
   update         Update the ZBR runtime engine to the latest version
   version        Show the current ZBR version
   list           List all commands in your commands/ folder
@@ -295,7 +296,7 @@ function getBinaryPath() {
     if (process.platform !== "win32") {
       try {
         fs.chmodSync(binaryPath, 0o755);
-      } catch (err) {}
+      } catch (err) { }
     }
     return binaryPath;
   } catch (err) {
@@ -305,16 +306,16 @@ function getBinaryPath() {
   }
 }
 
-function run() {
+function run(extraArgs = []) {
   const binaryPath = getBinaryPath();
 
   if (process.platform !== "win32") {
     try {
       fs.chmodSync(binaryPath, 0o755);
-    } catch (err) {}
+    } catch (err) { }
   }
 
-  const child = spawn(binaryPath, [], {
+  const child = spawn(binaryPath, extraArgs, {
     stdio: "inherit",
     env: process.env,
   });
@@ -336,6 +337,10 @@ function run() {
       }
     });
   });
+}
+
+function validate() {
+  run(["--validate"]);
 }
 
 function update() {
@@ -361,6 +366,9 @@ function main() {
       break;
     case "run":
       run();
+      break;
+    case "validate":
+      validate();
       break;
     case "update":
       update();

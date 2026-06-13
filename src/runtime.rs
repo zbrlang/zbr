@@ -3,6 +3,11 @@ use crate::context::{ DiscordContext, EvalResult, FnMeta, FnOutput };
 use crate::functions;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::cell::RefCell;
+
+thread_local! {
+    pub static CURRENT_LOCATION: RefCell<(String, usize)> = RefCell::new((String::new(), 0));
+}
 
 /// Groups physical lines into logical statements by tracking brace depth.
 /// Lines inside unclosed braces are joined with `\n` so multiline arguments
@@ -61,6 +66,7 @@ pub struct Runtime {
     aliases: HashMap<String, Node>,
     pub context: DiscordContext,
     pub should_reply: bool,
+    pub call_depth: usize,
 }
 
 impl Runtime {
@@ -72,6 +78,7 @@ impl Runtime {
             aliases: HashMap::new(),
             context,
             should_reply: false,
+            call_depth: 0,
         }
     }
 
@@ -89,16 +96,19 @@ impl Runtime {
                     }
                     FnOutput::Empty => {}
                     FnOutput::Error(e) => {
-                        fatal_error = Some(e);
+                        let loc = CURRENT_LOCATION.with(|l| l.borrow().clone());
+                        fatal_error = Some(format!("{} ({}:{})", e, loc.0, loc.1));
                     }
                     FnOutput::UserError(e) => {
                         if !e.is_empty() {
-                            fatal_error = Some(e);
+                            let loc = CURRENT_LOCATION.with(|l| l.borrow().clone());
+                            fatal_error = Some(format!("{} ({}:{})", e, loc.0, loc.1));
                         }
                     }
                 }
             Err(e) => {
-                fatal_error = Some(e);
+                let loc = CURRENT_LOCATION.with(|l| l.borrow().clone());
+                fatal_error = Some(format!("{} ({}:{})", e, loc.0, loc.1));
             }
         }
 
@@ -225,12 +235,27 @@ impl Runtime {
     }
 
     pub fn evaluate(&mut self, node: Node) -> Result<FnOutput, String> {
+        self.call_depth += 1;
+        let result = if self.call_depth > 100 {
+            Ok(
+                FnOutput::Error(
+                    "Maximum call depth of 100 exceeded. Check for circular function calls.".to_string()
+                )
+            )
+        } else {
+            self.evaluate_inner(node)
+        };
+        self.call_depth -= 1;
+        result
+    }
+
+    pub fn evaluate_inner(&mut self, node: Node) -> Result<FnOutput, String> {
         match node {
             Node::StringLiteral(s) => { Ok(FnOutput::Text(s)) }
             Node::Concat(segments) => {
                 let mut result = String::new();
                 for segment in segments {
-                    match self.evaluate(segment)? {
+                    match self.evaluate_inner(segment)? {
                         FnOutput::Text(t) => result.push_str(&t),
                         FnOutput::Reply => {
                             self.should_reply = true;
@@ -253,13 +278,13 @@ impl Runtime {
                         Node::FunctionCall { name: aliased_name, args: aliased_args } => {
                             let mut merged_args = aliased_args;
                             merged_args.extend(args);
-                            return self.evaluate(Node::FunctionCall {
+                            return self.evaluate_inner(Node::FunctionCall {
                                 name: aliased_name,
                                 args: merged_args,
                             });
                         }
                         _ => {
-                            return self.evaluate(aliased_node);
+                            return self.evaluate_inner(aliased_node);
                         }
                     }
                 }
@@ -304,7 +329,7 @@ impl Runtime {
                 if name == "eval" {
                     let mut resolved = Vec::new();
                     for arg in args {
-                        match self.evaluate(arg)? {
+                        match self.evaluate_inner(arg)? {
                             FnOutput::Text(t) => resolved.push(t),
                             FnOutput::Reply => {
                                 return Ok(FnOutput::Reply);
@@ -327,7 +352,7 @@ impl Runtime {
                     for stmt in stmts {
                         // Crucial: use parse_line and evaluate sequentially for each statement
                         if let Some(node) = crate::parser::parse_line(&stmt, Some(&self.registry)) {
-                            match self.evaluate(node)? {
+                            match self.evaluate_inner(node)? {
                                 FnOutput::Text(t) => eval_output.push(t),
                                 FnOutput::Reply => {
                                     return Ok(FnOutput::Reply);
@@ -354,7 +379,7 @@ impl Runtime {
                 // ── Normal eager evaluation ───────────────────────────────────
                 let mut resolved = Vec::new();
                 for arg in args {
-                    match self.evaluate(arg)? {
+                    match self.evaluate_inner(arg)? {
                         FnOutput::Text(t) => resolved.push(t),
                         FnOutput::Reply => {
                             return Ok(FnOutput::Reply);
@@ -410,7 +435,7 @@ impl Runtime {
         }
 
         // Evaluate the condition arg to a string
-        let condition_str = match self.evaluate(args[0].clone())? {
+        let condition_str = match self.evaluate_inner(args[0].clone())? {
             FnOutput::Text(t) => t,
             FnOutput::Empty => String::new(),
             FnOutput::Error(e) => {
@@ -434,7 +459,7 @@ impl Runtime {
 
         match branch_node {
             None => Ok(FnOutput::Empty),
-            Some(node) => self.evaluate(node),
+            Some(node) => self.evaluate_inner(node),
         }
     }
 
@@ -446,13 +471,13 @@ impl Runtime {
         }
 
         // Try evaluating the first arg (the code branch)
-        let result = self.evaluate(args[0].clone())?;
+        let result = self.evaluate_inner(args[0].clone())?;
 
         match result {
             // Error in the code branch — run the fallback if provided
             FnOutput::Error(_) | FnOutput::UserError(_) =>
                 match args.into_iter().nth(1) {
-                    Some(fallback) => self.evaluate(fallback),
+                    Some(fallback) => self.evaluate_inner(fallback),
                     None => Ok(FnOutput::Empty),
                 }
             // Success — return the result as-is
@@ -471,7 +496,7 @@ impl Runtime {
             return Ok(FnOutput::error("delay", "code block is required"));
         }
 
-        let duration_str = match self.evaluate(args[0].clone())? {
+        let duration_str = match self.evaluate_inner(args[0].clone())? {
             FnOutput::Text(t) => t,
             FnOutput::Empty => String::new(),
             FnOutput::Error(e) => {
@@ -513,7 +538,7 @@ impl Runtime {
         tokio::spawn(async move {
             tokio::time::sleep(std::time::Duration::from_secs(secs)).await;
             let mut rt = Runtime::new(ctx);
-            let _ = rt.evaluate(code_node);
+            let _ = rt.evaluate_inner(code_node);
         });
 
         Ok(FnOutput::Empty)
@@ -528,7 +553,7 @@ impl Runtime {
         }
 
         // Evaluate N eagerly
-        let n_str = match self.evaluate(args[0].clone())? {
+        let n_str = match self.evaluate_inner(args[0].clone())? {
             FnOutput::Text(t) => t,
             FnOutput::Empty => String::new(),
             FnOutput::Error(e) => {
@@ -565,7 +590,7 @@ impl Runtime {
                 })
             });
 
-            match self.evaluate(body.clone())? {
+            match self.evaluate_inner(body.clone())? {
                 FnOutput::Text(t) => {
                     if !t.is_empty() {
                         output.push(t);
@@ -620,7 +645,7 @@ impl Runtime {
                 })
             });
 
-            match self.evaluate(body.clone())? {
+            match self.evaluate_inner(body.clone())? {
                 FnOutput::Text(t) => {
                     if !t.is_empty() {
                         output.push(t);
@@ -655,7 +680,7 @@ impl Runtime {
         let key_count = args.len() - 1;
         let mut keys: Vec<String> = Vec::new();
         for arg in args[..key_count].iter() {
-            match self.evaluate(arg.clone())? {
+            match self.evaluate_inner(arg.clone())? {
                 FnOutput::Text(t) => keys.push(t),
                 FnOutput::Empty => keys.push(String::new()),
                 FnOutput::Error(e) => {
@@ -741,7 +766,7 @@ impl Runtime {
                 })
             });
 
-            match self.evaluate(body.clone())? {
+            match self.evaluate_inner(body.clone())? {
                 FnOutput::Text(t) => {
                     if !t.is_empty() {
                         output.push(t);
@@ -767,7 +792,7 @@ impl Runtime {
         if args.len() < 2 {
             return Err("Zasync - name and code are required".to_string());
         }
-        let name_str = match self.evaluate(args[0].clone())? {
+        let name_str = match self.evaluate_inner(args[0].clone())? {
             FnOutput::Text(t) => t.trim().to_string(),
             FnOutput::Empty => {
                 return Err("Zasync - name cannot be empty".to_string());
@@ -789,7 +814,7 @@ impl Runtime {
         let ctx_clone = self.context.clone();
         let handle = tokio::spawn(async move {
             let mut rt = Runtime::new(ctx_clone);
-            match rt.evaluate(code_node) {
+            match rt.evaluate_inner(code_node) {
                 Ok(FnOutput::Text(t)) => t,
                 _ => String::new(),
             }
@@ -806,7 +831,7 @@ impl Runtime {
         if args.is_empty() {
             return Err("Zawait - name is required".to_string());
         }
-        let name_str = match self.evaluate(args[0].clone())? {
+        let name_str = match self.evaluate_inner(args[0].clone())? {
             FnOutput::Text(t) => t.trim().to_string(),
             FnOutput::Empty => {
                 return Err("Zawait - name cannot be empty".to_string());
@@ -848,7 +873,7 @@ impl Runtime {
         }
 
         // Evaluate the alias name eagerly
-        let alias_name_raw = match self.evaluate(args[1].clone())? {
+        let alias_name_raw = match self.evaluate_inner(args[1].clone())? {
             FnOutput::Text(t) => t.trim().to_string(),
             FnOutput::Empty => {
                 return Ok(

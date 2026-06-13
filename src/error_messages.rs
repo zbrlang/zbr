@@ -38,12 +38,12 @@ pub fn exact_args(expected: usize, got: usize) -> String {
     )
 }
 
-// ── Required but empty ─────────────────────────────────────────────────────
+// Required but empty
 pub fn required(arg_num: usize, arg_name: &str) -> String {
     format!("argument {} ({}) is required", arg_num, arg_name)
 }
 
-// ── Type errors ────────────────────────────────────────────────────────────
+// Type errors
 pub fn expected_snowflake(arg_num: usize, arg_name: &str, got: &str) -> String {
     format!("expected snowflake ID in argument {} ({}), got \"{}\"", arg_num, arg_name, got)
 }
@@ -71,12 +71,12 @@ pub fn expected_duration(arg_num: usize, arg_name: &str, got: &str) -> String {
     )
 }
 
-// ── Enum / choice errors ───────────────────────────────────────────────────
+// Enum / choice errors
 pub fn expected_choice(arg_num: usize, arg_name: &str, choices: &str, got: &str) -> String {
     format!("expected one of ({}) in argument {} ({}), got \"{}\"", choices, arg_num, arg_name, got)
 }
 
-// ── Range errors ───────────────────────────────────────────────────────────
+// Range errors
 pub fn out_of_range(arg_num: usize, arg_name: &str, min: i64, max: i64, got: i64) -> String {
     format!("argument {} ({}) must be between {} and {}, got {}", arg_num, arg_name, min, max, got)
 }
@@ -87,7 +87,7 @@ pub fn too_long(arg_num: usize, arg_name: &str, max: usize, got: usize) -> Strin
     format!("argument {} ({}) must be at most {} characters, got {}", arg_num, arg_name, max, got)
 }
 
-// ── Dependency / state errors ──────────────────────────────────────────────
+// Dependency / state errors
 pub fn requires_first(dependency: &str) -> String {
     format!("requires {} to be called first", dependency)
 }
@@ -107,17 +107,17 @@ pub fn action_failed_reason(action: &str, reason: &str) -> String {
     format!("failed to {} ({})", action, reason)
 }
 
-// ── Setup / availability ────────────────────────────────────────────────────
+// Setup / availability
 pub fn not_available(component: &str) -> String {
     format!("{} is not available", component)
 }
 
-// ── Internal errors ─────────────────────────────────────────────────────────
+// Internal errors
 pub fn internal_error(msg: &str) -> String {
     format!("internal error: {}", msg)
 }
 
-// ── Permission errors ──────────────────────────────────────────────────────
+// Permission errors
 pub fn unknown_permission(got: &str) -> String {
     format!("unknown permission \"{}\" — see docs for valid permission names", got)
 }

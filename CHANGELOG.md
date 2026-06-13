@@ -2,6 +2,14 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.6.0 - System Improvements and Validation
+
+### Core
+- **Hot Reload Debouncing**: Added hot reload debouncing (300ms) to prevent multiple reloads on rapid file saves.
+- **Recursion Limits**: Added recursion depth limit (max 100) to prevent stack overflows from circular function calls.
+- **Debugging**: Added file and line number info to error messages for easier debugging.
+- **CLI**: Added `zbr validate` command to check for syntax errors and missing env vars without starting the bot.
+
 ## v1.5.6 - Android OS Metadata Support
 
 ### Core
