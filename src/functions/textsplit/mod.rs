@@ -6,3 +6,5 @@ pub mod getTextSplitLength;
 pub mod joinSplitText;
 pub mod removeSplitTextElement;
 pub mod editSplitText;
+pub mod listShuffle;
+pub mod listReverse;
