@@ -23,3 +23,18 @@ pub mod trimContent;
 pub mod trimSpace;
 pub mod uppercase;
 pub mod url;
+
+pub mod fuzzyMatch;
+pub mod snakeCase;
+pub mod camelCase;
+pub mod pascalCase;
+pub mod kebabCase;
+pub mod pad;
+pub mod roman;
+pub mod censor;
+pub mod clean;
+pub mod extract;
+pub mod repeatText;
+pub mod reverseText;
+pub mod randomCase;
+pub mod wordCount;
