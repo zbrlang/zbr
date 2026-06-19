@@ -2,6 +2,27 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.7.0 - Massive Expansion of Math, String, and Utility APIs
+
+This release introduces over 50 new functions to the ZBR engine, drastically expanding the capabilities for string manipulation, advanced math, randomization, and data validation without requiring external APIs.
+
+### Discord API Extensions
+- **ZfetchInvite**: Fetch detailed invite metadata.
+- **ZuserLocale**: Retrieve user locale/language settings.
+- **ZmessageLink**: Generate Discord message jump-links.
+
+### Math & Number Utilities
+- **Zabbreviate**, **ZbaseConvert**, **ZbitWise**, **Zclamp**, **ZdecimalToHex**, **Zdice**, **Zfactorial**, **Zfinancial**, **Zgcd**, **ZhexToDecimal**, **Zhypot**, **ZisEven**, **ZisOdd**, **Zlcm**, **Zlerp**, **ZlistMath**, **Zpercent**, **Zroot**, **Ztruncate**
+
+### String & List Manipulation
+- **ZcamelCase**, **Zcensor**, **Zclean**, **Zextract**, **ZfuzzyMatch**, **ZkebabCase**, **ZlistReverse**, **ZlistShuffle**, **ZpascalCase**, **ZrandomCase**, **ZrepeatText**, **ZreverseText**, **ZsnakeCase**, **ZwordCount**
+
+### Visual & Color Utilities
+- **ZcolorInvert**, **ZcolorRandom**, **ZhexToHsl**, **ZhexToRgb**, **ZhslToHex**, **ZrgbToHex**
+
+### Technical & Utility
+- **ZcharCode**, **Zentropy**, **ZformatBytes**, **ZfromCharCode**, **Zpad**, **ZrelativeTime**, **Zroman**, **ZtimeDiff**, **ZtimeFormat**, **Ztype**, **Zuuid**, **Zvalidate**
+
 ## v1.6.0 - System Improvements and Validation
 
 ### Core

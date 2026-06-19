@@ -1,5 +1,19 @@
 [
   {
+    "name": "Zabbreviate",
+    "description": "Executes the Zabbreviate function.",
+    "syntax": "Zabbreviate{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "number",
+        "required": true
+      }
+    ],
+    "example": "Zabbreviate{}"
+  },
+  {
     "name": "Zabs",
     "description": "Returns the absolute value of the given number.",
     "syntax": "Zabs{value}",
@@ -68,7 +82,7 @@
         "required": true
       }
     ],
-    "example": "ZaddCmdReactions{✅;🚀}"
+    "example": "ZaddCmdReactions{\u2705;\ud83d\ude80}"
   },
   {
     "name": "ZaddEmoji",
@@ -179,7 +193,7 @@
         "required": true
       }
     ],
-    "example": "ZaddMessageReactions{123456789012345678;987654321098765432;👍;🎉}"
+    "example": "ZaddMessageReactions{123456789012345678;987654321098765432;\ud83d\udc4d;\ud83c\udf89}"
   },
   {
     "name": "ZaddReactions",
@@ -193,7 +207,7 @@
         "required": true
       }
     ],
-    "example": "ZaddReactions{👍;❤️;🎉}"
+    "example": "ZaddReactions{\ud83d\udc4d;\u2764\ufe0f;\ud83c\udf89}"
   },
   {
     "name": "ZaddRoleSelect",
@@ -259,7 +273,7 @@
         "required": false
       }
     ],
-    "example": "ZaddSelectMenuOption{Red;red;The color red;false;🔴}"
+    "example": "ZaddSelectMenuOption{Red;red;The color red;false;\ud83d\udd34}"
   },
   {
     "name": "ZaddTextInput",
@@ -1024,6 +1038,54 @@
     "example": "Zbase64Encode{hello}"
   },
   {
+    "name": "ZbaseConvert",
+    "description": "Executes the ZbaseConvert function.",
+    "syntax": "ZbaseConvert{arg1;arg2;arg3}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "ZbaseConvert{}"
+  },
+  {
+    "name": "ZbitWise",
+    "description": "Executes the ZbitWise function.",
+    "syntax": "ZbitWise{arg1;arg2;arg3}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "ZbitWise{}"
+  },
+  {
     "name": "ZblackListIDs",
     "description": "Halts command execution if the triggering user's ID matches any of the provided user IDs.",
     "syntax": "ZblackListIDs{userID;...;errorMessage?}",
@@ -1239,6 +1301,20 @@
     "example": "Zcalculate{(2 + 3) * 4 ** 2}"
   },
   {
+    "name": "ZcamelCase",
+    "description": "Executes the ZcamelCase function.",
+    "syntax": "ZcamelCase{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZcamelCase{}"
+  },
+  {
     "name": "ZcategoryChannels",
     "description": "Returns the channels inside a category sorted by position, formatted as names, IDs, mentions, or a count, joined by the specified separator.",
     "syntax": "ZcategoryChannels{categoryID;separator?;returnType?}",
@@ -1308,6 +1384,30 @@
     "example": "Zceil{4.3}"
   },
   {
+    "name": "Zcensor",
+    "description": "Executes the Zcensor function.",
+    "syntax": "Zcensor{arg1;arg2;arg3?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "example": "Zcensor{}"
+  },
+  {
     "name": "ZchangeCooldownTime",
     "description": "Overrides the label words used when formatting remaining cooldown times.",
     "syntax": "ZchangeCooldownTime{days?;hours?;minutes?;seconds?}",
@@ -1338,7 +1438,7 @@
         "default": "Seconds"
       }
     ],
-    "example": "ZchangeCooldownTime{días;horas;minutos;segundos}"
+    "example": "ZchangeCooldownTime{d\u00edas;horas;minutos;segundos}"
   },
   {
     "name": "ZchangeNickname",
@@ -1539,6 +1639,20 @@
     "example": "ZchannelWebhooks{1234567890123456789}"
   },
   {
+    "name": "ZcharCode",
+    "description": "Executes the ZcharCode function.",
+    "syntax": "ZcharCode{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZcharCode{}"
+  },
+  {
     "name": "ZcharCount",
     "description": "Returns the number of Unicode characters in the text.",
     "syntax": "ZcharCount{text}",
@@ -1605,6 +1719,44 @@
     "example": "ZcheckUserPerms{123456789012345678;manageMessages;kickMembers}"
   },
   {
+    "name": "Zclamp",
+    "description": "Executes the Zclamp function.",
+    "syntax": "Zclamp{arg1;arg2;arg3}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "number",
+        "required": true
+      }
+    ],
+    "example": "Zclamp{}"
+  },
+  {
+    "name": "Zclean",
+    "description": "Executes the Zclean function.",
+    "syntax": "Zclean{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zclean{}"
+  },
+  {
     "name": "Zclear",
     "description": "Bulk-deletes up to 100 recent messages in the current channel, with an optional user filter and configurable handling of pinned messages.",
     "syntax": "Zclear{amount;userID?;removePinned?}",
@@ -1651,7 +1803,7 @@
         "required": true
       }
     ],
-    "example": "ZclearReactions{123456789012345678;987654321098765432;👍}"
+    "example": "ZclearReactions{123456789012345678;987654321098765432;\ud83d\udc4d}"
   },
   {
     "name": "Zcolor",
@@ -1672,6 +1824,28 @@
       }
     ],
     "example": "Zcolor{#FF5733;1}"
+  },
+  {
+    "name": "ZcolorInvert",
+    "description": "Executes the ZcolorInvert function.",
+    "syntax": "ZcolorInvert{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZcolorInvert{}"
+  },
+  {
+    "name": "ZcolorRandom",
+    "description": "Executes the ZcolorRandom function.",
+    "syntax": "ZcolorRandom{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "ZcolorRandom{}"
   },
   {
     "name": "ZcolorRole",
@@ -1817,7 +1991,7 @@
         "default": "false"
       }
     ],
-    "example": "ZcreateForumTag{987654321012345678;Bug Report;🐛;false}"
+    "example": "ZcreateForumTag{987654321012345678;Bug Report;\ud83d\udc1b;false}"
   },
   {
     "name": "ZcreateInvite",
@@ -2058,6 +2232,20 @@
     "example": "Zdeafen{123456789012345678}"
   },
   {
+    "name": "ZdecimalToHex",
+    "description": "Executes the ZdecimalToHex function.",
+    "syntax": "ZdecimalToHex{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "ZdecimalToHex{}"
+  },
+  {
     "name": "Zdefer",
     "description": "Defers the interaction response, showing a thinking indicator and extending the response window to 15 minutes.",
     "syntax": "Zdefer{}",
@@ -2263,6 +2451,20 @@
       }
     ],
     "example": "Zdescription{This is the embed body.;1}"
+  },
+  {
+    "name": "Zdice",
+    "description": "Executes the Zdice function.",
+    "syntax": "Zdice{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zdice{}"
   },
   {
     "name": "ZdisplayName",
@@ -2801,6 +3003,20 @@
     "example": "Zentitlements{}"
   },
   {
+    "name": "Zentropy",
+    "description": "Executes the Zentropy function.",
+    "syntax": "Zentropy{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zentropy{}"
+  },
+  {
     "name": "Zephemeral",
     "description": "Marks the current slash command response as ephemeral so it is only visible to the invoking user.",
     "syntax": "Zephemeral{}",
@@ -2952,6 +3168,77 @@
     "example": "ZexecutionTime{}"
   },
   {
+    "name": "Zextract",
+    "description": "Executes the Zextract function.",
+    "syntax": "Zextract{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zextract{}"
+  },
+  {
+    "name": "Zfactorial",
+    "description": "Executes the Zfactorial function.",
+    "syntax": "Zfactorial{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "Zfactorial{}"
+  },
+  {
+    "name": "ZfetchInvite",
+    "description": "Executes the ZfetchInvite function.",
+    "syntax": "ZfetchInvite{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZfetchInvite{}"
+  },
+  {
+    "name": "Zfinancial",
+    "description": "Executes the Zfinancial function.",
+    "syntax": "Zfinancial{arg1;arg2?;arg3?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "arg3",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "example": "Zfinancial{}"
+  },
+  {
     "name": "Zfloor",
     "description": "Returns the largest integer less than or equal to the given number.",
     "syntax": "Zfloor{number}",
@@ -3037,6 +3324,20 @@
       }
     ],
     "example": "ZforSplit{ZloopIndex{}: ZloopValue{}}"
+  },
+  {
+    "name": "ZformatBytes",
+    "description": "Executes the ZformatBytes function.",
+    "syntax": "ZformatBytes{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZformatBytes{}"
   },
   {
     "name": "ZforumPostCount",
@@ -3185,6 +3486,20 @@
     "example": "ZforwardMessage{123456789012345678;987654321098765432}"
   },
   {
+    "name": "ZfromCharCode",
+    "description": "Executes the ZfromCharCode function.",
+    "syntax": "ZfromCharCode{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZfromCharCode{}"
+  },
+  {
     "name": "ZfromTimestamp",
     "description": "Formats a Unix timestamp into a human-readable date/time string using the active timezone and the specified format.",
     "syntax": "ZfromTimestamp{unix;format?}",
@@ -3203,6 +3518,44 @@
       }
     ],
     "example": "ZfromTimestamp{1700000000;date}"
+  },
+  {
+    "name": "ZfuzzyMatch",
+    "description": "Executes the ZfuzzyMatch function.",
+    "syntax": "ZfuzzyMatch{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZfuzzyMatch{}"
+  },
+  {
+    "name": "Zgcd",
+    "description": "Executes the Zgcd function.",
+    "syntax": "Zgcd{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "Zgcd{}"
   },
   {
     "name": "ZgetAttachments",
@@ -3395,7 +3748,7 @@
         "required": true
       }
     ],
-    "example": "ZgetReactions{123456789012345678;987654321098765432;, ;👍}"
+    "example": "ZgetReactions{123456789012345678;987654321098765432;, ;\ud83d\udc4d}"
   },
   {
     "name": "ZgetRoleSelectRoleCount",
@@ -3717,6 +4070,48 @@
     "example": "ZhasRole{123456789012345678;987654321012345678}"
   },
   {
+    "name": "ZhexToDecimal",
+    "description": "Executes the ZhexToDecimal function.",
+    "syntax": "ZhexToDecimal{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZhexToDecimal{}"
+  },
+  {
+    "name": "ZhexToHsl",
+    "description": "Executes the ZhexToHsl function.",
+    "syntax": "ZhexToHsl{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZhexToHsl{}"
+  },
+  {
+    "name": "ZhexToRgb",
+    "description": "Executes the ZhexToRgb function.",
+    "syntax": "ZhexToRgb{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZhexToRgb{}"
+  },
+  {
     "name": "ZhighestRole",
     "description": "Returns the ID of the highest-position role held by the specified user, defaulting to the author.",
     "syntax": "ZhighestRole{userID?}",
@@ -3752,6 +4147,30 @@
     "variadic": false,
     "arguments": [],
     "example": "Zhour{}"
+  },
+  {
+    "name": "ZhslToHex",
+    "description": "Executes the ZhslToHex function.",
+    "syntax": "ZhslToHex{arg1;arg2;arg3}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZhslToHex{}"
   },
   {
     "name": "ZhttpAddHeader",
@@ -3911,6 +4330,25 @@
     "variadic": false,
     "arguments": [],
     "example": "ZhttpStatus{}"
+  },
+  {
+    "name": "Zhypot",
+    "description": "Executes the Zhypot function.",
+    "syntax": "Zhypot{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "number",
+        "required": true
+      }
+    ],
+    "example": "Zhypot{}"
   },
   {
     "name": "Zif",
@@ -4122,6 +4560,20 @@
     "example": "ZisEmojiAnimated{123456789012345678}"
   },
   {
+    "name": "ZisEven",
+    "description": "Executes the ZisEven function.",
+    "syntax": "ZisEven{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZisEven{}"
+  },
+  {
     "name": "ZisHoisted",
     "description": "Returns true if the given role is displayed separately in the member list, defaulting to the author's top role if no ID is provided.",
     "syntax": "ZisHoisted{roleID?}",
@@ -4262,6 +4714,20 @@
       }
     ],
     "example": "ZisNumber{3.14}"
+  },
+  {
+    "name": "ZisOdd",
+    "description": "Executes the ZisOdd function.",
+    "syntax": "ZisOdd{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZisOdd{}"
   },
   {
     "name": "ZisSlash",
@@ -4603,6 +5069,20 @@
     "example": "ZjsonUnset{user;email}"
   },
   {
+    "name": "ZkebabCase",
+    "description": "Executes the ZkebabCase function.",
+    "syntax": "ZkebabCase{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZkebabCase{}"
+  },
+  {
     "name": "Zkick",
     "description": "Kicks a user from the guild with an optional reason.",
     "syntax": "Zkick{userID;reason?}",
@@ -4653,6 +5133,49 @@
     "example": "ZlastPinTimestamp{1234567890123456789}"
   },
   {
+    "name": "Zlcm",
+    "description": "Executes the Zlcm function.",
+    "syntax": "Zlcm{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "Zlcm{}"
+  },
+  {
+    "name": "Zlerp",
+    "description": "Executes the Zlerp function.",
+    "syntax": "Zlerp{arg1;arg2;arg3}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "number",
+        "required": true
+      }
+    ],
+    "example": "Zlerp{}"
+  },
+  {
     "name": "ZlinesCount",
     "description": "Returns the number of lines in the text, returning zero for an empty string.",
     "syntax": "ZlinesCount{text}",
@@ -4665,6 +5188,68 @@
       }
     ],
     "example": "ZlinesCount{line one\nline two}"
+  },
+  {
+    "name": "ZlistMath",
+    "description": "Executes the ZlistMath function.",
+    "syntax": "ZlistMath{arg1;arg2;arg3}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZlistMath{}"
+  },
+  {
+    "name": "ZlistReverse",
+    "description": "Executes the ZlistReverse function.",
+    "syntax": "ZlistReverse{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZlistReverse{}"
+  },
+  {
+    "name": "ZlistShuffle",
+    "description": "Executes the ZlistShuffle function.",
+    "syntax": "ZlistShuffle{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZlistShuffle{}"
   },
   {
     "name": "ZlistVar",
@@ -5514,6 +6099,35 @@
     "example": "Zoption{username}"
   },
   {
+    "name": "Zpad",
+    "description": "Executes the Zpad function.",
+    "syntax": "Zpad{arg1;arg2;arg3?;arg4?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "arg4",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "example": "Zpad{}"
+  },
+  {
     "name": "ZpadLeft",
     "description": "Pads the text on the left with a repeated character until it reaches the specified width, defaulting to a space.",
     "syntax": "ZpadLeft{text;width;char?}",
@@ -5577,6 +6191,44 @@
       }
     ],
     "example": "ZparentID{1234567890123456789}"
+  },
+  {
+    "name": "ZpascalCase",
+    "description": "Executes the ZpascalCase function.",
+    "syntax": "ZpascalCase{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZpascalCase{}"
+  },
+  {
+    "name": "Zpercent",
+    "description": "Executes the Zpercent function.",
+    "syntax": "Zpercent{arg1;arg2;arg3?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "number",
+        "required": false
+      }
+    ],
+    "example": "Zpercent{}"
   },
   {
     "name": "ZpermNames",
@@ -5651,7 +6303,7 @@
         "required": false
       }
     ],
-    "example": "ZpollAddAnswer{Yes;✅}"
+    "example": "ZpollAddAnswer{Yes;\u2705}"
   },
   {
     "name": "ZpollAllowMultiselect",
@@ -5869,6 +6521,20 @@
     "example": "Zrandom{1;100}"
   },
   {
+    "name": "ZrandomCase",
+    "description": "Executes the ZrandomCase function.",
+    "syntax": "ZrandomCase{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZrandomCase{}"
+  },
+  {
     "name": "ZrandomCategoryID",
     "description": "Returns the ID of a randomly selected category channel in the current server.",
     "syntax": "ZrandomCategoryID{}",
@@ -5996,6 +6662,20 @@
     "example": "ZregexReplace{hello   world;\\s+;-}"
   },
   {
+    "name": "ZrelativeTime",
+    "description": "Executes the ZrelativeTime function.",
+    "syntax": "ZrelativeTime{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZrelativeTime{}"
+  },
+  {
     "name": "ZremoveAllComponents",
     "description": "Removes all components from a message, defaulting to the triggering message.",
     "syntax": "ZremoveAllComponents{messageID?}",
@@ -6102,6 +6782,25 @@
       }
     ],
     "example": "Zrepeat{3;Line ZloopIndex{}}"
+  },
+  {
+    "name": "ZrepeatText",
+    "description": "Executes the ZrepeatText function.",
+    "syntax": "ZrepeatText{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZrepeatText{}"
   },
   {
     "name": "ZreplaceText",
@@ -6220,6 +6919,44 @@
       }
     ],
     "example": "ZresetUserVar{points}"
+  },
+  {
+    "name": "ZreverseText",
+    "description": "Executes the ZreverseText function.",
+    "syntax": "ZreverseText{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZreverseText{}"
+  },
+  {
+    "name": "ZrgbToHex",
+    "description": "Executes the ZrgbToHex function.",
+    "syntax": "ZrgbToHex{arg1;arg2;arg3}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZrgbToHex{}"
   },
   {
     "name": "ZroleColor",
@@ -6389,6 +7126,39 @@
       }
     ],
     "example": "ZrolePosition{987654321012345678}"
+  },
+  {
+    "name": "Zroman",
+    "description": "Executes the Zroman function.",
+    "syntax": "Zroman{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zroman{}"
+  },
+  {
+    "name": "Zroot",
+    "description": "Executes the Zroot function.",
+    "syntax": "Zroot{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "number",
+        "required": true
+      }
+    ],
+    "example": "Zroot{}"
   },
   {
     "name": "Zround",
@@ -7020,6 +7790,20 @@
     "example": "ZslowMode{1234567890123456789;30s}"
   },
   {
+    "name": "ZsnakeCase",
+    "description": "Executes the ZsnakeCase function.",
+    "syntax": "ZsnakeCase{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZsnakeCase{}"
+  },
+  {
     "name": "ZsnowflakeAge",
     "description": "Returns a human-readable age from any snowflake like '3 days ago'.",
     "syntax": "ZsnowflakeAge{snowflakeID}",
@@ -7144,7 +7928,7 @@
         "required": false
       }
     ],
-    "example": "ZsoundboardEdit{123456789012345678;New Name;50;🔔}"
+    "example": "ZsoundboardEdit{123456789012345678;New Name;50;\ud83d\udd14}"
   },
   {
     "name": "ZsoundboardPlay",
@@ -7961,6 +8745,30 @@
     "example": "ZtimeDiff{1700000000;1699990000;minutes}"
   },
   {
+    "name": "ZtimeFormat",
+    "description": "Executes the ZtimeFormat function.",
+    "syntax": "ZtimeFormat{arg1;arg2;arg3?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg3",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "example": "ZtimeFormat{}"
+  },
+  {
     "name": "Ztimeout",
     "description": "Applies a communication timeout to a user for the specified duration, up to a maximum of 28 days.",
     "syntax": "Ztimeout{userID;duration}",
@@ -8085,6 +8893,25 @@
     "example": "ZtrimSpace{  hello world  }"
   },
   {
+    "name": "Ztruncate",
+    "description": "Executes the Ztruncate function.",
+    "syntax": "Ztruncate{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "integer",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "Ztruncate{}"
+  },
+  {
     "name": "ZtryRun",
     "description": "Evaluates the code block and falls back to the fallback block if any error occurs.",
     "syntax": "ZtryRun{code;fallback?}",
@@ -8102,6 +8929,20 @@
       }
     ],
     "example": "ZtryRun{ZgetUserVar{score};0}"
+  },
+  {
+    "name": "Ztype",
+    "description": "Executes the Ztype function.",
+    "syntax": "Ztype{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Ztype{}"
   },
   {
     "name": "Zunban",
@@ -8360,6 +9201,20 @@
     "example": "ZuserJoined{123456789012345678;%B %d, %Y}"
   },
   {
+    "name": "ZuserLocale",
+    "description": "Executes the ZuserLocale function.",
+    "syntax": "ZuserLocale{arg1?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "example": "ZuserLocale{}"
+  },
+  {
     "name": "ZuserPerms",
     "description": "Returns the guild permissions held by the command author or specified user, up to the given amount, joined by the separator.",
     "syntax": "ZuserPerms{userID?;amount?;separator?}",
@@ -8413,7 +9268,7 @@
         "required": true
       }
     ],
-    "example": "ZuserReacted{123456789012345678;987654321098765432;111222333444555666;👍}"
+    "example": "ZuserReacted{123456789012345678;987654321098765432;111222333444555666;\ud83d\udc4d}"
   },
   {
     "name": "ZuserRoles",
@@ -8582,6 +9437,33 @@
       }
     ],
     "example": "Zusername{123456789012345678}"
+  },
+  {
+    "name": "Zuuid",
+    "description": "Executes the Zuuid function.",
+    "syntax": "Zuuid{}",
+    "variadic": false,
+    "arguments": [],
+    "example": "Zuuid{}"
+  },
+  {
+    "name": "Zvalidate",
+    "description": "Executes the Zvalidate function.",
+    "syntax": "Zvalidate{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "Zvalidate{}"
   },
   {
     "name": "Zvar",
@@ -8899,6 +9781,25 @@
     "example": "ZwebhookDelete{https://discord.com/api/webhooks/123456789/abcdeftoken}"
   },
   {
+    "name": "ZweightedRandom",
+    "description": "Executes the ZweightedRandom function.",
+    "syntax": "ZweightedRandom{arg1;arg2}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "arg2",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZweightedRandom{}"
+  },
+  {
     "name": "ZwelcomeScreen",
     "description": "Returns the guild's welcome screen as a JSON object.",
     "syntax": "ZwelcomeScreen{guildID?}",
@@ -8912,6 +9813,20 @@
       }
     ],
     "example": "ZwelcomeScreen{123456789012345678}"
+  },
+  {
+    "name": "ZwordCount",
+    "description": "Executes the ZwordCount function.",
+    "syntax": "ZwordCount{arg1}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "arg1",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZwordCount{}"
   },
   {
     "name": "Zyear",
