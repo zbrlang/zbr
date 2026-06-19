@@ -9,3 +9,15 @@ pub mod skus;
 pub mod snowflakeTimestamp;
 pub mod snowflakeAge;
 pub mod bulkBan;
+
+pub mod uuid;
+pub mod hexToRgb;
+pub mod rgbToHex;
+pub mod hslToHex;
+pub mod hexToHsl;
+pub mod colorInvert;
+pub mod formatBytes;
+pub mod charCode;
+pub mod fromCharCode;
+pub mod entropy;
+pub mod validate;
