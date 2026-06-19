@@ -16,3 +16,4 @@ pub mod userPerms;
 pub mod userServerAvatar;
 pub mod userStatus;
 pub mod username;
+pub mod userLocale;

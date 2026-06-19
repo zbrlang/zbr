@@ -4,3 +4,4 @@ pub mod deleteInvite;
 pub mod inviteInfo;
 pub mod serverInvite;
 pub mod createInviteWithRoles;
+pub mod fetchInvite;
