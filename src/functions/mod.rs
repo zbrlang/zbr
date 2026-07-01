@@ -2018,6 +2018,11 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         min_args: 2,
         max_args: 100,
     });
+    registry.insert("jsonMerge".to_string(), FnMeta {
+        func: json::jsonMerge::run,
+        min_args: 2,
+        max_args: 100,
+    });
 
     // Components
     registry.insert("addButton".to_string(), FnMeta {

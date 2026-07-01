@@ -19,3 +19,4 @@ pub mod jsonArraySort;
 pub mod jsonArrayCount;
 pub mod jsonArrayIndex;
 pub mod jsonJoinArray;
+pub mod jsonMerge;
