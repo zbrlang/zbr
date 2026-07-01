@@ -6,13 +6,20 @@ pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
         Ok(v) => v, Err(e) => return e,
     };
     
-    let operation = args[2].to_uppercase();
+    let operation = match args.get(1) {
+        Some(v) => v.to_uppercase(),
+        None => return FnOutput::error("bitWise", crate::error_messages::too_few_args(2, 1)),
+    };
     
     if operation == "NOT" {
         return FnOutput::Text((!n1).to_string());
     }
 
-    let n2 = match parse_i64(&args[1], "bitWise", 2, "n2") {
+    if args.len() < 3 {
+        return FnOutput::error("bitWise", crate::error_messages::too_few_args(3, args.len()));
+    }
+
+    let n2 = match parse_i64(&args[2], "bitWise", 3, "n2") {
         Ok(v) => v, Err(e) => return e,
     };
 
