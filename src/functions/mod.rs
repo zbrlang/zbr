@@ -1093,6 +1093,11 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         min_args: 1,
         max_args: 3,
     });
+    registry.insert("editEmbed".to_string(), FnMeta {
+        func: embeds::editEmbed::run,
+        min_args: 1,
+        max_args: 3,
+    });
     registry.insert("webhookCreate".to_string(), FnMeta {
         func: webhooks::webhookCreate::run,
         min_args: 2,
