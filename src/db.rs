@@ -69,7 +69,6 @@ pub async fn connect() -> SqlitePool {
         .execute(&pool).await
         .expect("Failed to create global_vars table");
 
-    // ── Cooldown tables ───────────────────────────────────────────────────────
     sqlx::query(
         "
         CREATE TABLE IF NOT EXISTS user_cooldowns (
@@ -319,8 +318,6 @@ pub async fn global_var_exists(pool: &SqlitePool, bot_id: &str, name: &str) -> b
         .unwrap_or(0) > 0
 }
 
-// ── Cooldown DB functions ─────────────────────────────────────────────────────
-
 /// Returns remaining seconds on a user cooldown, or 0 if not active.
 pub async fn get_user_cooldown(
     pool: &SqlitePool,
@@ -346,30 +343,6 @@ pub async fn get_user_cooldown(
     }
 }
 
-pub async fn set_user_cooldown(
-    pool: &SqlitePool,
-    bot_id: &str,
-    guild_id: &str,
-    user_id: &str,
-    command: &str,
-    duration_secs: i64
-) -> Result<(), sqlx::Error> {
-    let expires_at = chrono::Utc::now().timestamp() + duration_secs;
-    sqlx
-        ::query(
-            "INSERT INTO user_cooldowns (bot_id, guild_id, user_id, command, expires_at)
-         VALUES (?, ?, ?, ?, ?)
-         ON CONFLICT(bot_id, guild_id, user_id, command) DO UPDATE SET expires_at=excluded.expires_at"
-        )
-        .bind(bot_id)
-        .bind(guild_id)
-        .bind(user_id)
-        .bind(command)
-        .bind(expires_at)
-        .execute(pool).await?;
-    Ok(())
-}
-
 /// Returns remaining seconds on a server cooldown, or 0 if not active.
 pub async fn get_server_cooldown(
     pool: &SqlitePool,
@@ -391,28 +364,6 @@ pub async fn get_server_cooldown(
         Some(e) if e > now => e - now,
         _ => 0,
     }
-}
-
-pub async fn set_server_cooldown(
-    pool: &SqlitePool,
-    bot_id: &str,
-    guild_id: &str,
-    command: &str,
-    duration_secs: i64
-) -> Result<(), sqlx::Error> {
-    let expires_at = chrono::Utc::now().timestamp() + duration_secs;
-    sqlx
-        ::query(
-            "INSERT INTO server_cooldowns (bot_id, guild_id, command, expires_at)
-         VALUES (?, ?, ?, ?)
-         ON CONFLICT(bot_id, guild_id, command) DO UPDATE SET expires_at=excluded.expires_at"
-        )
-        .bind(bot_id)
-        .bind(guild_id)
-        .bind(command)
-        .bind(expires_at)
-        .execute(pool).await?;
-    Ok(())
 }
 
 /// Returns remaining seconds on a global cooldown, or 0 if not active.
@@ -438,14 +389,125 @@ pub async fn get_global_cooldown(
     }
 }
 
-pub async fn set_global_cooldown(
+pub async fn try_acquire_user_cooldown(
+    pool: &SqlitePool,
+    bot_id: &str,
+    guild_id: &str,
+    user_id: &str,
+    command: &str,
+    duration_secs: i64
+) -> Result<Option<i64>, sqlx::Error> {
+    let now = chrono::Utc::now().timestamp();
+    let expires_at = now + duration_secs;
+
+    let mut tx = pool.begin().await?;
+
+    let existing: Option<i64> = sqlx
+        ::query_scalar(
+            "SELECT expires_at FROM user_cooldowns WHERE bot_id=? AND guild_id=? AND user_id=? AND command=?"
+        )
+        .bind(bot_id)
+        .bind(guild_id)
+        .bind(user_id)
+        .bind(command)
+        .fetch_optional(&mut *tx).await?;
+
+    if let Some(e) = existing {
+        if e > now {
+            tx.commit().await?;
+            return Ok(Some(e - now));
+        }
+    }
+
+    sqlx
+        ::query(
+            "INSERT INTO user_cooldowns (bot_id, guild_id, user_id, command, expires_at)
+         VALUES (?, ?, ?, ?, ?)
+         ON CONFLICT(bot_id, guild_id, user_id, command) DO UPDATE SET expires_at=excluded.expires_at"
+        )
+        .bind(bot_id)
+        .bind(guild_id)
+        .bind(user_id)
+        .bind(command)
+        .bind(expires_at)
+        .execute(&mut *tx).await?;
+
+    tx.commit().await?;
+    Ok(None)
+}
+
+pub async fn try_acquire_server_cooldown(
+    pool: &SqlitePool,
+    bot_id: &str,
+    guild_id: &str,
+    command: &str,
+    duration_secs: i64
+) -> Result<Option<i64>, sqlx::Error> {
+    let now = chrono::Utc::now().timestamp();
+    let expires_at = now + duration_secs;
+
+    let mut tx = pool.begin().await?;
+
+    let existing: Option<i64> = sqlx
+        ::query_scalar(
+            "SELECT expires_at FROM server_cooldowns WHERE bot_id=? AND guild_id=? AND command=?"
+        )
+        .bind(bot_id)
+        .bind(guild_id)
+        .bind(command)
+        .fetch_optional(&mut *tx).await?;
+
+    if let Some(e) = existing {
+        if e > now {
+            tx.commit().await?;
+            return Ok(Some(e - now));
+        }
+    }
+
+    sqlx
+        ::query(
+            "INSERT INTO server_cooldowns (bot_id, guild_id, command, expires_at)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(bot_id, guild_id, command) DO UPDATE SET expires_at=excluded.expires_at"
+        )
+        .bind(bot_id)
+        .bind(guild_id)
+        .bind(command)
+        .bind(expires_at)
+        .execute(&mut *tx).await?;
+
+    tx.commit().await?;
+    Ok(None)
+}
+
+pub async fn try_acquire_global_cooldown(
     pool: &SqlitePool,
     bot_id: &str,
     user_id: &str,
     command: &str,
     duration_secs: i64
-) -> Result<(), sqlx::Error> {
-    let expires_at = chrono::Utc::now().timestamp() + duration_secs;
+) -> Result<Option<i64>, sqlx::Error> {
+    let now = chrono::Utc::now().timestamp();
+    let expires_at = now + duration_secs;
+
+    let mut tx = pool.begin().await?;
+
+    let existing: Option<i64> = sqlx
+        ::query_scalar(
+            "SELECT expires_at FROM global_cooldowns WHERE bot_id=? AND user_id=? AND command=?"
+        )
+        .bind(bot_id)
+        .bind(user_id)
+        .bind(command)
+        .fetch_optional(&mut *tx).await?;
+
+    if let Some(e) = existing {
+        if e > now {
+            tx.commit().await?;
+            return Ok(Some(e - now));
+        }
+    }
+
     sqlx
         ::query(
             "INSERT INTO global_cooldowns (bot_id, user_id, command, expires_at)
@@ -456,6 +518,8 @@ pub async fn set_global_cooldown(
         .bind(user_id)
         .bind(command)
         .bind(expires_at)
-        .execute(pool).await?;
-    Ok(())
+        .execute(&mut *tx).await?;
+
+    tx.commit().await?;
+    Ok(None)
 }

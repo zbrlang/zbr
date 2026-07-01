@@ -21,34 +21,27 @@ pub fn run(args: Vec<String>, ctx: &DiscordContext) -> FnOutput {
     let user_id = ctx.author_id.clone();
     let command = ctx.command_name.clone();
 
-    let remaining = tokio::task::block_in_place(|| {
+    let result = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(async {
-            crate::db::get_global_cooldown(&db, &bot_id, &user_id, &command).await
+            crate::db::try_acquire_global_cooldown(&db, &bot_id, &user_id, &command, duration_secs).await
         })
     });
 
-    if remaining > 0 {
-        let labels = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle::current().block_on(async {
-                ctx.cooldown_labels.lock().await.clone()
-            })
-        });
-        let msg = if error_msg.is_empty() {
-            format!("You are on global cooldown. Try again in {}.", super::helpers::format_remaining(remaining, &labels))
-        } else {
-            apply_time_placeholders(&error_msg, remaining, &labels)
-        };
-        return FnOutput::user_error(msg);
+    match result {
+        Ok(None) => FnOutput::Empty,
+        Ok(Some(remaining)) => {
+            let labels = tokio::task::block_in_place(|| {
+                tokio::runtime::Handle::current().block_on(async {
+                    ctx.cooldown_labels.lock().await.clone()
+                })
+            });
+            let msg = if error_msg.is_empty() {
+                format!("You are on global cooldown. Try again in {}.", super::helpers::format_remaining(remaining, &labels))
+            } else {
+                apply_time_placeholders(&error_msg, remaining, &labels)
+            };
+            FnOutput::user_error(msg)
+        }
+        Err(e) => FnOutput::error("globalCooldown", crate::error_messages::action_failed_reason("acquire global cooldown", &e.to_string())),
     }
-
-    let res = tokio::task::block_in_place(|| {
-        tokio::runtime::Handle::current().block_on(async {
-            crate::db::set_global_cooldown(&db, &bot_id, &user_id, &command, duration_secs).await
-        })
-    });
-    if let Err(e) = res {
-        return FnOutput::error("globalCooldown", crate::error_messages::action_failed_reason("set global cooldown", &e.to_string()));
-    }
-
-    FnOutput::Empty
 }
