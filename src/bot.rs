@@ -148,7 +148,7 @@ impl Bot {
                 shard_id: ctx.shard_id.0 as u64,
                 total_shards: total_shard_count(&ctx).await,
             };
-            let data = executor::execute_code(ast, context, &state);
+            let data = executor::execute_code(ast, context, &state).await;
             send_event_response(ctx, &channel_id, &data).await;
         }
     }
@@ -442,7 +442,7 @@ impl EventHandler for Bot {
                         total_shards: total_shard_count(&ctx).await,
                     };
 
-                    let data = executor::execute_code(ast, context, &state);
+                    let data = executor::execute_code(ast, context, &state).await;
 
                     send_response(&ctx, &msg, &data).await;
                     return;
@@ -997,7 +997,7 @@ impl EventHandler for Bot {
                         total_shards: total_shard_count(&ctx).await,
                     };
 
-                    let data = executor::execute_code(ast, context, &state);
+                    let data = executor::execute_code(ast, context, &state).await;
 
                     let built_embeds = build_embeds(&data.embeds);
                     let text_content = resolve_text_content(&data);
@@ -1138,7 +1138,7 @@ impl EventHandler for Bot {
                         total_shards: total_shard_count(&ctx).await,
                     };
 
-                    let data = executor::execute_code(ast, context, &state);
+                    let data = executor::execute_code(ast, context, &state).await;
 
                     // If Zdefer was called, send a deferred acknowledgment
                     if data.components.deferred {
@@ -1299,7 +1299,7 @@ impl EventHandler for Bot {
                         total_shards: total_shard_count(&ctx).await,
                     };
 
-                    let data = executor::execute_code(ast, context, &state);
+                    let data = executor::execute_code(ast, context, &state).await;
 
                     let built_embeds = build_embeds(&data.embeds);
                     let text_content = resolve_text_content(&data);

@@ -90,8 +90,6 @@ pub struct RunResponse {
     pub components: ComponentData,
 }
 
-// ── Input types ─────────────────────────────────────────────────────────
-
 pub struct RunContext {
     pub author_id: String,
     pub username: String,
@@ -117,8 +115,6 @@ pub struct ExecState {
     pub shard_id: u64,
     pub total_shards: u64,
 }
-
-// ── DiscordContext builder ──────────────────────────────────────────────
 
 fn build_discord_context(ctx: RunContext, state: &ExecState) -> DiscordContext {
     DiscordContext {
@@ -166,19 +162,13 @@ fn build_discord_context(ctx: RunContext, state: &ExecState) -> DiscordContext {
     }
 }
 
-// ── Response builder ────────────────────────────────────────────────────
-
-fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime) -> RunResponse {
-    let (pending_reactions, allowed_user_mentions, allowed_role_mentions) = tokio::task::block_in_place(|| {
-        tokio::runtime::Handle
-            ::current()
-            .block_on(async {
-                let pr = rt.context.pending_reactions.lock().await.clone();
-                let aum = rt.context.allowed_user_mentions.lock().await.clone();
-                let arm = rt.context.allowed_role_mentions.lock().await.clone();
-                (pr, aum, arm)
-            })
-    });
+async fn build_response(
+    result: crate::context::EvalResult,
+    rt: &mut runtime::Runtime
+) -> RunResponse {
+    let pending_reactions = rt.context.pending_reactions.lock().await.clone();
+    let allowed_user_mentions = rt.context.allowed_user_mentions.lock().await.clone();
+    let allowed_role_mentions = rt.context.allowed_role_mentions.lock().await.clone();
 
     let mut embeds: Vec<EmbedData> = Vec::new();
     for (i, e) in result.embeds.into_iter().enumerate() {
@@ -302,16 +292,13 @@ fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime)
         components,
     }
 }
-
-// ── Public entry point ──────────────────────────────────────────────────
-
-pub fn execute_code(
+pub async fn execute_code(
     ast: std::sync::Arc<crate::ast::Node>,
     ctx: RunContext,
     state: &ExecState
 ) -> RunResponse {
     let discord_ctx = build_discord_context(ctx, state);
     let mut rt = runtime::Runtime::new(discord_ctx);
-    let result = rt.run((*ast).clone());
-    build_response(result, &mut rt)
+    let result = rt.run((*ast).clone()).await;
+    build_response(result, &mut rt).await
 }
