@@ -2,6 +2,38 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.8.0 - Stability, Performance, and API Expansion
+
+This release delivers 11 bug fixes, 3 performance improvements, and 6 new ZBR functions for embeds, JSON, HTTP, and server metadata.
+
+### New Functions
+- **Embeds**: `ZeditEmbed{channelID?;messageID;index?}` to edit an existing message's embed by channel and message ID, with optional embed index.
+- **JSON**: `ZjsonMerge{target;sourceJson}` for deep-merging a JSON string into the working object at a key path (objects merge recursively; scalars and arrays overwrite).
+- **HTTP**: `ZhttpHead{url}` and `ZhttpOptions{url}` for HEAD and OPTIONS request methods.
+- **Servers**: `ZserverSplash{guildID?}` and `ZserverDiscoverySplash{guildID?}` returning guild splash and discovery splash CDN URLs.
+
+### Bug Fixes
+- Fixed missing `\;` and `\Z` escape sequences in loader brace depth tracking.
+- Fixed duplicate reaction function registrations overwriting `max_args`.
+- Fixed bitwise operation reading from arg 1 before checking arg 2 requirement.
+- Fixed empty `Zdiv` args causing a panic.
+- Fixed HTTP response body read failure silently returning an empty string instead of an error.
+- Fixed unnecessary `block_in_place` wrapping `block_on` on `JoinHandle`.
+- Fixed `total_shards` computed from `ShardManager` runners instead of duplicating shard index.
+- Fixed SQL errors not logged to stderr in var getter and reset functions before returning defaults.
+- Fixed cooldown race condition by wrapping read-then-set in a SQLite transaction.
+- Fixed `file:line` suffix from runtime error propagation.
+- Fixed missing graceful shutdown handler for SIGTERM/SIGINT.
+
+### Performance
+- Batched `block_in_place` calls in `build_response` to reduce thread pool contention.
+- Made `Runtime::run` fully async, eliminating 12 `block_in_place` wrappers.
+- Made `execute_code` and `build_response` async for improved concurrency.
+
+### Chore
+- Cleaned up import order and formatting in `bot.rs`.
+- Replaced `starts_with` URL validation with proper parsing via the `url` crate.
+
 ## v1.7.0 - Massive Expansion of Math, String, and Utility APIs
 
 This release introduces over 50 new functions to the ZBR engine, drastically expanding the capabilities for string manipulation, advanced math, randomization, and data validation without requiring external APIs.

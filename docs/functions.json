@@ -2597,6 +2597,32 @@
     "example": "ZeditButton{my_button;Updated Label;primary;false}"
   },
   {
+    "name": "ZeditEmbed",
+    "description": "Edits the embed at the specified slot index into an existing message in the specified channel.",
+    "syntax": "ZeditEmbed{channelID?;messageID;index?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "channelID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current channel"
+      },
+      {
+        "name": "messageID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "index",
+        "type": "integer",
+        "required": false,
+        "default": "1"
+      }
+    ],
+    "example": "ZeditEmbed{123456789012345678;1}"
+  },
+  {
     "name": "ZeditChannelPerms",
     "description": "Edits permission overwrites for a user or role on a channel, using + to allow, - to deny, and / to neutralize each named permission.",
     "syntax": "ZeditChannelPerms{channelID;userOrRoleID;permission;...}",
@@ -4239,6 +4265,34 @@
     "example": "ZhttpGetHeader{Authorization}"
   },
   {
+    "name": "ZhttpHead",
+    "description": "Sends an HTTP HEAD request to the specified URL and stores the response for access via ZhttpStatus and ZhttpResult.",
+    "syntax": "ZhttpHead{url}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": true
+      }
+    ],
+    "example": "ZhttpHead{https://api.example.com/users/1}"
+  },
+  {
+    "name": "ZhttpOptions",
+    "description": "Sends an HTTP OPTIONS request to the specified URL and stores the response for access via ZhttpStatus and ZhttpResult.",
+    "syntax": "ZhttpOptions{url}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "url",
+        "type": "url",
+        "required": true
+      }
+    ],
+    "example": "ZhttpOptions{https://api.example.com/users/1}"
+  },
+  {
     "name": "ZhttpPatch",
     "description": "Sends an HTTP PATCH request to the specified URL with an optional request body and stores the response.",
     "syntax": "ZhttpPatch{url;body?}",
@@ -4997,6 +5051,25 @@
       }
     ],
     "example": "ZjsonJoinArray{names;, }"
+  },
+  {
+    "name": "ZjsonMerge",
+    "description": "Deep-merges a JSON string into the value at the specified key path in the working JSON object. Objects are merged recursively; scalars and arrays overwrite.",
+    "syntax": "ZjsonMerge{target;sourceJson}",
+    "variadic": true,
+    "arguments": [
+      {
+        "name": "target",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "sourceJson",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "example": "ZjsonMerge{config;{\"theme\":\"dark\"}}"
   },
   {
     "name": "ZjsonParse",
@@ -7344,6 +7417,21 @@
     "example": "ZserverDescription{}"
   },
   {
+    "name": "ZserverDiscoverySplash",
+    "description": "Returns the discovery splash URL of the guild, or an empty string if none is set.",
+    "syntax": "ZserverDiscoverySplash{guildID?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      }
+    ],
+    "example": "ZserverDiscoverySplash{}"
+  },
+  {
     "name": "ZserverEmojis",
     "description": "Returns the custom emojis of the guild as formatted emoji strings joined by the specified separator.",
     "syntax": "ZserverEmojis{guildID?;separator?}",
@@ -7560,6 +7648,21 @@
       }
     ],
     "example": "ZserverRoles{;123456789012345678}"
+  },
+  {
+    "name": "ZserverSplash",
+    "description": "Returns the splash URL of the guild, or an empty string if no splash is set.",
+    "syntax": "ZserverSplash{guildID?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "guildID",
+        "type": "snowflake",
+        "required": false,
+        "default": "current guild"
+      }
+    ],
+    "example": "ZserverSplash{}"
   },
   {
     "name": "ZserverStickers",

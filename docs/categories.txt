@@ -135,6 +135,7 @@ Zdm - message
 ZdmChannelID - channels
 Zduration - utility
 ZeditButton - components
+ZeditEmbed - embeds
 ZeditChannelPerms - channels
 ZeditEvent - events
 ZeditForumTag - forums
@@ -229,6 +230,8 @@ ZhttpAddHeader - http
 ZhttpDelete - http
 ZhttpGet - http
 ZhttpGetHeader - http
+ZhttpHead - http
+ZhttpOptions - http
 ZhttpPatch - http
 ZhttpPost - http
 ZhttpPut - http
@@ -277,6 +280,7 @@ ZjsonClear - json
 ZjsonExists - json
 ZjsonGet - json
 ZjsonJoinArray - json
+ZjsonMerge - json
 ZjsonParse - json
 ZjsonPretty - json
 ZjsonSet - json
@@ -417,6 +421,7 @@ ZserverChannels - channels
 ZserverCooldown - cooldown
 ZserverCount - bot
 ZserverDescription - servers
+ZserverDiscoverySplash - servers
 ZserverEmojis - servers
 ZserverEvents - events
 ZserverIcon - servers
@@ -427,6 +432,7 @@ ZserverName - servers
 ZserverNames - bot
 ZserverOwner - servers
 ZserverRoles - roles
+ZserverSplash - servers
 ZserverStickers - stickers
 ZserverTemplates - templates
 ZserverVerificationLevel - servers
