@@ -1,7 +1,7 @@
 use crate::executor::{ self, ComponentData, EmbedData, ExecState, RunContext, RunResponse };
 use crate::types::{ Command, CommandMap, CommandScope, CommandType, Db };
-use regex::Regex;
 use once_cell::sync::Lazy;
+use regex::Regex;
 use serenity::async_trait;
 use serenity::builder::{
     CreateActionRow,
@@ -21,8 +21,8 @@ use serenity::builder::{
     CreateSelectMenuKind,
     CreateSelectMenuOption,
 };
-use serenity::model::application::{ CommandOptionType, Interaction };
 use serenity::gateway::ActivityData;
+use serenity::model::application::{ CommandOptionType, Interaction };
 use serenity::model::gateway::Ready;
 use serenity::model::guild::Member;
 use serenity::model::id::{ EmojiId, GuildId };
@@ -156,13 +156,13 @@ impl EventHandler for Bot {
 
         // Load presence from zbr.json
         let config_str = std::fs::read_to_string("zbr.json").unwrap_or_default();
-        let config = serde_json
-            ::from_str::<crate::types::Config>(&config_str)
-            .unwrap_or_else(|_| crate::types::Config {
+        let config = serde_json::from_str::<crate::types::Config>(&config_str).unwrap_or_else(|_| {
+            crate::types::Config {
                 status: None,
                 activity: None,
                 logging: true,
-            });
+            }
+        });
 
         let status = match config.status.as_deref() {
             Some("dnd") => OnlineStatus::DoNotDisturb,
@@ -428,7 +428,7 @@ impl EventHandler for Bot {
                         shard_latency: get_latency(&ctx).await,
                         shard_id: ctx.shard_id.0 as u64,
                         total_shards: ctx.shard_id.0 as u64,
-                        };
+                    };
 
                     let data = executor::execute_code(ast, context, &state);
 
@@ -983,7 +983,7 @@ impl EventHandler for Bot {
                         shard_latency: get_latency(&ctx).await,
                         shard_id: ctx.shard_id.0 as u64,
                         total_shards: ctx.shard_id.0 as u64,
-                        };
+                    };
 
                     let data = executor::execute_code(ast, context, &state);
 
@@ -1124,7 +1124,7 @@ impl EventHandler for Bot {
                         shard_latency: get_latency(&ctx).await,
                         shard_id: ctx.shard_id.0 as u64,
                         total_shards: ctx.shard_id.0 as u64,
-                        };
+                    };
 
                     let data = executor::execute_code(ast, context, &state);
 
@@ -1285,7 +1285,7 @@ impl EventHandler for Bot {
                         shard_latency: get_latency(&ctx).await,
                         shard_id: ctx.shard_id.0 as u64,
                         total_shards: ctx.shard_id.0 as u64,
-                        };
+                    };
 
                     let data = executor::execute_code(ast, context, &state);
 
