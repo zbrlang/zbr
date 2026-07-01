@@ -169,22 +169,15 @@ fn build_discord_context(ctx: RunContext, state: &ExecState) -> DiscordContext {
 // ── Response builder ────────────────────────────────────────────────────
 
 fn build_response(result: crate::context::EvalResult, rt: &mut runtime::Runtime) -> RunResponse {
-    let pending_reactions = tokio::task::block_in_place(|| {
+    let (pending_reactions, allowed_user_mentions, allowed_role_mentions) = tokio::task::block_in_place(|| {
         tokio::runtime::Handle
             ::current()
-            .block_on(async { rt.context.pending_reactions.lock().await.clone() })
-    });
-
-    let allowed_user_mentions = tokio::task::block_in_place(|| {
-        tokio::runtime::Handle
-            ::current()
-            .block_on(async { rt.context.allowed_user_mentions.lock().await.clone() })
-    });
-
-    let allowed_role_mentions = tokio::task::block_in_place(|| {
-        tokio::runtime::Handle
-            ::current()
-            .block_on(async { rt.context.allowed_role_mentions.lock().await.clone() })
+            .block_on(async {
+                let pr = rt.context.pending_reactions.lock().await.clone();
+                let aum = rt.context.allowed_user_mentions.lock().await.clone();
+                let arm = rt.context.allowed_role_mentions.lock().await.clone();
+                (pr, aum, arm)
+            })
     });
 
     let mut embeds: Vec<EmbedData> = Vec::new();
