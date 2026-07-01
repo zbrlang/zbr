@@ -1927,6 +1927,17 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         max_args: 100,
     });
 
+    registry.insert("httpHead".to_string(), FnMeta {
+        func: http::httpHead::run,
+        min_args: 1,
+        max_args: 1,
+    });
+    registry.insert("httpOptions".to_string(), FnMeta {
+        func: http::httpOptions::run,
+        min_args: 1,
+        max_args: 1,
+    });
+
     // JSON
     registry.insert("jsonParse".to_string(), FnMeta {
         func: json::jsonParse::run,

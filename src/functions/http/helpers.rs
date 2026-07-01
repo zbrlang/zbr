@@ -111,7 +111,9 @@ pub fn do_request(
                 "PUT"    => client.put(&url),
                 "DELETE" => client.delete(&url),
                 "PATCH"  => client.patch(&url),
-                other    => return Err(format!("unsupported method: {}", other)),
+                "HEAD"    => client.head(&url),
+                "OPTIONS" => client.request(reqwest::Method::OPTIONS, &url),
+                other     => return Err(format!("unsupported method: {}", other)),
             };
 
             for (k, v) in &headers {
