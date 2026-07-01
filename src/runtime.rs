@@ -82,7 +82,7 @@ impl Runtime {
         }
     }
 
-    pub fn run(&mut self, node: Node) -> EvalResult {
+    pub async fn run(&mut self, node: Node) -> EvalResult {
         self.should_reply = false;
         let mut output = Vec::new();
         let mut fatal_error: Option<String> = None;
@@ -109,44 +109,16 @@ impl Runtime {
             }
         }
 
-        // On error: check for suppression first, then wipe state.
         if let Some(err) = fatal_error {
-            let suppress_text = tokio::task::block_in_place(|| {
-                tokio::runtime::Handle
-                    ::current()
-                    .block_on(async { self.context.suppress_error_text.lock().await.clone() })
-            });
-            let suppress_embed = tokio::task::block_in_place(|| {
-                tokio::runtime::Handle
-                    ::current()
-                    .block_on(async { *self.context.suppress_error_embed.lock().await })
-            });
+            let suppress_text = self.context.suppress_error_text.lock().await.clone();
+            let suppress_embed = *self.context.suppress_error_embed.lock().await;
 
-            // If suppression is active, return the suppressed response instead of the error
             if suppress_text.is_some() || suppress_embed.is_some() {
-                let embeds = tokio::task::block_in_place(|| {
-                    tokio::runtime::Handle
-                        ::current()
-                        .block_on(async { self.context.embed.lock().await.clone() })
-                });
-                let ephemeral = tokio::task::block_in_place(|| {
-                    tokio::runtime::Handle
-                        ::current()
-                        .block_on(async { *self.context.ephemeral.lock().await })
-                });
-                let use_channel = tokio::task::block_in_place(|| {
-                    tokio::runtime::Handle
-                        ::current()
-                        .block_on(async { self.context.use_channel.lock().await.clone() })
-                });
+                let embeds = self.context.embed.lock().await.clone();
+                let ephemeral = *self.context.ephemeral.lock().await;
+                let use_channel = self.context.use_channel.lock().await.clone();
 
-                // Build consumed_embeds: everything EXCEPT the suppress embed
-                let mut consumed = tokio::task::block_in_place(|| {
-                    tokio::runtime::Handle
-                        ::current()
-                        .block_on(async { self.context.consumed_embeds.lock().await.clone() })
-                });
-                // Mark all embeds as consumed except the one we want to show
+                let mut consumed = self.context.consumed_embeds.lock().await.clone();
                 for i in 0..embeds.len() {
                     if Some(i) != suppress_embed {
                         consumed.insert(i);
@@ -170,13 +142,8 @@ impl Runtime {
                 };
             }
 
-            // No suppression — wipe state and return the error
-            tokio::task::block_in_place(|| {
-                tokio::runtime::Handle::current().block_on(async {
-                    self.context.embed.lock().await.clear();
-                    self.context.consumed_embeds.lock().await.clear();
-                })
-            });
+            self.context.embed.lock().await.clear();
+            self.context.consumed_embeds.lock().await.clear();
             return EvalResult {
                 output: vec![],
                 should_reply: false,
@@ -189,35 +156,11 @@ impl Runtime {
             };
         }
 
-        let embeds = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle
-                ::current()
-                .block_on(async { self.context.embed.lock().await.clone() })
-        });
-
-        let consumed_embeds = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle
-                ::current()
-                .block_on(async { self.context.consumed_embeds.lock().await.clone() })
-        });
-
-        let ephemeral = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle
-                ::current()
-                .block_on(async { *self.context.ephemeral.lock().await })
-        });
-
-        let use_channel = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle
-                ::current()
-                .block_on(async { self.context.use_channel.lock().await.clone() })
-        });
-
-        let components = tokio::task::block_in_place(|| {
-            tokio::runtime::Handle
-                ::current()
-                .block_on(async { self.context.components.lock().await.clone() })
-        });
+        let embeds = self.context.embed.lock().await.clone();
+        let consumed_embeds = self.context.consumed_embeds.lock().await.clone();
+        let ephemeral = *self.context.ephemeral.lock().await;
+        let use_channel = self.context.use_channel.lock().await.clone();
+        let components = self.context.components.lock().await.clone();
 
         EvalResult {
             output,
