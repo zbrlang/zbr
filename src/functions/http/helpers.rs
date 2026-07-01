@@ -124,7 +124,7 @@ pub fn do_request(
 
             let resp = req.send().await.map_err(|e| format!("request failed: {}", e))?;
             let status = resp.status().as_u16();
-            let text = resp.text().await.unwrap_or_default();
+            let text = resp.text().await.map_err(|e| format!("failed to read response body: {}", e))?;
             Ok((status, text))
         })
     });
