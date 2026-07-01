@@ -46,7 +46,7 @@ fn get_brace_change(s: &str) -> i32 {
         }
         if ch == '\\' {
             if let Some(&(_, next)) = chars.peek() {
-                if next == '{' || next == '}' || next == '\\' {
+                if next == '{' || next == '}' || next == ';' || next == '\\' || next == 'Z' {
                     chars.next();
                     continue;
                 }
