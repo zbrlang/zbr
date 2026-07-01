@@ -132,7 +132,10 @@ pub async fn get_user_var(
         .bind(user_id)
         .bind(name)
         .fetch_optional(pool).await
-        .unwrap_or(None)
+        .unwrap_or_else(|e| {
+            eprintln!("get_user_var SQL error: {}", e);
+            None
+        })
         .unwrap_or_default()
 }
 
@@ -177,7 +180,10 @@ pub async fn get_server_var(pool: &SqlitePool, bot_id: &str, guild_id: &str, nam
         .bind(guild_id)
         .bind(name)
         .fetch_optional(pool).await
-        .unwrap_or(None)
+        .unwrap_or_else(|e| {
+            eprintln!("get_server_var SQL error: {}", e);
+            None
+        })
         .unwrap_or_default()
 }
 
@@ -224,7 +230,10 @@ pub async fn get_channel_var(
         .bind(channel_id)
         .bind(name)
         .fetch_optional(pool).await
-        .unwrap_or(None)
+        .unwrap_or_else(|e| {
+            eprintln!("get_channel_var SQL error: {}", e);
+            None
+        })
         .unwrap_or_default()
 }
 
@@ -263,7 +272,10 @@ pub async fn get_global_var(pool: &SqlitePool, bot_id: &str, name: &str) -> Stri
         .bind(bot_id)
         .bind(name)
         .fetch_optional(pool).await
-        .unwrap_or(None)
+        .unwrap_or_else(|e| {
+            eprintln!("get_global_var SQL error: {}", e);
+            None
+        })
         .unwrap_or_default()
 }
 
@@ -291,7 +303,10 @@ pub async fn list_global_vars(pool: &SqlitePool, bot_id: &str) -> Vec<String> {
     sqlx::query_scalar::<_, String>("SELECT name FROM global_vars WHERE bot_id=? ORDER BY name")
         .bind(bot_id)
         .fetch_all(pool).await
-        .unwrap_or_default()
+        .unwrap_or_else(|e| {
+            eprintln!("list_global_vars SQL error: {}", e);
+            vec![]
+        })
 }
 
 /// Returns true if a global var exists for this bot.
