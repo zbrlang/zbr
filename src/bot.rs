@@ -116,6 +116,18 @@ async fn get_latency(ctx: &Context) -> Option<std::time::Duration> {
     runners.get(&ctx.shard_id)?.latency
 }
 
+async fn total_shard_count(ctx: &Context) -> u64 {
+    let data = ctx.data.read().await;
+    let shard_manager = match data.get::<crate::types::ShardManagerContainer>() {
+        Some(sm) => sm,
+        None => {
+            return 1;
+        }
+    };
+    let runners = shard_manager.runners.lock().await;
+    runners.len() as u64
+}
+
 impl Bot {
     async fn run_event_command(&self, ctx: &Context, trigger: &str, context: RunContext) {
         let commands = self.commands.read().await;
@@ -134,7 +146,7 @@ impl Bot {
                 cache: ctx.cache.clone(),
                 shard_latency: get_latency(&ctx).await,
                 shard_id: ctx.shard_id.0 as u64,
-                total_shards: ctx.shard_id.0 as u64,
+                total_shards: total_shard_count(&ctx).await,
             };
             let data = executor::execute_code(ast, context, &state);
             send_event_response(ctx, &channel_id, &data).await;
@@ -427,7 +439,7 @@ impl EventHandler for Bot {
                         cache: ctx.cache.clone(),
                         shard_latency: get_latency(&ctx).await,
                         shard_id: ctx.shard_id.0 as u64,
-                        total_shards: ctx.shard_id.0 as u64,
+                        total_shards: total_shard_count(&ctx).await,
                     };
 
                     let data = executor::execute_code(ast, context, &state);
@@ -982,7 +994,7 @@ impl EventHandler for Bot {
                         cache: ctx.cache.clone(),
                         shard_latency: get_latency(&ctx).await,
                         shard_id: ctx.shard_id.0 as u64,
-                        total_shards: ctx.shard_id.0 as u64,
+                        total_shards: total_shard_count(&ctx).await,
                     };
 
                     let data = executor::execute_code(ast, context, &state);
@@ -1123,7 +1135,7 @@ impl EventHandler for Bot {
                         cache: ctx.cache.clone(),
                         shard_latency: get_latency(&ctx).await,
                         shard_id: ctx.shard_id.0 as u64,
-                        total_shards: ctx.shard_id.0 as u64,
+                        total_shards: total_shard_count(&ctx).await,
                     };
 
                     let data = executor::execute_code(ast, context, &state);
@@ -1284,7 +1296,7 @@ impl EventHandler for Bot {
                         cache: ctx.cache.clone(),
                         shard_latency: get_latency(&ctx).await,
                         shard_id: ctx.shard_id.0 as u64,
-                        total_shards: ctx.shard_id.0 as u64,
+                        total_shards: total_shard_count(&ctx).await,
                     };
 
                     let data = executor::execute_code(ast, context, &state);
@@ -1587,7 +1599,6 @@ fn build_components(data: &ComponentData) -> Vec<CreateActionRow> {
         }
     }
 
-    // ── String/User/Role/Mentionable select menu ──────────────────────────────
     if let Some(sm) = &data.select_menu {
         let kind = match sm.kind.as_str() {
             "user" =>
@@ -1686,11 +1697,6 @@ fn build_embeds(embeds: &[EmbedData]) -> Vec<CreateEmbed> {
         .collect()
 }
 
-/// Parse an emoji string into a serenity ReactionType.
-/// Supports:
-///   - Unicode emoji: "👍"
-///   - Custom emoji format: "<:name:id>" or "<a:name:id>"
-///   - Raw ID: "123456789"
 pub fn parse_reaction_type(s: &str) -> ReactionType {
     let s = s.trim();
     // Custom emoji: <:name:id> or <a:name:id>
