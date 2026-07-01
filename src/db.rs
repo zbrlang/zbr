@@ -163,12 +163,14 @@ pub async fn set_user_var(
 
 /// Delete all user_vars rows for a given bot+guild+name (resets for every user).
 pub async fn reset_user_var(pool: &SqlitePool, bot_id: &str, guild_id: &str, name: &str) {
-    sqlx::query("DELETE FROM user_vars WHERE bot_id=? AND guild_id=? AND name=?")
+    if let Err(e) = sqlx::query("DELETE FROM user_vars WHERE bot_id=? AND guild_id=? AND name=?")
         .bind(bot_id)
         .bind(guild_id)
         .bind(name)
         .execute(pool).await
-        .ok();
+    {
+        eprintln!("reset_user_var SQL error: {}", e);
+    }
 }
 
 pub async fn get_server_var(pool: &SqlitePool, bot_id: &str, guild_id: &str, name: &str) -> String {
@@ -209,11 +211,13 @@ pub async fn set_server_var(
 
 /// Delete all server_vars rows for a given bot+name (resets across every server).
 pub async fn reset_server_var(pool: &SqlitePool, bot_id: &str, name: &str) {
-    sqlx::query("DELETE FROM server_vars WHERE bot_id=? AND name=?")
+    if let Err(e) = sqlx::query("DELETE FROM server_vars WHERE bot_id=? AND name=?")
         .bind(bot_id)
         .bind(name)
         .execute(pool).await
-        .ok();
+    {
+        eprintln!("reset_server_var SQL error: {}", e);
+    }
 }
 
 pub async fn get_channel_var(
@@ -259,11 +263,13 @@ pub async fn set_channel_var(
 
 /// Delete all channel_vars rows for a given bot+name (resets across every channel).
 pub async fn reset_channel_var(pool: &SqlitePool, bot_id: &str, name: &str) {
-    sqlx::query("DELETE FROM channel_vars WHERE bot_id=? AND name=?")
+    if let Err(e) = sqlx::query("DELETE FROM channel_vars WHERE bot_id=? AND name=?")
         .bind(bot_id)
         .bind(name)
         .execute(pool).await
-        .ok();
+    {
+        eprintln!("reset_channel_var SQL error: {}", e);
+    }
 }
 
 pub async fn get_global_var(pool: &SqlitePool, bot_id: &str, name: &str) -> String {
