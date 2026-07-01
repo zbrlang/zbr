@@ -16,6 +16,7 @@ use notify::{ recommended_watcher, Event, RecursiveMode, Watcher };
 use serenity::prelude::*;
 use std::env;
 use std::sync::Arc;
+use tokio::signal;
 use tokio::sync::RwLock;
 use types::CommandMap;
 
@@ -127,8 +128,20 @@ async fn main() {
         data.insert::<types::ShardManagerContainer>(client.shard_manager.clone());
     }
 
-    if let Err(why) = client.start().await {
-        eprintln!("Client error: {:?}", why);
+    let shard_manager = client.shard_manager.clone();
+
+    let client_handle = tokio::spawn(async move {
+        if let Err(why) = client.start().await {
+            eprintln!("Client error: {:?}", why);
+        }
+    });
+
+    tokio::select! {
+        _ = signal::ctrl_c() => {
+            println!("\nShutting down...");
+            shard_manager.shutdown_all().await;
+        }
+        _ = client_handle => {}
     }
 
     drop(watcher);
