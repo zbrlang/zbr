@@ -96,19 +96,16 @@ impl Runtime {
                     }
                     FnOutput::Empty => {}
                     FnOutput::Error(e) => {
-                        let loc = CURRENT_LOCATION.with(|l| l.borrow().clone());
-                        fatal_error = Some(format!("{} ({}:{})", e, loc.0, loc.1));
+                        fatal_error = Some(e);
                     }
                     FnOutput::UserError(e) => {
                         if !e.is_empty() {
-                            let loc = CURRENT_LOCATION.with(|l| l.borrow().clone());
-                            fatal_error = Some(format!("{} ({}:{})", e, loc.0, loc.1));
+                            fatal_error = Some(e);
                         }
                     }
                 }
             Err(e) => {
-                let loc = CURRENT_LOCATION.with(|l| l.borrow().clone());
-                fatal_error = Some(format!("{} ({}:{})", e, loc.0, loc.1));
+                fatal_error = Some(e);
             }
         }
 
