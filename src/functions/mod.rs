@@ -898,38 +898,6 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         max_args: 1,
     });
 
-    // Reactions
-    registry.insert("addReactions".to_string(), FnMeta {
-        func: reactions::addReactions::run,
-        min_args: 1,
-        max_args: 100,
-    });
-    registry.insert("addCmdReactions".to_string(), FnMeta {
-        func: reactions::addCmdReactions::run,
-        min_args: 1,
-        max_args: 100,
-    });
-    registry.insert("addMessageReactions".to_string(), FnMeta {
-        func: reactions::addMessageReactions::run,
-        min_args: 3,
-        max_args: 100,
-    });
-    registry.insert("getReactions".to_string(), FnMeta {
-        func: reactions::getReactions::run,
-        min_args: 4,
-        max_args: 4,
-    });
-    registry.insert("clearReactions".to_string(), FnMeta {
-        func: reactions::clearReactions::run,
-        min_args: 3,
-        max_args: 100,
-    });
-    registry.insert("userReacted".to_string(), FnMeta {
-        func: reactions::userReacted::run,
-        min_args: 4,
-        max_args: 4,
-    });
-
     // Time extras
     registry.insert("getTimestamp".to_string(), FnMeta {
         func: time::getTimestamp::run,
