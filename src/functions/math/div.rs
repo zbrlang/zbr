@@ -5,7 +5,10 @@ use super::helpers::parse_f64;
 // Zdiv{100;5;2} = 100 / 5 / 2 = 10
 pub fn run(args: Vec<String>, _ctx: &DiscordContext) -> FnOutput {
     let mut iter = args.iter().enumerate();
-    let (_, first) = iter.next().unwrap();
+    let (_, first) = match iter.next() {
+        Some(v) => v,
+        None => return FnOutput::error("div", crate::error_messages::too_few_args(1, 0)),
+    };
     let mut result = match parse_f64(first, "div", 1, "value") {
         Ok(v) => v, Err(e) => return e,
     };
