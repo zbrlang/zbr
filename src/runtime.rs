@@ -854,9 +854,7 @@ impl Runtime {
         match handle {
             None => Ok(FnOutput::error("await", format!("no async block named '{}'", name_str))),
             Some(h) => {
-                let result = tokio::task
-                    ::block_in_place(|| tokio::runtime::Handle::current().block_on(h))
-                    .unwrap_or_default();
+                let result = tokio::runtime::Handle::current().block_on(h).unwrap_or_default();
                 Ok(if result.is_empty() { FnOutput::Empty } else { FnOutput::Text(result) })
             }
         }
