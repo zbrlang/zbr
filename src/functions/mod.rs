@@ -1553,6 +1553,16 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         min_args: 0,
         max_args: 1,
     });
+    registry.insert("guildSplash".to_string(), FnMeta {
+        func: servers::serverSplash::run,
+        min_args: 0,
+        max_args: 1,
+    });
+    registry.insert("guildDiscoverySplash".to_string(), FnMeta {
+        func: servers::serverDiscoverySplash::run,
+        min_args: 0,
+        max_args: 1,
+    });
     registry.insert("serverDescription".to_string(), FnMeta {
         func: servers::serverDescription::run,
         min_args: 0,

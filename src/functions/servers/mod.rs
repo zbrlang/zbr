@@ -7,6 +7,8 @@ pub mod guildExists;
 pub mod membersCount;
 pub mod serverBanner;
 pub mod serverDescription;
+pub mod serverDiscoverySplash;
+pub mod serverSplash;
 pub mod serverEmojis;
 pub mod serverIcon;
 pub mod serverName;
