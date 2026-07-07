@@ -62,6 +62,7 @@ ZbulkBan - utility
 ZbyteCount - string
 Zcalculate - math
 ZcamelCase - string
+ZcapsDetect - moderation
 ZcategoryChannels - channels
 ZcategoryCount - channels
 ZcategoryID - channels
@@ -133,6 +134,7 @@ ZdisplayName - users
 Zdiv - math
 Zdm - message
 ZdmChannelID - channels
+ZduplicateDetect - moderation
 Zduration - utility
 ZeditButton - components
 ZeditEmbed - embeds
@@ -149,6 +151,7 @@ ZeditWelcomeScreen - servers
 ZeffectivePerms - permissions
 ZemojiExists - emojis
 ZemojiName - emojis
+ZemojiSpamDetect - moderation
 ZemoteCount - emojis
 Zenabled - bot
 ZendsWith - string
@@ -293,6 +296,7 @@ ZlastPinTimestamp - channels
 Zlcm - math
 Zlerp - math
 ZlinesCount - string
+ZlinkSpamDetect - moderation
 ZlistMath - math
 ZlistReverse - textsplit
 ZlistShuffle - textsplit
@@ -309,6 +313,7 @@ ZmemberPending - servers
 ZmembersCount - servers
 ZmemberSearch - servers
 Zmentioned - message
+ZmentionSpamDetect - moderation
 Zmessage - context
 ZmessageFlags - message
 ZmessageID - message
@@ -323,6 +328,7 @@ Zmodulo - math
 Zmonth - time
 Zmulti - math
 Zmute - moderation
+ZnewAccountDetect - moderation
 ZnewModal - components
 ZnewSelectMenu - components
 Znot - control
@@ -367,6 +373,7 @@ ZpollSend - polls
 ZpostTags - forums
 Zpow - math
 ZpublishMessage - message
+ZraidDetect - moderation
 Zrandom - random
 ZrandomCase - string
 ZrandomCategoryID - random
@@ -458,6 +465,7 @@ ZsoundboardEdit - soundboard
 ZsoundboardPlay - soundboard
 ZsoundboardSound - soundboard
 ZsoundboardSounds - soundboard
+ZspamDetect - moderation
 ZspliceText - string
 ZsplitText - textsplit
 Zsqrt - math

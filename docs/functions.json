@@ -1315,6 +1315,27 @@
     "example": "ZcamelCase{}"
   },
   {
+    "name": "ZcapsDetect",
+    "description": "Returns true if the ratio of uppercase letters in the message meets or exceeds the threshold. Best used inside an onMessage event.",
+    "syntax": "ZcapsDetect{message?;threshold?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "message",
+        "type": "string",
+        "required": false,
+        "default": "current message"
+      },
+      {
+        "name": "threshold",
+        "type": "number",
+        "required": false,
+        "default": "0.7"
+      }
+    ],
+    "example": "ZcapsDetect{Zmessage;0.7}"
+  },
+  {
     "name": "ZcategoryChannels",
     "description": "Returns the channels inside a category sorted by position, formatted as names, IDs, mentions, or a count, joined by the specified separator.",
     "syntax": "ZcategoryChannels{categoryID;separator?;returnType?}",
@@ -2541,6 +2562,22 @@
     "example": "ZdmChannelID{1234567890123456789}"
   },
   {
+    "name": "ZduplicateDetect",
+    "description": "Returns true if the current message is similar to a recent message in the channel, using Levenshtein distance. Best used inside an onMessage event.",
+    "syntax": "ZduplicateDetect{similarityThreshold?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "similarityThreshold",
+        "type": "number",
+        "required": false,
+        "default": "0.85"
+      }
+    ],
+    "example": "ZduplicateDetect{0.85}"
+  },
+
+  {
     "name": "Zduration",
     "description": "Converts a duration string (e.g. 1h, 30m, 5d) into seconds.",
     "syntax": "Zduration{duration}",
@@ -2972,6 +3009,27 @@
       }
     ],
     "example": "ZemojiName{123456789012345678}"
+  },
+  {
+    "name": "ZemojiSpamDetect",
+    "description": "Returns true if the number of emojis in the message meets or exceeds the threshold. Best used inside an onMessage event.",
+    "syntax": "ZemojiSpamDetect{message?;threshold?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "message",
+        "type": "string",
+        "required": false,
+        "default": "current message"
+      },
+      {
+        "name": "threshold",
+        "type": "number",
+        "required": false,
+        "default": "10"
+      }
+    ],
+    "example": "ZemojiSpamDetect{Zmessage;10}"
   },
   {
     "name": "ZemoteCount",
@@ -5263,6 +5321,32 @@
     "example": "ZlinesCount{line one\nline two}"
   },
   {
+    "name": "ZlinkSpamDetect",
+    "description": "Returns true if the user has sent more messages containing URLs than the allowed limit within the time window. Best used inside an onMessage event.",
+    "syntax": "ZlinkSpamDetect{userID;maxLinks?;windowSeconds?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "maxLinks",
+        "type": "number",
+        "required": false,
+        "default": "3"
+      },
+      {
+        "name": "windowSeconds",
+        "type": "number",
+        "required": false,
+        "default": "60"
+      }
+    ],
+    "example": "ZlinkSpamDetect{ZuserID;3;60}"
+  },
+  {
     "name": "ZlistMath",
     "description": "Executes the ZlistMath function.",
     "syntax": "ZlistMath{arg1;arg2;arg3}",
@@ -5515,6 +5599,21 @@
     "example": "Zmentioned{1;true}"
   },
   {
+    "name": "ZmentionSpamDetect",
+    "description": "Returns true if the number of mentions (@user, @role, @everyone, @here) in the current message meets or exceeds the threshold. Best used inside an onMessage event.",
+    "syntax": "ZmentionSpamDetect{threshold?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "threshold",
+        "type": "number",
+        "required": false,
+        "default": "5"
+      }
+    ],
+    "example": "ZmentionSpamDetect{5}"
+  },
+  {
     "name": "Zmessage",
     "description": "Returns the full message content after the command trigger, or the Nth space-separated word when an index is provided.",
     "syntax": "Zmessage{index?}",
@@ -5762,6 +5861,26 @@
       }
     ],
     "example": "Zmute{123456789012345678}"
+  },
+  {
+    "name": "ZnewAccountDetect",
+    "description": "Returns true if the account age of the specified user is less than the minimum age in days, calculated from their Discord snowflake ID. Best used inside an onMemberJoin event.",
+    "syntax": "ZnewAccountDetect{userID;minAgeDays?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "minAgeDays",
+        "type": "number",
+        "required": false,
+        "default": "7"
+      }
+    ],
+    "example": "ZnewAccountDetect{ZuserID;7}"
   },
   {
     "name": "ZnewModal",
@@ -6573,6 +6692,26 @@
       }
     ],
     "example": "ZpublishMessage{123456789012345678;987654321098765432}"
+  },
+  {
+    "name": "ZraidDetect",
+    "description": "Returns true if the number of member joins in the guild within the time window meets or exceeds the threshold. Best used inside an onMemberJoin event.",
+    "syntax": "ZraidDetect{joinCount;windowSeconds?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "joinCount",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "windowSeconds",
+        "type": "number",
+        "required": false,
+        "default": "60"
+      }
+    ],
+    "example": "ZraidDetect{5;30}"
   },
   {
     "name": "Zrandom",
@@ -8073,6 +8212,32 @@
     "variadic": false,
     "arguments": [],
     "example": "ZsoundboardSounds{}"
+  },
+  {
+    "name": "ZspamDetect",
+    "description": "Returns true if the user has exceeded the message count threshold within the time window. Best used inside an onMessage event.",
+    "syntax": "ZspamDetect{userID;threshold?;windowSeconds?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "userID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "threshold",
+        "type": "number",
+        "required": false,
+        "default": "10"
+      },
+      {
+        "name": "windowSeconds",
+        "type": "number",
+        "required": false,
+        "default": "60"
+      }
+    ],
+    "example": "ZspamDetect{ZuserID;10;60}"
   },
   {
     "name": "ZspliceText",
