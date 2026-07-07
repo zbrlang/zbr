@@ -2,17 +2,39 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.8.1 - Advanced Moderation Functions
+
+This release adds 8 new moderation detection functions. All use pure logic, math, or regex, no external APIs required.
+
+### New Functions
+
+- **`ZspamDetect{userID;threshold?;windowSeconds?}`**: Tracks message velocity for a user and returns `true` if they've exceeded the threshold within the time window. Defaults: 10 messages / 60 seconds.
+- **`ZraidDetect{joinCount;windowSeconds?}`**: Tracks member joins and returns `true` if the guild has exceeded the join threshold within the time window. Defaults: 60 seconds.
+- **`ZduplicateDetect{similarityThreshold?}`**: Compares the current message against the last 50 messages in the channel using Levenshtein distance. Returns `true` if a similar message is found. Default threshold: 0.85 (85%).
+- **`ZmentionSpamDetect{threshold?}`**: Counts `@user`, `@role`, `@everyone`, and `@here` mentions in the current message. Returns `true` if the count meets or exceeds the threshold. Default: 5.
+- **`ZlinkSpamDetect{userID;maxLinks?;windowSeconds?}`**: Tracks messages containing URLs for a user and returns `true` if they've exceeded the limit within the time window. Defaults: 3 links / 60 seconds.
+- **`ZcapsDetect{message?;threshold?}`**: Calculates the ratio of uppercase letters to total letters. Returns `true` if the ratio meets or exceeds the threshold. Default: 0.7 (70%).
+- **`ZemojiSpamDetect{message?;threshold?}`**: Counts Unicode and custom Discord emojis in a message. Returns `true` if the count meets or exceeds the threshold. Default: 10.
+- **`ZnewAccountDetect{userID;minAgeDays?}`**: Extracts the account creation date from the Discord snowflake ID and returns `true` if the account is younger than the minimum age. Default: 7 days.
+
+### Database
+
+- Added `spam_tracker` table, used by `ZspamDetect` and `ZlinkSpamDetect`.
+- Added `raid_tracker` table, used by `ZraidDetect`.
+
 ## v1.8.0 - Stability, Performance, and API Expansion
 
 This release delivers 11 bug fixes, 3 performance improvements, and 6 new ZBR functions for embeds, JSON, HTTP, and server metadata.
 
 ### New Functions
+
 - **Embeds**: `ZeditEmbed{channelID?;messageID;index?}` to edit an existing message's embed by channel and message ID, with optional embed index.
 - **JSON**: `ZjsonMerge{target;sourceJson}` for deep-merging a JSON string into the working object at a key path (objects merge recursively; scalars and arrays overwrite).
 - **HTTP**: `ZhttpHead{url}` and `ZhttpOptions{url}` for HEAD and OPTIONS request methods.
 - **Servers**: `ZserverSplash{guildID?}` and `ZserverDiscoverySplash{guildID?}` returning guild splash and discovery splash CDN URLs.
 
 ### Bug Fixes
+
 - Fixed missing `\;` and `\Z` escape sequences in loader brace depth tracking.
 - Fixed duplicate reaction function registrations overwriting `max_args`.
 - Fixed bitwise operation reading from arg 1 before checking arg 2 requirement.
@@ -26,11 +48,13 @@ This release delivers 11 bug fixes, 3 performance improvements, and 6 new ZBR fu
 - Fixed missing graceful shutdown handler for SIGTERM/SIGINT.
 
 ### Performance
+
 - Batched `block_in_place` calls in `build_response` to reduce thread pool contention.
 - Made `Runtime::run` fully async, eliminating 12 `block_in_place` wrappers.
 - Made `execute_code` and `build_response` async for improved concurrency.
 
 ### Chore
+
 - Cleaned up import order and formatting in `bot.rs`.
 - Replaced `starts_with` URL validation with proper parsing via the `url` crate.
 
@@ -39,25 +63,31 @@ This release delivers 11 bug fixes, 3 performance improvements, and 6 new ZBR fu
 This release introduces over 50 new functions to the ZBR engine, drastically expanding the capabilities for string manipulation, advanced math, randomization, and data validation without requiring external APIs.
 
 ### Discord API Extensions
+
 - **ZfetchInvite**: Fetch detailed invite metadata.
 - **ZuserLocale**: Retrieve user locale/language settings.
 - **ZmessageLink**: Generate Discord message jump-links.
 
 ### Math & Number Utilities
+
 - **Zabbreviate**, **ZbaseConvert**, **ZbitWise**, **Zclamp**, **ZdecimalToHex**, **Zdice**, **Zfactorial**, **Zfinancial**, **Zgcd**, **ZhexToDecimal**, **Zhypot**, **ZisEven**, **ZisOdd**, **Zlcm**, **Zlerp**, **ZlistMath**, **Zpercent**, **Zroot**, **Ztruncate**
 
 ### String & List Manipulation
+
 - **ZcamelCase**, **Zcensor**, **Zclean**, **Zextract**, **ZfuzzyMatch**, **ZkebabCase**, **ZlistReverse**, **ZlistShuffle**, **ZpascalCase**, **ZrandomCase**, **ZrepeatText**, **ZreverseText**, **ZsnakeCase**, **ZwordCount**
 
 ### Visual & Color Utilities
+
 - **ZcolorInvert**, **ZcolorRandom**, **ZhexToHsl**, **ZhexToRgb**, **ZhslToHex**, **ZrgbToHex**
 
 ### Technical & Utility
+
 - **ZcharCode**, **Zentropy**, **ZformatBytes**, **ZfromCharCode**, **Zpad**, **ZrelativeTime**, **Zroman**, **ZtimeDiff**, **ZtimeFormat**, **Ztype**, **Zuuid**, **Zvalidate**
 
 ## v1.6.0 - System Improvements and Validation
 
 ### Core
+
 - **Hot Reload Debouncing**: Added hot reload debouncing (300ms) to prevent multiple reloads on rapid file saves.
 - **Recursion Limits**: Added recursion depth limit (max 100) to prevent stack overflows from circular function calls.
 - **Debugging**: Added file and line number info to error messages for easier debugging.
@@ -66,11 +96,13 @@ This release introduces over 50 new functions to the ZBR engine, drastically exp
 ## v1.5.6 - Android OS Metadata Support
 
 ### Core
+
 - **OS Metadata**: Updated `packages/zbr-linux-arm64/package.json` to explicitly include `android` in the `os` field, ensuring better compatibility and installation support for Android devices via Termux.
 
 ## v1.5.5 - Binary Permissions Fix
 
 ### Core
+
 - **Binary Permissions**: Fixed an issue in `bin/cli.js` where the resolved runtime binary lacked executable permissions on Unix-based platforms, causing `zbr version` and other commands to fail.
 
 ## v1.5.4 - Platform-Specific Package Migration
@@ -78,14 +110,17 @@ This release introduces over 50 new functions to the ZBR engine, drastically exp
 This release migrates the installation process from a `postinstall` script to platform-specific optional npm packages, improving reliability and compatibility across different operating systems and CPU architectures.
 
 ### Core
+
 - **Optional Dependencies**: Replaced `postinstall.js` with 6 platform-specific optional packages (`@zbrlang/zbr-linux-x64`, `@zbrlang/zbr-linux-arm64`, `@zbrlang/zbr-darwin-x64`, `@zbrlang/zbr-darwin-arm64`, `@zbrlang/zbr-windows-x64`, `@zbrlang/zbr-windows-arm64`).
 - **Binary Resolution**: Updated `bin/cli.js` to dynamically resolve the binary path from the installed optional package.
 - **Android Support**: Added `android` platform normalization to `linux` in `bin/cli.js`.
 
 ### CLI
+
 - **`zbr update`**: Reworked to run `npm i -g @zbrlang/zbr@latest` instead of manual binary downloads.
 
 ### CI/CD
+
 - **Release Workflow**: Updated `.github/workflows/release.yml` to automatically download, version, and publish the platform-specific packages to npm.
 
 ## v1.5.3 - Fixes and Build Target Optimization
@@ -93,6 +128,7 @@ This release migrates the installation process from a `postinstall` script to pl
 This release fixes critical installation issues for Android/Termux and corrects binary path configurations.
 
 ### Fixes
+
 - Fixed duplicate key variable in `postinstall.js` causing Android Termux install to fail
 - Fixed `cli.js` binary paths pointing to wrong directory and old binary names
 - Removed iOS binary build target
@@ -102,10 +138,12 @@ This release fixes critical installation issues for Android/Termux and corrects 
 This release introduces over 30 new functions, organizes webhook and template functionality into dedicated categories, and adds shard-aware utility functions for advanced bot monitoring.
 
 ### Core
+
 - **Shard-Awareness**: Added `shard_id` and `total_shards` to `DiscordContext`, allowing bots to query their sharding status.
 - **Webhook Consolidation**: Moved all webhook-related functions (`sendWebhook`, `webhookCreate`, `webhookDelete`) into a new, dedicated `webhooks` category.
 
 ### New Functions
+
 - **Bot**: `ZcurrentShard`, `ZtotalShards`
 - **Member Management**: `ZmemberPending`, `ZmemberSearch`, `ZmemberFlags`
 - **Invites**: `ZcreateInviteWithRoles`
@@ -118,10 +156,12 @@ This release introduces over 30 new functions, organizes webhook and template fu
 - **Utility**: `ZsnowflakeTimestamp`, `ZsnowflakeAge`, `ZbulkBan`
 
 ### Modifications
+
 - `ZisTimedOut`: Now supports an optional `returnTimestamp` argument.
 - `ZinviteInfo`: Now fetches real data for `uses`, `isTemporary`, and `maxAge`.
 
 ### CI/CD
+
 - **Multi-Platform Binary Support**: Updated `.github/workflows/release.yml` and `postinstall.js` to build, name, and correctly download platform-specific binaries (Linux x64/arm64, macOS x64/arm64, Windows x64/arm64).
 - **HuggingFace Rebuild Fix**: Updated `release.yml` to force a Dockerfile cache bust using `date +%s` during the HF Space rebuild process, ensuring the latest version is always deployed.
 
@@ -130,6 +170,7 @@ This release introduces over 30 new functions, organizes webhook and template fu
 This release improves the command loader's ability to process complex ZBR scripts and adds new escape sequences.
 
 ### Core
+
 - **Multi-line Function Support**: Added brace-depth tracking to the command loader, allowing function calls (e.g., `Zdescription{...}`) to span multiple lines.
 - **Newline Preservation**: Fixed an issue where consecutive plain-text lines were incorrectly concatenated without newlines.
 - **`\Z` and `\}` Escape Support**: Added `\Z` escape sequence to output literal Z-prefixed text and `\}` to escape curly brackets, correctly handling nested braces in multi-line commands.
@@ -141,12 +182,14 @@ This release improves the command loader's ability to process complex ZBR script
 This release introduces major improvements to the parser's flexibility, simplifies function invocation, and resolves critical bugs in the alias system and positional argument handling.
 
 ### Core
+
 - **Optional Brackets**: Zero-argument function calls no longer require curly brackets (e.g., `Zusername` works the same as `Zusername{}`).
 - **Literal Text Handling**: Unknown Z-prefixed identifiers (e.g., `ZUnknown`) without brackets are now treated as literal text instead of causing runtime errors.
 - **Nested Bracketless Calls**: Bracketless function calls are now correctly recognized and evaluated even when nested within the arguments of other function calls (e.g., `ZsendMessage{ZchannelID;hello}`).
 - **Alias Fixes**: Resolved argument merging issues where aliased function calls were losing arguments, and added validation to ensure the aliased function is a valid ZBR function.
 
 ### Argument Parsing
+
 - **Empty Argument Preservation**: `split_args` now correctly preserves empty arguments between semicolons (e.g., `Zfunc{;arg2}` correctly maps `arg2` to index 1).
 - **Positional Argument Robustness**: Refactored 161 functions across the codebase to explicitly handle empty string arguments as "use default" values, preventing positional misalignment bugs.
 
@@ -155,6 +198,7 @@ This release introduces major improvements to the parser's flexibility, simplifi
 This release introduces the `Zalias` system for improved code reusability and fixes a bug in message evaluation.
 
 ### Core
+
 - **Runtime Aliases**: Added `Zalias{<expression>;<alias_name>}` which allows users to create runtime aliases for any ZBR expression. Aliases are local to the command execution, support chaining, and include a recursion depth guard to prevent infinite loops.
 - **Fixed `Zreply` Evaluation**: Resolved a bug where `Zreply{}` inside a concatenated string (e.g. `Hello Zreply{} World`) would short-circuit evaluation, causing subsequent content to be ignored.
 - **Ping Precision**: Updated `Zping{}` to return the actual bot gateway latency with 5 decimal places (in milliseconds) for high-precision monitoring.
@@ -165,11 +209,13 @@ This release introduces the `Zalias` system for improved code reusability and fi
 This release focuses on improving bot performance and robustness by caching execution data and surfacing critical database errors.
 
 ### Core
+
 - **AST Caching**: Pre-parses ZBR scripts into an AST on load, eliminating redundant parsing on every execution.
 - **Variable Caching**: Implemented a per-execution variable cache in `DiscordContext` to eliminate redundant database reads for the same variable within a single command execution.
 - **Regex Optimization**: Moved trigger regex compilation to a `static` initializer, eliminating repeated compilation on every incoming message.
 
 ### Error Handling
+
 - **Structured Error Reporting**: Refactored command loading to produce detailed, context-aware error messages (file, line number) when command files fail to parse.
 - **Database Error Propagation**: Database write failures are no longer silently ignored and now surface as error messages in Discord.
 - **Standardized Error Messages**: Aligned database failure messages with the centralized `error_messages.rs` formatting system (`action_failed_reason`).
@@ -177,10 +223,12 @@ This release focuses on improving bot performance and robustness by caching exec
 ## v1.4.2 - Mobile support and version fix
 
 ### Distribution
+
 - **Android support**: Added `aarch64-linux-android` binary target; ZBR now runs on Android via Termux.
 - **iOS support**: Added `aarch64-apple-ios` binary target; ZBR now runs on iOS via iSH.
 
 ### CLI
+
 - **Fixed `zbr version`**: Now reports the actual binary version instead of the stale npm package version.
 - **Fixed `zbr update`**: Version is now always accurate after updating.
 
@@ -189,9 +237,11 @@ This release focuses on improving bot performance and robustness by caching exec
 This release addresses a critical parser bug and introduces a new interaction feature for better message management in Discord.
 
 ### Core
+
 - **Fixed Parser Data Loss**: Resolved a bug in `parse_arg` where arguments containing multiple function calls (e.g., inside `Zif`) were being truncated.
 
 ### New Functions
+
 - `Zupdate{}`: Signals that an interaction (button/select menu) should update the original message instead of sending a new reply.
 - `ZspliceText{text;start;length;replacement}`: Modifies a string by removing a specified number of characters and inserting new text.
 
@@ -200,6 +250,7 @@ This release addresses a critical parser bug and introduces a new interaction fe
 All 390+ ZBR functions now share a single centralized error system in `src/error_messages.rs`. Every `FnOutput::error()` call uses the same formatting helpers, producing consistent `Line N: Zfunction - message` output everywhere.
 
 ### Core
+
 - **26 centralized error helpers**: `too_few_args`, `expected_snowflake`, `expected_url`, `out_of_range`, `not_found`, `action_failed_reason`, `not_available`, and more, all producing uniform error messages.
 - **Every function updated**: All 394+ `FnOutput::error` calls across the codebase now route through `crate::error_messages::*`.
 - **Helper modules aligned**: `math/helpers.rs` (`parse_f64`/`parse_i64`), `permissions/helpers.rs`, `audit/helpers.rs`, and `json/helpers.rs` all use the centralized system.
@@ -210,6 +261,7 @@ All 390+ ZBR functions now share a single centralized error system in `src/error
 This release eliminates the HTTP runtime server, running the engine in-process for lower latency and simpler deployment. It also adds 5 new function categories and over 30 new functions.
 
 ### Core
+
 - **Removed HTTP runtime server**: The Axum-based HTTP server (`/run` endpoint) is gone. Code execution now happens directly in-process via the new `executor` module, eliminating network overhead and the need for `axum`, `tower`, and `tower-http` dependencies.
 - **SSRF Protection**: HTTP functions now validate URLs against a blocklist of private/reserved IPs and known dangerous hostnames before executing requests.
 - **Header Validation**: `ZhttpAddHeader` blocks dangerous headers (cookie, host, connection, transfer-encoding, etc.) for security.
@@ -251,6 +303,7 @@ Alias: `ZautomodRuleUpdate` → `ZautomodRuleEdit`
 This release fixes bot owner resolution for team/group bots, adds new server/thread/voice functions, improves CLI command support, and expands project initialization.
 
 ### Core
+
 - Fixed `botOwnerID` so it returns the actual bot owner instead of the team ID when the bot is part of a team/group.
 - Added `version`, `list`, and `new <type>` CLI commands.
 - Updated `init` to support creating a project in a new folder via `init <folder>`.
@@ -259,12 +312,15 @@ This release fixes bot owner resolution for team/group bots, adds new server/thr
 ### Functions added
 
 **Server functions**
+
 - `serverChannels`, `serverRoles`
 
 **Thread functions**
+
 - `threadArchived`, `threadLocked`, `threadParentID`
 
 **Voice functions**
+
 - `voiceEmpty`, `voiceFull`, `voiceNew`, `voiceOld`
 
 ## v1.1.0 - Audit & Event Additions
@@ -272,11 +328,13 @@ This release fixes bot owner resolution for team/group bots, adds new server/thr
 This release adds a new audit-log function category and several gateway-based event triggers.
 
 ### Audit
+
 - Added a new `audit` function category exposing functions:
-	- `ZauditCount`, `ZauditEntries`, `ZauditLatest`, `ZauditEntryID`, `ZauditEntryUser`, `ZauditEntryAction`, `ZauditEntryTarget`, `ZauditEntryReason`, `ZauditEntryChanges`
+  - `ZauditCount`, `ZauditEntries`, `ZauditLatest`, `ZauditEntryID`, `ZauditEntryUser`, `ZauditEntryAction`, `ZauditEntryTarget`, `ZauditEntryReason`, `ZauditEntryChanges`
 - Functions fetch and return guild audit log data via the Discord API (JSON output for structured fields).
 
 ### Events
+
 - Added new triggers: `onBotJoin`, `onBotLeave`, `onBoostAdd`, `onBoostRemove`.
 - `onBotJoin` and `onBotLeave` map to runtime guild join/leave events and fire only for guilds the bot joins or leaves while online.
 - Boost event detection implemented via guild update comparisons of `premium_subscription_count`.
@@ -286,6 +344,7 @@ This release adds a new audit-log function category and several gateway-based ev
 End of Alpha and the first stable production release. This version introduces the official ZBR CLI, automated installation, and multi-OS support.
 
 ### CLI & Distribution
+
 - **New ZBR CLI**: The entire engine is now managed via a unified global command: `zbr`.
 - **Project Initialization**: `zbr init` instantly bootstraps a new project with a recommended folder structure, configuration files, and example scripts.
 - **Unified Runner**: `zbr run` launches the high-performance Rust execution engine and starts your bot.
@@ -293,6 +352,7 @@ End of Alpha and the first stable production release. This version introduces th
 - **Smart Installation**: Distributed via npm with a tiny footprint; the CLI automatically downloads the correct binary for your system on install.
 
 ### Features
+
 - Includes all features and functions from **Alpha v5** and earlier. Scroll down to see the full history from Alpha v1 to v5.
 
 ## Alpha v5
@@ -300,6 +360,7 @@ End of Alpha and the first stable production release. This version introduces th
 Loop system, async execution, full voice channel coverage, scheduled events, forum channels, stage channels, stickers, invite management, regex, extended string and math utilities, and more.
 
 ### Core
+
 - **Loop system**: `Zrepeat{N;code}` runs a code block N times (max 1000); `ZforSplit{code}` iterates over the current split text; `ZforJson{key;...;code}` iterates over a JSON array at a key path. All three are lazy-evaluated. `ZloopIndex{}` and `ZloopValue{}` expose the current iteration state inside any loop body
 - **Async execution**: `Zasync{name;code}` spawns a named background task that runs the code block concurrently; `Zawait{name}` blocks until that task completes and returns its result
 - **Deferred execution**: `Zdelay{duration;code}` runs a code block after a delay (e.g. `10s`, `2m`) in a background task; `ZreplyIn{duration;content}` replies to the trigger message after a delay. Both are fire-and-forget and cancelled on restart
@@ -356,6 +417,7 @@ Loop system, async execution, full voice channel coverage, scheduled events, for
 Moderation, message operations, HTTP requests, JSON manipulation, full control flow, error handling, and the component/interaction system.
 
 ### Core
+
 - `#type interaction`: new command type for component interaction handlers
 - `#type event`: new command type for Discord gateway event handlers
 - `onInteraction{id?}` trigger: runs when a button, select menu, or modal is submitted. Specific handler (`onInteraction{my_button}`) takes priority over catch-all (`onInteraction`)
@@ -408,6 +470,7 @@ Moderation, message operations, HTTP requests, JSON manipulation, full control f
 User, role, channel, server, and bot functions. Full Discord entity coverage.
 
 ### Core
+
 - Context functions: `Zmessage`, `Zoption`, `ZuserID`, `ZchannelID`, `ZguildID`, `ZroleID`, `Zusername`
 - `Zenabled{}`: enable/disable a command at runtime
 - `ZallowUserMentions{}`, `ZallowRoleMentions{}`: control which mentions the bot pings
@@ -436,6 +499,7 @@ User, role, channel, server, and bot functions. Full Discord entity coverage.
 Reactions, emojis, text splitting, permissions, threads, and blacklists. Introduced the `Zif` condition system.
 
 ### Core
+
 - `Zif{condition;then;else?}`: lazy conditional evaluation with `==`, `!=`, `>`, `<`, `>=`, `<=`, `contains`, `startsWith`, `endsWith`, `&&`, `||` operators
 - `ZcheckCondition{}`: evaluate a condition string and return `true`/`false`
 
@@ -464,6 +528,7 @@ Reactions, emojis, text splitting, permissions, threads, and blacklists. Introdu
 Initial release. Established the core runtime, parser, and execution model.
 
 ### Core
+
 - ZBR scripting language runtime built in Rust
 - Line-by-line execution with `Z`-prefixed function call syntax
 - Argument parsing with `;` separator, nested function calls, escape sequences (`\{`, `\;`, `\\`)
