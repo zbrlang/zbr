@@ -371,6 +371,19 @@ impl EventHandler for Bot {
 
         let content = msg.content.trim().to_string();
 
+        // Auto-track message for spam detection
+        if let Some(guild_id) = msg.guild_id {
+            let has_link = content.contains("http://") || content.contains("https://");
+            crate::db::log_spam_event(
+                &self.db,
+                &self.bot_id,
+                &guild_id.to_string(),
+                &msg.author.id.to_string(),
+                &msg.channel_id.to_string(),
+                has_link
+            ).await;
+        }
+
         let on_message_context = RunContext {
             author_id: msg.author.id.to_string(),
             username: msg.author.name.clone(),
@@ -570,6 +583,14 @@ impl EventHandler for Bot {
     }
 
     async fn guild_member_addition(&self, ctx: Context, new_member: Member) {
+        // Auto-track join for raid detection
+        crate::db::log_raid_event(
+            &self.db,
+            &self.bot_id,
+            &new_member.guild_id.to_string(),
+            &new_member.user.id.to_string()
+        ).await;
+
         let context = RunContext {
             author_id: new_member.user.id.to_string(),
             username: new_member.user.name.clone(),

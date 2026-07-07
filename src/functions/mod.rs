@@ -1706,6 +1706,48 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         max_args: 1,
     });
 
+    // Advanced Moderation
+    registry.insert("spamDetect".to_string(), FnMeta {
+        func: moderation::spamDetect::run,
+        min_args: 1,
+        max_args: 3,
+    });
+    registry.insert("raidDetect".to_string(), FnMeta {
+        func: moderation::raidDetect::run,
+        min_args: 1,
+        max_args: 2,
+    });
+    registry.insert("duplicateDetect".to_string(), FnMeta {
+        func: moderation::duplicateDetect::run,
+        min_args: 0,
+        max_args: 2,
+    });
+    registry.insert("mentionSpamDetect".to_string(), FnMeta {
+        func: moderation::mentionSpamDetect::run,
+        min_args: 0,
+        max_args: 1,
+    });
+    registry.insert("linkSpamDetect".to_string(), FnMeta {
+        func: moderation::linkSpamDetect::run,
+        min_args: 1,
+        max_args: 3,
+    });
+    registry.insert("capsDetect".to_string(), FnMeta {
+        func: moderation::capsDetect::run,
+        min_args: 0,
+        max_args: 2,
+    });
+    registry.insert("emojiSpamDetect".to_string(), FnMeta {
+        func: moderation::emojiSpamDetect::run,
+        min_args: 0,
+        max_args: 2,
+    });
+    registry.insert("newAccountDetect".to_string(), FnMeta {
+        func: moderation::newAccountDetect::run,
+        min_args: 1,
+        max_args: 2,
+    });
+
     // Voice
     registry.insert("isInVoice".to_string(), FnMeta {
         func: voice::isInVoice::run,
