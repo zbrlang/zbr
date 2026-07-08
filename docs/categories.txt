@@ -42,6 +42,14 @@ ZautomodRuleEdit - automod
 ZautomodRules - automod
 ZautomodRuleUpdate - automod
 Zawait - runtime
+Zai - ai
+ZaiClassify - ai
+ZaiClassifyCtx - ai
+ZaiCtx - ai
+ZaiDecide - ai
+ZaiDecideCtx - ai
+ZaiExtract - ai
+ZaiExtractCtx - ai
 Zban - moderation
 Zbase64Decode - utility
 Zbase64Encode - utility
@@ -245,6 +253,7 @@ Zhypot - math
 Zif - control
 ZignoreChannels - permissions
 Zimage - embeds
+ZimageAnalyze - ai
 ZindexOf - string
 ZinputValue - components
 ZinviteInfo - invites

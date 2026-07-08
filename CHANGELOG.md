@@ -2,6 +2,30 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.8.2 - AI Integration Functions
+
+This release adds 9 new AI-powered functions using the Gemini API for text generation, classification, extraction, and image analysis.
+
+### New Functions
+
+- **`Zai{apiKey;prompt;model?;maxTokens?;temperature?}`**: Sends a prompt to the AI and returns the response text. Supports Gemini API keys (AIza... or AQ...).
+- **`ZaiCtx{apiKey;prompt;model?;maxTokens?;temperature?}`**: Same as `Zai` but automatically injects Discord context (author, server, channel, message) as a system message.
+- **`ZaiDecide{apiKey;content;question;model?}`**: Asks the AI a yes/no question about the provided content. Returns strictly `true` or `false`.
+- **`ZaiDecideCtx{apiKey;question;model?}`**: Same as `ZaiDecide` but uses the current Discord context instead of provided content.
+- **`ZaiExtract{apiKey;content;instruction;model?}`**: Extracts specific information from text based on the instruction (e.g., emails, phone numbers, usernames). Returns `N/A` if not found.
+- **`ZaiExtractCtx{apiKey;instruction;model?}`**: Same as `ZaiExtract` but extracts from the current Discord context.
+- **`ZaiClassify{apiKey;content;categories;model?}`**: Classifies content into one category from a comma-separated list. Returns the best matching category.
+- **`ZaiClassifyCtx{apiKey;categories;model?}`**: Same as `ZaiClassify` but classifies the current Discord context.
+- **`ZimageAnalyze{apiKey;imageUrl;prompt;model?}`**: Analyzes an image from a URL using AI vision and returns a text description based on the prompt.
+
+### AI Features
+
+- Default model: `gemini-2.5-flash-lite` (free tier compatible)
+- Supports both `AIza...` and `AQ...` API key formats
+- Uses `v1beta` API endpoint for maximum model compatibility
+- Temperature and token limits configurable per function
+- Validated outputs for decision and classification functions
+
 ## v1.8.1 - Advanced Moderation Functions
 
 This release adds 8 new moderation detection functions. All use pure logic, math, or regex, no external APIs required.

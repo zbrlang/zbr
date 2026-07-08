@@ -984,6 +984,241 @@
     "example": "Zawait{my_task}"
   },
   {
+    "name": "Zai",
+    "description": "Sends a prompt to the AI and returns the response text. Supports Gemini API keys (AIza... or AQ...).",
+    "syntax": "Zai{apiKey;prompt;model?;maxTokens?;temperature?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      },
+      {
+        "name": "maxTokens",
+        "type": "integer",
+        "required": false
+      },
+      {
+        "name": "temperature",
+        "type": "number",
+        "required": false
+      }
+    ],
+    "example": "Zai{AIza...;What is Discord?;gemini-2.5-flash;500;0.7}"
+  },
+  {
+    "name": "ZaiCtx",
+    "description": "Sends a prompt to the AI with Discord context automatically injected as a system message. Returns the response text.",
+    "syntax": "ZaiCtx{apiKey;prompt;model?;maxTokens?;temperature?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      },
+      {
+        "name": "maxTokens",
+        "type": "integer",
+        "required": false
+      },
+      {
+        "name": "temperature",
+        "type": "number",
+        "required": false
+      }
+    ],
+    "example": "ZaiCtx{AIza...;Summarize this conversation;gemini-2.5-flash}"
+  },
+  {
+    "name": "ZaiDecide",
+    "description": "Asks the AI a yes/no question about the provided content. Returns strictly 'true' or 'false'.",
+    "syntax": "ZaiDecide{apiKey;content;question;model?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "question",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      }
+    ],
+    "example": "ZaiDecide{AIza...;The sky is blue;Is this about colors?}"
+  },
+  {
+    "name": "ZaiDecideCtx",
+    "description": "Asks the AI a yes/no question about the current Discord context. Returns strictly 'true' or 'false'.",
+    "syntax": "ZaiDecideCtx{apiKey;question;model?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "question",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      }
+    ],
+    "example": "ZaiDecideCtx{AIza...;Is the author an admin?}"
+  },
+  {
+    "name": "ZaiExtract",
+    "description": "Extracts specific information from text based on the instruction. Returns 'N/A' if not found.",
+    "syntax": "ZaiExtract{apiKey;content;instruction;model?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "instruction",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      }
+    ],
+    "example": "ZaiExtract{AIza...;Contact me at john@example.com;email address}"
+  },
+  {
+    "name": "ZaiExtractCtx",
+    "description": "Extracts specific information from the current Discord context based on the instruction. Returns 'N/A' if not found.",
+    "syntax": "ZaiExtractCtx{apiKey;instruction;model?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "instruction",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      }
+    ],
+    "example": "ZaiExtractCtx{AIza...;all mentioned usernames}"
+  },
+  {
+    "name": "ZaiClassify",
+    "description": "Classifies content into one category from a comma-separated list. Returns the best matching category.",
+    "syntax": "ZaiClassify{apiKey;content;categories;model?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "categories",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      }
+    ],
+    "example": "ZaiClassify{AIza...;I love this server!;positive,negative,neutral}"
+  },
+  {
+    "name": "ZaiClassifyCtx",
+    "description": "Classifies the current Discord context into one category from a comma-separated list. Returns the best matching category.",
+    "syntax": "ZaiClassifyCtx{apiKey;categories;model?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "categories",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      }
+    ],
+    "example": "ZaiClassifyCtx{AIza...;question,command,greeting,feedback}"
+  },
+  {
     "name": "Zban",
     "description": "Bans a user from the guild with an optional reason and optional number of days of messages to delete.",
     "syntax": "Zban{userID;reason?;deleteMessageDays?}",
@@ -2576,7 +2811,6 @@
     ],
     "example": "ZduplicateDetect{0.85}"
   },
-
   {
     "name": "Zduration",
     "description": "Converts a duration string (e.g. 1h, 30m, 5d) into seconds.",
@@ -4525,6 +4759,36 @@
       }
     ],
     "example": "Zimage{https://example.com/banner.png;1}"
+  },
+  {
+    "name": "ZimageAnalyze",
+    "description": "Analyzes an image from a URL using AI vision and returns a text description based on the prompt.",
+    "syntax": "ZimageAnalyze{apiKey;imageUrl;prompt;model?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "apiKey",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "imageUrl",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "required": false,
+        "default": "gemini-2.5-flash-lite"
+      }
+    ],
+    "example": "ZimageAnalyze{AIza...;https://example.com/image.png;What is in this image?}"
   },
   {
     "name": "ZindexOf",
