@@ -44,6 +44,7 @@ pub mod webhooks;
 
 pub mod automod;
 pub mod utility;
+pub mod ai;
 
 use crate::context::FnMeta;
 use crate::context::FnOutput;
@@ -1746,6 +1747,53 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         func: moderation::newAccountDetect::run,
         min_args: 1,
         max_args: 2,
+    });
+
+    // AI
+    registry.insert("ai".to_string(), FnMeta {
+        func: ai::ai::run,
+        min_args: 2,
+        max_args: 5,
+    });
+    registry.insert("aiCtx".to_string(), FnMeta {
+        func: ai::aiCtx::run,
+        min_args: 2,
+        max_args: 5,
+    });
+    registry.insert("aiDecide".to_string(), FnMeta {
+        func: ai::aiDecide::run,
+        min_args: 3,
+        max_args: 4,
+    });
+    registry.insert("aiDecideCtx".to_string(), FnMeta {
+        func: ai::aiDecideCtx::run,
+        min_args: 2,
+        max_args: 3,
+    });
+    registry.insert("aiExtract".to_string(), FnMeta {
+        func: ai::aiExtract::run,
+        min_args: 3,
+        max_args: 4,
+    });
+    registry.insert("aiExtractCtx".to_string(), FnMeta {
+        func: ai::aiExtractCtx::run,
+        min_args: 2,
+        max_args: 3,
+    });
+    registry.insert("aiClassify".to_string(), FnMeta {
+        func: ai::aiClassify::run,
+        min_args: 3,
+        max_args: 4,
+    });
+    registry.insert("aiClassifyCtx".to_string(), FnMeta {
+        func: ai::aiClassifyCtx::run,
+        min_args: 2,
+        max_args: 3,
+    });
+    registry.insert("imageAnalyze".to_string(), FnMeta {
+        func: ai::imageAnalyze::run,
+        min_args: 2,
+        max_args: 4,
     });
 
     // Voice
