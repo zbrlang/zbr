@@ -8,3 +8,5 @@ pub mod pollCreate;
 pub mod pollEnd;
 pub mod pollGet;
 pub mod pollSend;
+pub mod pollAnswerDetails;
+pub mod pollExpiration;
