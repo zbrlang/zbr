@@ -11,3 +11,6 @@ pub mod eventStart;
 pub mod eventStatus;
 pub mod eventSubscribers;
 pub mod serverEvents;
+pub mod eventInvite;
+pub mod eventUpdateStatus;
+pub mod eventCover;
