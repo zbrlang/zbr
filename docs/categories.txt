@@ -170,12 +170,15 @@ Zerror - errors
 Zeval - special
 ZeventChannel - events
 ZeventCount - events
+ZeventCover - events
 ZeventDescription - events
 ZeventEnd - events
+ZeventInvite - events
 ZeventName - events
 ZeventStart - events
 ZeventStatus - events
 ZeventSubscribers - events
+ZeventUpdateStatus - events
 ZexecutionTime - bot
 Zextract - string
 Zfactorial - math
@@ -346,6 +349,8 @@ ZonboardingDefaultChannels - onboarding
 ZonboardingEnabled - onboarding
 ZonboardingMode - onboarding
 ZonboardingPrompts - onboarding
+ZonboardingSetEnabled - onboarding
+ZonboardingSetMode - onboarding
 ZonlyAdmin - permissions
 ZonlyBotChannelPerms - permissions
 ZonlyBotPerms - permissions
@@ -373,10 +378,12 @@ ZpinList - message
 ZpinMessage - message
 ZpollAddAnswer - polls
 ZpollAllowMultiselect - polls
+ZpollAnswerDetails - polls
 ZpollAnswerVoters - polls
 ZpollAnswerVotes - polls
 ZpollCreate - polls
 ZpollEnd - polls
+ZpollExpiration - polls
 ZpollGet - polls
 ZpollSend - polls
 ZpostTags - forums

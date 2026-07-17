@@ -3394,6 +3394,25 @@
     "example": "ZeventCount{}"
   },
   {
+    "name": "ZeventCover",
+    "description": "Gets or sets the cover image URL for a scheduled event.",
+    "syntax": "ZeventCover{eventID;imageURL?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "imageURL",
+        "type": "url",
+        "required": false
+      }
+    ],
+    "example": "ZeventCover{1234567890123456789;https://example.com/cover.png}"
+  },
+  {
     "name": "ZeventDescription",
     "description": "Returns the description of a scheduled event by its event ID, or an empty string if no description is set.",
     "syntax": "ZeventDescription{eventID}",
@@ -3420,6 +3439,20 @@
       }
     ],
     "example": "ZeventEnd{1234567890123456789}"
+  },
+  {
+    "name": "ZeventInvite",
+    "description": "Returns a shareable invite URL for the scheduled event.",
+    "syntax": "ZeventInvite{eventID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZeventInvite{1234567890123456789}"
   },
   {
     "name": "ZeventName",
@@ -3476,6 +3509,25 @@
       }
     ],
     "example": "ZeventSubscribers{1234567890123456789}"
+  },
+  {
+    "name": "ZeventUpdateStatus",
+    "description": "Updates the status of a scheduled event.",
+    "syntax": "ZeventUpdateStatus{eventID;status}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "eventID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "status",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "ZeventUpdateStatus{1234567890123456789;2}"
   },
   {
     "name": "ZexecutionTime",
@@ -6263,6 +6315,34 @@
     "example": "ZonboardingPrompts{}"
   },
   {
+    "name": "ZonboardingSetEnabled",
+    "description": "Enables or disables guild onboarding.",
+    "syntax": "ZonboardingSetEnabled{enabled}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "required": true
+      }
+    ],
+    "example": "ZonboardingSetEnabled{true}"
+  },
+  {
+    "name": "ZonboardingSetMode",
+    "description": "Sets the onboarding mode for the guild.",
+    "syntax": "ZonboardingSetMode{mode}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "mode",
+        "type": "integer",
+        "required": true
+      }
+    ],
+    "example": "ZonboardingSetMode{1}"
+  },
+  {
     "name": "ZonlyAdmin",
     "description": "Halts execution unless the author has the Administrator permission in the guild.",
     "syntax": "ZonlyAdmin{errorMessage?}",
@@ -6776,6 +6856,25 @@
     "example": "ZpollAllowMultiselect{true}"
   },
   {
+    "name": "ZpollAnswerDetails",
+    "description": "Returns JSON with answer text, emoji, and vote count for a specific answer in a poll.",
+    "syntax": "ZpollAnswerDetails{pollID;answerID}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "pollID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "answerID",
+        "type": "snowflake",
+        "required": true
+      }
+    ],
+    "example": "ZpollAnswerDetails{1234567890123456789;1}"
+  },
+  {
     "name": "ZpollAnswerVoters",
     "description": "Returns a list of users who voted for a specific poll answer.",
     "syntax": "ZpollAnswerVoters{messageID;answerID;channelID?}",
@@ -6863,6 +6962,25 @@
       }
     ],
     "example": "ZpollEnd{987654321098765432}"
+  },
+  {
+    "name": "ZpollExpiration",
+    "description": "Gets or sets the poll's end timestamp.",
+    "syntax": "ZpollExpiration{pollID;endTime?}",
+    "variadic": false,
+    "arguments": [
+      {
+        "name": "pollID",
+        "type": "snowflake",
+        "required": true
+      },
+      {
+        "name": "endTime",
+        "type": "integer",
+        "required": false
+      }
+    ],
+    "example": "ZpollExpiration{1234567890123456789;1721234567}"
   },
   {
     "name": "ZpollGet",

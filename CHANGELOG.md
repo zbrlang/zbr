@@ -2,6 +2,26 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
 
+## v1.8.3 - Discord API Feature Expansion
+
+This release adds 7 new Discord API-based functions for Events, Polls, and Onboarding management.
+
+### New Functions
+
+- **`ZeventInvite{eventID}`**: Returns a shareable invite URL for the scheduled event.
+- **`ZeventUpdateStatus{eventID;status}`**: Updates the status of a scheduled event.
+- **`ZeventCover{eventID;imageURL?}`**: Gets or sets the cover image URL for a scheduled event.
+- **`ZpollAnswerDetails{pollID;answerID}`**: Returns JSON with answer text, emoji, and vote count for a specific answer in a poll.
+- **`ZpollExpiration{pollID;endTime?}`**: Gets or sets the poll's end timestamp.
+- **`ZonboardingSetMode{mode}`**: Sets the onboarding mode for the guild.
+- **`ZonboardingSetEnabled{enabled}`**: Enables or disables guild onboarding.
+
+### API Expansion
+
+- Added base function stubs for Event management (invite generation, status updates, and cover management).
+- Added base function stubs for Poll interaction (answer details and expiration settings).
+- Added base function stubs for Guild Onboarding configuration (mode and status toggles).
+
 ## v1.8.2 - AI Integration Functions
 
 This release adds 9 new AI-powered functions using the Gemini API for text generation, classification, extraction, and image analysis.
