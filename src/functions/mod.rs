@@ -3128,4 +3128,40 @@ pub fn register(registry: &mut HashMap<String, FnMeta>) {
         min_args: 0,
         max_args: 0,
     });
+    // New functions
+    registry.insert("eventInvite".to_string(), FnMeta {
+        func: events::eventInvite::run,
+        min_args: 1,
+        max_args: 1,
+    });
+    registry.insert("eventUpdateStatus".to_string(), FnMeta {
+        func: events::eventUpdateStatus::run,
+        min_args: 2,
+        max_args: 2,
+    });
+    registry.insert("eventCover".to_string(), FnMeta {
+        func: events::eventCover::run,
+        min_args: 1,
+        max_args: 2,
+    });
+    registry.insert("pollAnswerDetails".to_string(), FnMeta {
+        func: polls::pollAnswerDetails::run,
+        min_args: 2,
+        max_args: 2,
+    });
+    registry.insert("pollExpiration".to_string(), FnMeta {
+        func: polls::pollExpiration::run,
+        min_args: 1,
+        max_args: 2,
+    });
+    registry.insert("onboardingSetMode".to_string(), FnMeta {
+        func: onboarding::onboardingSetMode::run,
+        min_args: 1,
+        max_args: 1,
+    });
+    registry.insert("onboardingSetEnabled".to_string(), FnMeta {
+        func: onboarding::onboardingSetEnabled::run,
+        min_args: 1,
+        max_args: 1,
+    });
 }
