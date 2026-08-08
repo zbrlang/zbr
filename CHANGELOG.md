@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.vercel.app/docs/changelog) website.
+All notable changes to the ZBR project are documented here and in the [changelog](https://docs.zbrlang.tech/changelog) website.
 
 ## v1.8.3 - Discord API Feature Expansion
 

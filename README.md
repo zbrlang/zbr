@@ -8,7 +8,7 @@ You write commands as plain `.zbr` files using ZBR functions, no boilerplate, no
 Get your bot up and running in seconds:
 
 ### Option 1: Webapp Editor (Recommended)
-Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a zero-setup development experience.
+Head over to the [ZBR Webapp](https://app.zbrlang.tech) for a zero-setup development experience.
 1. Build your commands, manage variables, and tweak settings visually.
 2. Press **Run** to launch your bot instantly in the cloud for testing.
 3. Your bot is now live for testing!
@@ -43,7 +43,7 @@ Head over to the [ZBR Webapp](https://zbr-webapp.vercel.app) for a zero-setup de
 
 ## Webapp Editor
 
-For those who prefer a visual development environment, the [ZBR Webapp](https://zbr-webapp.vercel.app) allows you to build and test your bot entirely in your browser.
+For those who prefer a visual development environment, the [ZBR Webapp](https://app.zbrlang.tech) allows you to build and test your bot entirely in your browser.
 
 - **Instant Prototyping:** Write code and launch your bot with a single click using the built-in cloud runner, no local setup required.
 - **Visual Interface:** Easily design your bot logic, manage variables, and configure settings without touching a terminal.
@@ -141,7 +141,7 @@ Lines starting with `//` are comments.
 - **Channels**: ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZsyncPerms, ZchannelExists, ZchannelName, ZslowMode
 - **Roles**: ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole
 
-...and **32+ more** — see the [full function reference](https://zbr-website.vercel.app/docs).
+...and **32+ more** — see the [full function reference](https://docs.zbrlang.tech).
 
 ## Example commands
 
