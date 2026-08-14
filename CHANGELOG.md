@@ -1,6 +1,25 @@
 # Changelog
 
-All notable changes to the ZBR project are documented here and in the [changelog](https://docs.zbrlang.tech/changelog) website.
+All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.tech/docs/changelog) website.
+
+## v1.8.4 - Multi-Channel Distribution & Automated CI/CD
+
+This release introduces comprehensive multi-channel distribution support for the ZBR CLI, along with fully automated CI/CD pipeline integration.
+
+### Distribution Channels
+
+- **Homebrew (macOS/Linux)**: Added support for installation via Homebrew tap (`brew install zbrlang/tap/zbr`).
+- **Scoop (Windows)**: Added support for installation via Scoop bucket (`scoop bucket add zbrlang ...`).
+- **AUR (Arch Linux)**: Added support for installation via the Arch User Repository (`yay -S zbr`).
+- **Winget (Windows)**: Added support for installation via the Windows Package Manager (`winget install zbrlang.zbr`).
+- **Shell Installer**: Introduced a native shell installer (`curl -sSfL https://install.zbrlang.tech | sh`) for Linux and macOS.
+
+### Infrastructure & Automation
+
+- **Automated CI/CD Pipeline**: Enhanced the `release.yml` GitHub Actions workflow to automatically build, calculate binary hashes, update manifests, and deploy to Homebrew, Scoop, AUR, and Winget repositories upon new releases.
+- **Subdomain Redirection**: Updated website `middleware.ts` to support automated redirects for `homebrew.`, `scoop.`, `aur.`, `winget.`, `install.`, and `packages.` subdomains to their respective GitHub repositories or download assets.
+- **Documentation**: Centralized all installation instructions into a new, comprehensive guide and standardized across `DOWNLOADS.md` and website documentation (`installation.mdx`).
+- **NPM/Bun Optimization**: Refined NPM packaging and documented support for Bun installation.
 
 ## v1.8.3 - Discord API Feature Expansion
 

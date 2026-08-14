@@ -1,6 +1,8 @@
 # Downloads
 
-You can install the ZBR CLI using your preferred package manager or by downloading the binary directly.
+You can install the ZBR CLI using your preferred package manager or by downloading the binary directly. 
+
+Further information is also available on the [ZBR documentation website](https://zbrlang.tech/docs/guides/installation).
 
 ## Recommended Installation Methods
 

@@ -139,7 +139,7 @@ Lines starting with `//` are comments.
 - **Channels**: ZcreateChannel, ZdeleteChannels, ZmodifyChannel, ZsyncPerms, ZchannelExists, ZchannelName, ZslowMode
 - **Roles**: ZcreateRole, ZdeleteRole, ZmodifyRole, ZroleMembers, ZroleExists, ZhasRole
 
-...and **32+ more** — see the [full function reference](https://docs.zbrlang.tech).
+...and **32+ more** — see the [full function reference](https://zbrlang.tech/docs).
 
 ## Example commands
 
