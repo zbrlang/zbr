@@ -176,3 +176,92 @@ jobs:
           git add .build-version Dockerfile
           git commit -m "rebuild for ${{ github.ref_name }}"
           git push
+
+  deploy_distribution:
+    name: Deploy Distribution Manifests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DISTRIBUTION_SSH_KEY }}
+
+      - name: Download Binaries
+        run: |
+          gh release download ${{ github.ref_name }} --pattern "zbr-*"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calculate Hashes
+        id: hashes
+        run: |
+          echo "DARWIN_X64=$(sha256sum zbr-darwin-x64 | cut -d' ' -f1)" >> $GITHUB_ENV
+          echo "DARWIN_ARM64=$(sha256sum zbr-darwin-arm64 | cut -d' ' -f1)" >> $GITHUB_ENV
+          echo "LINUX_X64=$(sha256sum zbr-linux-x64 | cut -d' ' -f1)" >> $GITHUB_ENV
+          echo "LINUX_ARM64=$(sha256sum zbr-linux-arm64 | cut -d' ' -f1)" >> $GITHUB_ENV
+          echo "WIN_X64=$(sha256sum zbr-windows-x64.exe | cut -d' ' -f1)" >> $GITHUB_ENV
+          echo "WIN_ARM64=$(sha256sum zbr-windows-arm64.exe | cut -d' ' -f1)" >> $GITHUB_ENV
+        
+      - name: Extract version from tag
+        id: tag_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Update Homebrew
+        run: |
+          git clone git@github.com:zbrlang/homebrew-tap.git tap
+          cp homebrew/zbr.rb tap/Formula/zbr.rb
+          sed -i "s/REPLACE_ME_SHA256_DARWIN_X64/$DARWIN_X64/" tap/Formula/zbr.rb
+          sed -i "s/REPLACE_ME_SHA256_DARWIN_ARM64/$DARWIN_ARM64/" tap/Formula/zbr.rb
+          sed -i "s/REPLACE_ME_SHA256_LINUX_X64/$LINUX_X64/" tap/Formula/zbr.rb
+          sed -i "s/REPLACE_ME_SHA256_LINUX_ARM64/$LINUX_ARM64/" tap/Formula/zbr.rb
+          cd tap
+          git config user.name "ZBR CI"
+          git config user.email "ci@zbrlang.com"
+          git add .
+          git commit -m "Update zbr to ${{ github.ref_name }}"
+          git push
+
+      - name: Update AUR
+        run: |
+          git clone git@github.com:zbrlang/aur-package.git aur
+          cp aur/PKGBUILD aur/PKGBUILD
+          sed -i "s/pkgver=.*$/pkgver=${{ steps.tag_version.outputs.VERSION }}/" aur/PKGBUILD
+          sed -i "s/REPLACE_ME_SHA256_LINUX_X64/$LINUX_X64/" aur/PKGBUILD
+          sed -i "s/REPLACE_ME_SHA256_LINUX_ARM64/$LINUX_ARM64/" aur/PKGBUILD
+          cd aur
+          git config user.name "ZBR CI"
+          git config user.email "ci@zbrlang.com"
+          git add .
+          git commit -m "Update zbr to ${{ github.ref_name }}"
+          git push
+
+      - name: Update Winget
+        run: |
+          git clone git@github.com:zbrlang/winget-packages.git winget
+          cp winget/zbr.yaml winget/zbr.yaml
+          sed -i "s/PackageVersion: .*$/PackageVersion: ${{ steps.tag_version.outputs.VERSION }}/" winget/zbr.yaml
+          sed -i "s/REPLACE_ME_SHA256_WINDOWS_X64/$WIN_X64/" winget/zbr.yaml
+          sed -i "s/REPLACE_ME_SHA256_WINDOWS_ARM64/$WIN_ARM64/" winget/zbr.yaml
+          cd winget
+          git config user.name "ZBR CI"
+          git config user.email "ci@zbrlang.com"
+          git add .
+          git commit -m "Update zbr to ${{ github.ref_name }}"
+          git push
+
+      - name: Update Scoop
+        run: |
+          git clone git@github.com:zbrlang/scoop-bucket.git bucket
+          cp scoop/zbr.json bucket/zbr.json
+          sed -i "s/REPLACE_ME_SHA256_WINDOWS_X64/$WIN_X64/" bucket/zbr.json
+          sed -i "s/REPLACE_ME_SHA256_WINDOWS_ARM64/$WIN_ARM64/" bucket/zbr.json
+          cd bucket
+          git config user.name "ZBR CI"
+          git config user.email "ci@zbrlang.com"
+          git add .
+          git commit -m "Update zbr to ${{ github.ref_name }}"
+          git push
