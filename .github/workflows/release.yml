@@ -116,6 +116,18 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # --- NPM (Temporarily Disabled - Uncomment to re-enable) ---
+      # - name: Setup Node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+      #     registry-url: 'https://registry.npmjs.org'
+      # - name: Publish to NPM
+      #   run: |
+      #     # (NPM logic here)
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Calculate Hashes
         id: hashes
         run: |
@@ -130,7 +142,7 @@ jobs:
         run: |
           if [ ! -f homebrew/zbr.rb ]; then echo "Error: homebrew/zbr.rb missing"; exit 1; fi
           rm -rf clone_homebrew
-          git clone git@github.com:zbrlang/homebrew-tap.git clone_homebrew
+          GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git clone git@github.com:zbrlang/homebrew-tap.git clone_homebrew
           mkdir -p clone_homebrew/Formula
           cp homebrew/zbr.rb clone_homebrew/Formula/zbr.rb
           sed -i "s/REPLACE_ME_SHA256_DARWIN_X64/$DARWIN_X64/" clone_homebrew/Formula/zbr.rb
@@ -141,13 +153,13 @@ jobs:
           git config user.name "ZBR CI"
           git config user.email "ci@zbrlang.com"
           git add .
-          if ! git diff-index --quiet HEAD; then git commit -m "Update zbr to ${{ github.ref_name }}"; git push; else echo "No changes to commit."; fi
+          if ! git diff-index --quiet HEAD; then GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git commit -m "Update zbr to ${{ github.ref_name }}"; GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git push; else echo "No changes to commit."; fi
 
       - name: Update AUR
         run: |
           if [ ! -f aur/PKGBUILD ]; then echo "Error: aur/PKGBUILD missing"; exit 1; fi
           rm -rf clone_aur
-          git clone git@github.com:zbrlang/aur-package.git clone_aur
+          GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git clone git@github.com:zbrlang/aur-package.git clone_aur
           cp aur/PKGBUILD clone_aur/PKGBUILD
           sed -i "s/pkgver=.*$/pkgver=${{ steps.tag_version.outputs.VERSION }}/" clone_aur/PKGBUILD
           sed -i "s/REPLACE_ME_SHA256_LINUX_X64/$LINUX_X64/" clone_aur/PKGBUILD
@@ -156,13 +168,13 @@ jobs:
           git config user.name "ZBR CI"
           git config user.email "ci@zbrlang.com"
           git add .
-          if ! git diff-index --quiet HEAD; then git commit -m "Update zbr to ${{ github.ref_name }}"; git push; else echo "No changes to commit."; fi
+          if ! git diff-index --quiet HEAD; then GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git commit -m "Update zbr to ${{ github.ref_name }}"; GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git push; else echo "No changes to commit."; fi
 
       - name: Update Winget
         run: |
           if [ ! -f winget/zbr.yaml ]; then echo "Error: winget/zbr.yaml missing"; exit 1; fi
           rm -rf clone_winget
-          git clone git@github.com:zbrlang/winget-packages.git clone_winget
+          GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git clone git@github.com:zbrlang/winget-packages.git clone_winget
           cp winget/zbr.yaml clone_winget/zbr.yaml
           sed -i "s/PackageVersion: .*$/PackageVersion: ${{ steps.tag_version.outputs.VERSION }}/" clone_winget/zbr.yaml
           sed -i "s/REPLACE_ME_SHA256_WINDOWS_X64/$WIN_X64/" clone_winget/zbr.yaml
@@ -171,13 +183,13 @@ jobs:
           git config user.name "ZBR CI"
           git config user.email "ci@zbrlang.com"
           git add .
-          if ! git diff-index --quiet HEAD; then git commit -m "Update zbr to ${{ github.ref_name }}"; git push; else echo "No changes to commit."; fi
+          if ! git diff-index --quiet HEAD; then GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git commit -m "Update zbr to ${{ github.ref_name }}"; GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git push; else echo "No changes to commit."; fi
 
       - name: Update Scoop
         run: |
           if [ ! -f scoop/zbr.json ]; then echo "Error: scoop/zbr.json missing"; exit 1; fi
           rm -rf clone_scoop
-          git clone git@github.com:zbrlang/scoop-bucket.git clone_scoop
+          GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git clone git@github.com:zbrlang/scoop-bucket.git clone_scoop
           cp scoop/zbr.json clone_scoop/zbr.json
           sed -i "s/REPLACE_ME_SHA256_WINDOWS_X64/$WIN_X64/" clone_scoop/zbr.json
           sed -i "s/REPLACE_ME_SHA256_WINDOWS_ARM64/$WIN_ARM64/" clone_scoop/zbr.json
@@ -185,7 +197,7 @@ jobs:
           git config user.name "ZBR CI"
           git config user.email "ci@zbrlang.com"
           git add .
-          if ! git diff-index --quiet HEAD; then git commit -m "Update zbr to ${{ github.ref_name }}"; git push; else echo "No changes to commit."; fi
+          if ! git diff-index --quiet HEAD; then GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git commit -m "Update zbr to ${{ github.ref_name }}"; GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes" git push; else echo "No changes to commit."; fi
 
   rebuild_hf_space:
     name: Rebuild HF Space
