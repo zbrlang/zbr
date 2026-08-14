@@ -1,0 +1,18 @@
+# Maintainer: ZBRLang <ci@zbrlang.tech>
+pkgname=zbr
+pkgver=1.8.3
+pkgrel=1
+pkgdesc="ZBR CLI, A simple and powerful Discord bot scripting engine."
+arch=('x86_64' 'aarch64')
+url="https://zbrlang.tech"
+license=('custom')
+options=('!strip')
+
+source_x86_64=("https://github.com/zbrlang/zbr/releases/download/v${pkgver}/zbr-linux-x64")
+source_aarch64=("https://github.com/zbrlang/zbr/releases/download/v${pkgver}/zbr-linux-arm64")
+sha256sums_x86_64=('REPLACE_ME_SHA256_LINUX_X64')
+sha256sums_aarch64=('REPLACE_ME_SHA256_LINUX_ARM64')
+
+package() {
+    install -Dm755 "${srcdir}/zbr-linux-${CARCH == 'x86_64' ? 'x64' : 'arm64'}" "${pkgdir}/usr/bin/zbr"
+}
