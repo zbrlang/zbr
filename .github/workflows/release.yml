@@ -101,12 +101,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -123,6 +117,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # --- NPM (Temporarily Disabled - Uncomment to re-enable) ---
+      # - name: Setup Node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+      #     registry-url: 'https://registry.npmjs.org'
       # - name: Publish to NPM
       #   run: |
       #     # (NPM logic here)
@@ -142,6 +141,7 @@ jobs:
       - name: Update Homebrew
         run: |
           git clone git@github.com:zbrlang/homebrew-tap.git tap
+          mkdir -p tap/Formula
           cp homebrew/zbr.rb tap/Formula/zbr.rb
           sed -i "s/REPLACE_ME_SHA256_DARWIN_X64/$DARWIN_X64/" tap/Formula/zbr.rb
           sed -i "s/REPLACE_ME_SHA256_DARWIN_ARM64/$DARWIN_ARM64/" tap/Formula/zbr.rb
