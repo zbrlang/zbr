@@ -106,6 +106,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DISTRIBUTION_SSH_KEY }}
 
+      - name: Debug SSH Keys
+        run: ssh-add -l
+
       - name: Extract version from tag
         id: tag_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
