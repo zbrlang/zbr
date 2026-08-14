@@ -152,8 +152,12 @@ jobs:
           git config user.name "ZBR CI"
           git config user.email "ci@zbrlang.com"
           git add .
-          git commit -m "Update zbr to ${{ github.ref_name }}"
-          git push
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Update zbr to ${{ github.ref_name }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi
 
       - name: Update AUR
         run: |
@@ -167,8 +171,12 @@ jobs:
           git config user.name "ZBR CI"
           git config user.email "ci@zbrlang.com"
           git add .
-          git commit -m "Update zbr to ${{ github.ref_name }}"
-          git push
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Update zbr to ${{ github.ref_name }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi
 
       - name: Update Winget
         run: |
@@ -182,8 +190,12 @@ jobs:
           git config user.name "ZBR CI"
           git config user.email "ci@zbrlang.com"
           git add .
-          git commit -m "Update zbr to ${{ github.ref_name }}"
-          git push
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Update zbr to ${{ github.ref_name }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi
 
       - name: Update Scoop
         run: |
@@ -196,8 +208,12 @@ jobs:
           git config user.name "ZBR CI"
           git config user.email "ci@zbrlang.com"
           git add .
-          git commit -m "Update zbr to ${{ github.ref_name }}"
-          git push
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Update zbr to ${{ github.ref_name }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi
 
   rebuild_hf_space:
     name: Rebuild HF Space
