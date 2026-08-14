@@ -16,10 +16,8 @@ Head over to the [ZBR Webapp](https://app.zbrlang.tech) for a zero-setup develop
 > **Note:** The Webapp "Run" button is strictly for rapid prototyping and interactive testing. For 24/7 production hosting, you must export your project as a ZIP and use the CLI.
 
 ### Option 2: CLI
-1. **Install the CLI globally:**
-   ```bash
-   npm i -g @zbrlang/zbr
-   ```
+1. **Install the CLI:**
+   [Follow the installation guide in DOWNLOADS.md](DOWNLOADS.md) to install the ZBR CLI.
 
 2. **Initialize a new project:**
    ```bash
