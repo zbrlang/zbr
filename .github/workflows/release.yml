@@ -140,6 +140,7 @@ jobs:
 
       - name: Update Homebrew
         run: |
+          rm -rf tap
           git clone git@github.com:zbrlang/homebrew-tap.git tap
           mkdir -p tap/Formula
           cp homebrew/zbr.rb tap/Formula/zbr.rb
@@ -156,6 +157,7 @@ jobs:
 
       - name: Update AUR
         run: |
+          rm -rf aur
           git clone git@github.com:zbrlang/aur-package.git aur
           cp aur/PKGBUILD aur/PKGBUILD
           sed -i "s/pkgver=.*$/pkgver=${{ steps.tag_version.outputs.VERSION }}/" aur/PKGBUILD
@@ -170,6 +172,7 @@ jobs:
 
       - name: Update Winget
         run: |
+          rm -rf winget
           git clone git@github.com:zbrlang/winget-packages.git winget
           cp winget/zbr.yaml winget/zbr.yaml
           sed -i "s/PackageVersion: .*$/PackageVersion: ${{ steps.tag_version.outputs.VERSION }}/" winget/zbr.yaml
@@ -184,6 +187,7 @@ jobs:
 
       - name: Update Scoop
         run: |
+          rm -rf bucket
           git clone git@github.com:zbrlang/scoop-bucket.git bucket
           cp scoop/zbr.json bucket/zbr.json
           sed -i "s/REPLACE_ME_SHA256_WINDOWS_X64/$WIN_X64/" bucket/zbr.json
