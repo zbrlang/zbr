@@ -19,26 +19,31 @@ jobs:
             binary: zbr
             asset_name: zbr-linux-x64
             cross: false
+
           - os: ubuntu-latest
             target: aarch64-linux-android
             binary: zbr
             asset_name: zbr-linux-arm64
             cross: true
+
           - os: macos-latest
             target: x86_64-apple-darwin
             binary: zbr
             asset_name: zbr-darwin-x64
             cross: false
+
           - os: macos-latest
             target: aarch64-apple-darwin
             binary: zbr
             asset_name: zbr-darwin-arm64
             cross: false
+
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             binary: zbr.exe
             asset_name: zbr-windows-x64.exe
             cross: false
+
           - os: windows-latest
             target: aarch64-pc-windows-msvc
             binary: zbr.exe
@@ -93,10 +98,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy_all:
-    name: Deploy to All Channels
+  publish:
+    name: Publish to npm
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -111,23 +119,22 @@ jobs:
         id: tag_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Download Binaries
+      - name: Download and prepare binaries
         run: |
-          gh release download ${{ github.ref_name }} --pattern "zbr-*"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to NPM
-        run: |
-          # Prepare platform packages
+          for asset in zbr-linux-x64 zbr-linux-arm64 zbr-darwin-x64 zbr-darwin-arm64 zbr-windows-x64.exe zbr-windows-arm64.exe; do
+            gh release download ${{ github.ref_name }} --pattern "$asset"
+          done
           cp zbr-linux-x64 packages/zbr-linux-x64/
           cp zbr-linux-arm64 packages/zbr-linux-arm64/
           cp zbr-darwin-x64 packages/zbr-darwin-x64/
           cp zbr-darwin-arm64 packages/zbr-darwin-arm64/
           cp zbr-windows-x64.exe packages/zbr-windows-x64/
           cp zbr-windows-arm64.exe packages/zbr-windows-arm64/
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          # Update versions and publish platform packages
+      - name: Update versions and publish platform packages
+        run: |
           VERSION=${{ steps.tag_version.outputs.VERSION }}
           for pkg in packages/zbr-*; do
             cd $pkg
@@ -135,8 +142,12 @@ jobs:
             npm publish --access public
             cd ../..
           done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-          # Update main package version and publish
+      - name: Update main package version and publish
+        run: |
+          VERSION=${{ steps.tag_version.outputs.VERSION }}
           npm pkg set version=$VERSION
           npm pkg set optionalDependencies.@zbrlang/zbr-linux-x64=$VERSION
           npm pkg set optionalDependencies.@zbrlang/zbr-linux-arm64=$VERSION
@@ -148,81 +159,11 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Calculate Hashes
-        id: hashes
-        run: |
-          echo "DARWIN_X64=$(sha256sum zbr-darwin-x64 | cut -d' ' -f1)" >> $GITHUB_ENV
-          echo "DARWIN_ARM64=$(sha256sum zbr-darwin-arm64 | cut -d' ' -f1)" >> $GITHUB_ENV
-          echo "LINUX_X64=$(sha256sum zbr-linux-x64 | cut -d' ' -f1)" >> $GITHUB_ENV
-          echo "LINUX_ARM64=$(sha256sum zbr-linux-arm64 | cut -d' ' -f1)" >> $GITHUB_ENV
-          echo "WIN_X64=$(sha256sum zbr-windows-x64.exe | cut -d' ' -f1)" >> $GITHUB_ENV
-          echo "WIN_ARM64=$(sha256sum zbr-windows-arm64.exe | cut -d' ' -f1)" >> $GITHUB_ENV
-
-      - name: Update Homebrew
-        run: |
-          if [ ! -f homebrew/zbr.rb ]; then echo "Error: homebrew/zbr.rb missing"; exit 1; fi
-          rm -rf clone_homebrew
-          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/zbrlang/homebrew-tap.git clone_homebrew
-          mkdir -p clone_homebrew/Formula
-          cp homebrew/zbr.rb clone_homebrew/Formula/zbr.rb
-          sed -i "s/REPLACE_ME_SHA256_DARWIN_X64/$DARWIN_X64/" clone_homebrew/Formula/zbr.rb
-          sed -i "s/REPLACE_ME_SHA256_DARWIN_ARM64/$DARWIN_ARM64/" clone_homebrew/Formula/zbr.rb
-          sed -i "s/REPLACE_ME_SHA256_LINUX_X64/$LINUX_X64/" clone_homebrew/Formula/zbr.rb
-          sed -i "s/REPLACE_ME_SHA256_LINUX_ARM64/$LINUX_ARM64/" clone_homebrew/Formula/zbr.rb
-          cd clone_homebrew
-          git config user.name "ZBR CI"
-          git config user.email "ci@zbrlang.com"
-          git add .
-          if ! git diff-index --quiet HEAD; then git commit -m "Update zbr to ${{ github.ref_name }}"; git push; else echo "No changes to commit."; fi
-
-      - name: Update AUR
-        run: |
-          if [ ! -f aur/PKGBUILD ]; then echo "Error: aur/PKGBUILD missing"; exit 1; fi
-          rm -rf clone_aur
-          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/zbrlang/aur-package.git clone_aur
-          cp aur/PKGBUILD clone_aur/PKGBUILD
-          sed -i "s/pkgver=.*$/pkgver=${{ steps.tag_version.outputs.VERSION }}/" clone_aur/PKGBUILD
-          sed -i "s/REPLACE_ME_SHA256_LINUX_X64/$LINUX_X64/" clone_aur/PKGBUILD
-          sed -i "s/REPLACE_ME_SHA256_LINUX_ARM64/$LINUX_ARM64/" clone_aur/PKGBUILD
-          cd clone_aur
-          git config user.name "ZBR CI"
-          git config user.email "ci@zbrlang.com"
-          git add .
-          if ! git diff-index --quiet HEAD; then git commit -m "Update zbr to ${{ github.ref_name }}"; git push; else echo "No changes to commit."; fi
-
-      - name: Update Winget
-        run: |
-          if [ ! -f winget/zbr.yaml ]; then echo "Error: winget/zbr.yaml missing"; exit 1; fi
-          rm -rf clone_winget
-          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/zbrlang/winget-packages.git clone_winget
-          cp winget/zbr.yaml clone_winget/zbr.yaml
-          sed -i "s/PackageVersion: .*$/PackageVersion: ${{ steps.tag_version.outputs.VERSION }}/" clone_winget/zbr.yaml
-          sed -i "s/REPLACE_ME_SHA256_WINDOWS_X64/$WIN_X64/" clone_winget/zbr.yaml
-          sed -i "s/REPLACE_ME_SHA256_WINDOWS_ARM64/$WIN_ARM64/" clone_winget/zbr.yaml
-          cd clone_winget
-          git config user.name "ZBR CI"
-          git config user.email "ci@zbrlang.com"
-          git add .
-          if ! git diff-index --quiet HEAD; then git commit -m "Update zbr to ${{ github.ref_name }}"; git push; else echo "No changes to commit."; fi
-
-      - name: Update Scoop
-        run: |
-          if [ ! -f scoop/zbr.json ]; then echo "Error: scoop/zbr.json missing"; exit 1; fi
-          rm -rf clone_scoop
-          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/zbrlang/scoop-bucket.git clone_scoop
-          cp scoop/zbr.json clone_scoop/zbr.json
-          sed -i "s/REPLACE_ME_SHA256_WINDOWS_X64/$WIN_X64/" clone_scoop/zbr.json
-          sed -i "s/REPLACE_ME_SHA256_WINDOWS_ARM64/$WIN_ARM64/" clone_scoop/zbr.json
-          cd clone_scoop
-          git config user.name "ZBR CI"
-          git config user.email "ci@zbrlang.com"
-          git add .
-          if ! git diff-index --quiet HEAD; then git commit -m "Update zbr to ${{ github.ref_name }}"; git push; else echo "No changes to commit."; fi
-
   rebuild_hf_space:
     name: Rebuild HF Space
-    needs: deploy_all
+    needs: publish
     runs-on: ubuntu-latest
+
     steps:
       - name: Trigger Rebuild
         run: |
