@@ -2,6 +2,22 @@
 
 All notable changes to the ZBR project are documented here and in the [changelog](https://zbrlang.tech/docs/changelog) website.
 
+## v1.8.5 - Distribution Simplification
+
+This release reverts the experimental distribution changes introduced in v1.8.4, returning ZBR to its simpler NPM/Bun and manual download distribution model.
+
+### Distribution
+
+* **NPM/Bun**: Retained NPM and Bun as the primary installation methods.
+* **Manual Downloads**: Retained direct binary downloads for users who prefer manual installation.
+* **Removed Experimental Support**: Removed Homebrew, AUR, Winget, Scoop, and shell installer distribution.
+
+### Infrastructure & Documentation
+
+* **CI/CD**: Simplified the release pipeline to focus on core NPM publishing and binary releases.
+* **Documentation**: Updated installation documentation to reflect the reverted distribution methods.
+
+
 ## v1.8.4 - Multi-Channel Distribution & Automated CI/CD
 
 This release introduces comprehensive multi-channel distribution support for the ZBR CLI, along with fully automated CI/CD pipeline integration.

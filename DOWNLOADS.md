@@ -6,8 +6,6 @@ Further information is also available on the [ZBR documentation website](https:/
 
 ## Recommended Installation Methods
 
-### Universal (Windows, macOS, Linux)
-
 #### Option 1: NPM
 The standard Node.js package manager. You must have [Node.js](https://nodejs.org/) installed.
 
@@ -20,53 +18,6 @@ A fast, all-in-one JavaScript runtime and package manager. You must have [Bun](h
 
 ```bash
 bun install -g @zbrlang/zbr
-```
-
----
-
-### macOS & Linux
-
-#### Option 3: Homebrew (macOS, Linux)
-To use this method, you must have [Homebrew](https://brew.sh/) installed.
-
-```bash
-brew tap zbrlang/tap
-brew install zbr
-```
-
-#### Option 4: Shell Installer (macOS, Linux)
-For a quick, native installation, you can use our shell script (requires `curl` and `sudo` access):
-
-```bash
-curl -sSfL https://install.zbrlang.tech | sh
-```
-
-#### Option 5: AUR (Arch Linux)
-If you are on Arch Linux, install ZBR via your preferred AUR helper:
-
-```bash
-yay -S zbr
-# OR
-paru -S zbr
-```
-
----
-
-### Windows
-
-#### Option 6: Scoop
-To use this method, you must have [Scoop](https://scoop.sh/) installed.
-
-```bash
-scoop bucket add zbrlang https://github.com/zbrlang/scoop-bucket
-scoop install zbr
-```
-
-#### Option 7: Winget
-The official Windows Package Manager (pre-installed on Windows 10/11).
-
-```bash
-winget install zbrlang.zbr
 ```
 
 ---
