@@ -1,7 +1,6 @@
 #!/bin/sh
 set -e
 
-# Detect OS and Arch
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
 
@@ -21,13 +20,36 @@ esac
 
 echo "Installing ZBR CLI for $OS $ARCH..."
 
-# Get latest release tag
 LATEST_TAG=$(curl -s https://api.github.com/repos/zbrlang/zbr/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 
-# Download and install
 URL="https://github.com/zbrlang/zbr/releases/download/$LATEST_TAG/$TARGET"
-curl -L "$URL" -o /tmp/zbr
-chmod +x /tmp/zbr
-sudo mv /tmp/zbr /usr/local/bin/zbr
+curl -L "$URL" -o /tmp/zbr-engine
+chmod +x /tmp/zbr-engine
+sudo mv /tmp/zbr-engine /usr/local/bin/zbr-engine
+
+cat <<'EOF' | sudo tee /usr/local/bin/zbr > /dev/null
+#!/bin/sh
+case "$1" in
+  run)
+    shift
+    /usr/local/bin/zbr-engine "$@"
+    ;;
+  version|-v|--version)
+    /usr/local/bin/zbr-engine --version
+    ;;
+  help|--help)
+    echo "Usage: zbr [command]"
+    echo "Commands:"
+    echo "  run          Start the bot"
+    echo "  version      Show version"
+    ;;
+  *)
+    echo "Unknown command: $1"
+    echo "Use 'zbr help' for usage."
+    exit 1
+    ;;
+esac
+EOF
+sudo chmod +x /usr/local/bin/zbr
 
 echo "Successfully installed ZBR CLI ($LATEST_TAG) to /usr/local/bin/zbr"
